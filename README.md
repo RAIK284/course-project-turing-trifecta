@@ -1,10 +1,9 @@
-## Turing Trifecta Presents...
-
-### WAVELENGTH
+The Turing Trifecta Presents...
+# WAVELENGTH
 
 A web-based multiplayer game that mimicks the real life board game Wavelength.
 
-# Tech Stack
+### Tech Stack
 
 Frontend:
 - Typescript
