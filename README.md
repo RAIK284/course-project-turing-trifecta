@@ -1,1 +1,19 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=13687518&assignment_repo_type=AssignmentRepo)
+# Turing Trifecta Presents...
+
+### WAVELENGTH
+
+A web-based multiplayer game that mimicks the real life board game Wavelength.
+
+# Tech Stack
+
+Frontend:
+- Typescript
+- React
+- MobX
+
+Backend:
+- C#
+- .NET
+- Entity Framework
+- SignalR
+
