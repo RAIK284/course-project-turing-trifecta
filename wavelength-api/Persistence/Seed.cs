@@ -8,14 +8,16 @@ public class Seed
     {
         if (context.GameSessions.Any()) return;
 
-        var ID_GameSession_1 = "193245";
-        Guid ID_User_1 = Guid.NewGuid();
+        var JoinCode_GameSession_1 = "193245";
+        var ID_User_1 = Guid.NewGuid();
+        var ID_GameSession_1 = Guid.Parse("5e5136b8-5845-4256-92c1-084237021882");
 
         var gameSessions = new List<GameSession>
         {
             new GameSession()
             {
-                JoinCode = ID_GameSession_1,
+                ID = ID_GameSession_1,
+                JoinCode = JoinCode_GameSession_1,
                 StartTime = DateTime.Now,
                 OwnerID = ID_User_1
             }
