@@ -21,8 +21,8 @@ public class GameRound
     public string Clue { get; set; } = "";
 
     public int TargetOffset { get; set; }
-    
+
     public int RoundNumber { get; set; }
-    
-    public IEnumerable<GameSessionMemberRoundRole> RoundRoles { get; set; }
+
+    public IEnumerable<GameSessionMemberRoundRole> RoundRoles { get; set; } = new List<GameSessionMemberRoundRole>();
 }

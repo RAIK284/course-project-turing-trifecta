@@ -1,6 +1,6 @@
-using Domain;
+using Application.Core;
 using MediatR;
-using Persistence;
+using Persistence.DataTransferObject;
 using Persistence.Repositories;
 
 namespace Application.GameSessions;
@@ -11,31 +11,33 @@ public class Create
     {
         public Guid OwnerID { get; set; }
     }
-    
-    public class Command : IRequest<GameSession>
+
+    public class Command : IRequest<Result<GameSessionDTO>>
     {
         public Params Param;
 
         public Command(Params param)
         {
-            this.Param = param;
+            Param = param;
         }
     }
 
-    public class Handler : IRequestHandler<Command, GameSession>
+    public class Handler : IRequestHandler<Command, Result<GameSessionDTO>>
     {
-        private IGameSessionRepository gameSessionRepository;
+        private readonly IGameSessionRepository gameSessionRepository;
 
         public Handler(IGameSessionRepository gameSessionRepository)
         {
             this.gameSessionRepository = gameSessionRepository;
         }
-        
-        public async Task<GameSession> Handle(Command request, CancellationToken cancellationToken)
+
+        public async Task<Result<GameSessionDTO>> Handle(Command request, CancellationToken cancellationToken)
         {
             var result = await gameSessionRepository.Create(request.Param.OwnerID);
 
-            return result;
+            return result == null
+                ? Result<GameSessionDTO>.Failure("Unable to create game session.")
+                : Result<GameSessionDTO>.Success(result);
         }
     }
 }

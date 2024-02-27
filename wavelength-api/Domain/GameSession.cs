@@ -12,5 +12,5 @@ public class GameSession
 
     public Guid OwnerID { get; set; }
 
-    public ICollection<GameSessionMember> Members { get; set; }
+    public ICollection<GameSessionMember> Members { get; set; } = new List<GameSessionMember>();
 }
