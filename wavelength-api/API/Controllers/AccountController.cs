@@ -1,11 +1,11 @@
 ﻿using System.Security.Claims;
 using API.Services;
 using Application.Account;
-using Application.DataTransferObject;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Persistence.DataTransferObject;
 
 namespace API.Controllers;
 

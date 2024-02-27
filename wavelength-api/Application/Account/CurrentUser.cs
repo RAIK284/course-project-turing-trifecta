@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using Application.DataTransferObject;
 using AutoMapper;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Persistence.DataTransferObject;
 
 namespace Application.Account;
 

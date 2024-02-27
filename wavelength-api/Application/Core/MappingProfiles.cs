@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using Application.DataTransferObject;
 using AutoMapper;
 using Domain;
+using Persistence.DataTransferObject;
 
 namespace Application.Core;
 

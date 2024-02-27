@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using API.Services;
-using Application.DataTransferObject;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Persistence.DataTransferObject;
 
 namespace Application.Account;
 
