@@ -1,6 +1,7 @@
 using Domain;
 using MediatR;
 using Persistence;
+using Persistence.Repositories;
 
 namespace Application.GameSessions;
 
@@ -23,51 +24,18 @@ public class Create
 
     public class Handler : IRequestHandler<Command, GameSession>
     {
-        private DataContext context;
+        private IGameSessionRepository gameSessionRepository;
 
-        public Handler(DataContext context)
+        public Handler(IGameSessionRepository gameSessionRepository)
         {
-            this.context = context;
+            this.gameSessionRepository = gameSessionRepository;
         }
         
         public async Task<GameSession> Handle(Command request, CancellationToken cancellationToken)
         {
-            var newGameSession = new GameSession
-            {
-                JoinCode = GenerateRandomJoinCode(context),
-                StartTime = DateTime.Now,
-                OwnerID = request.Param.OwnerID,
-            };
+            var result = await gameSessionRepository.Create(request.Param.OwnerID);
 
-            var added = context.GameSessions.Add(newGameSession);
-
-            await context.SaveChangesAsync();
-
-            return added.Entity;
-        }
-
-        private String GenerateRandomJoinCode(DataContext context)
-        {
-            Random random = new Random();
-            String joinCode = "";
-
-            while (joinCode.Length == 0)
-            {
-                /// generate a value between 000,000 and 999,999 inclusive
-                int randomCode = random.Next(1000000);
-                String formattedCode = randomCode.ToString("D6");
-
-                var isCodeInUse = context.GameSessions
-                    .Where(gs => gs.EndTime == null)
-                    .Any(gs => gs.JoinCode == formattedCode);
-
-                if (!isCodeInUse)
-                {
-                    joinCode = formattedCode;
-                }
-            }
-
-            return joinCode;
+            return result;
         }
     }
 }

@@ -14,4 +14,6 @@ public class GameRoundSelectorSelection
     public int TargetOffset { get; set; }
 
     public Guid UserID { get; set; }
+    
+    public Team Team { get; set; }
 }

@@ -14,6 +14,8 @@ public class GameRoundOpposingTeamSelectionDTO
     ///     Gets or sets the value that represents whether this team chose left or right of the opposing team's guess.
     /// </summary>
     public bool IsLeft { get; set; }
+    
+    public Guid UserID { get; set; }
 
     public Team Team { get; set; }
 }

@@ -13,6 +13,5 @@ public class GameSessionMemberDTO
     public Guid UserID { get; set; }
 
     public Team Team { get; set; }
-
-    public TeamRole TeamRole { get; set; }
+    
 }

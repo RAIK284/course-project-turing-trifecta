@@ -1,4 +1,6 @@
-﻿namespace Persistence.DataTransferObject;
+﻿using Domain;
+
+namespace Persistence.DataTransferObject;
 
 public class GameRoundGhostGuessDTO
 {
@@ -14,4 +16,6 @@ public class GameRoundGhostGuessDTO
     public int TargetOffset { get; set; }
 
     public Guid UserID { get; set; }
+
+    public Team Team { get; set; }
 }
