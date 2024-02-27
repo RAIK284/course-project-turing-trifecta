@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Persistence.DataTransferObject;
@@ -288,6 +289,27 @@ public class GameRoundRepository : IGameRoundRepository
         context.GameSessionMemberRoundRoles.AddRange(gameRoundRoles);
 
         await context.SaveChangesAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<GameSessionMemberRoundRoleDTO?> GetRoundRole(Guid userID, Guid gameSessionID, Guid gameRoundID)
+    {
+        return await context.GameSessionMemberRoundRoles
+            .Where(rr => rr.GameSessionID == gameSessionID)
+            .Where(rr => rr.GameRoundID == gameRoundID)
+            .Where(rr => rr.UserID == userID)
+            .ProjectTo<GameSessionMemberRoundRoleDTO>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<GameRoundDTO?> GetRound(Guid gameSessionID, Guid gameRoundID)
+    {
+        return await context.GameRounds
+            .Where(rr => rr.GameSessionID == gameSessionID)
+            .Where(rr => rr.ID == gameRoundID)
+            .ProjectTo<GameRoundDTO>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
     }
 
     private bool HasUserHadRoleBefore(Guid userID, TeamRole role, List<GameRound> previousRounds)

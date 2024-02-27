@@ -13,4 +13,12 @@ public interface IGameSessionMemberRepository
     /// <param name="team">The team the user is trying to join.</param>
     /// <returns></returns>
     public Task<GameSessionMemberDTO?> JoinTeam(Guid userID, Guid gameSessionID, Team team);
+
+    /// <summary>
+    /// Gets the member entity for a user in a game session.
+    /// </summary>
+    /// <param name="userID">The ID of the user for this request.</param>
+    /// <param name="gameSessionID">The ID of the GameSession for which to grab the member entity.</param>
+    /// <returns></returns>
+    public Task<GameSessionMemberDTO?> Get(Guid userID, Guid gameSessionID);
 }

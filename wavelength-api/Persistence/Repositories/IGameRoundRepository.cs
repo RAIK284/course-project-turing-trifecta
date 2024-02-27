@@ -66,6 +66,24 @@ public interface IGameRoundRepository
         Guid gameSessionID, 
         Guid gameRoundID, 
         bool isLeft);
+
+    /// <summary>
+    /// Gets a Game Round.
+    /// </summary>
+    /// <param name="gameSessionID">The ID of the GameSession to get this round for.</param>
+    /// <param name="gameRoundID">The ID of the GameRound to find the round by.</param>
+    /// <returns></returns>
+    public Task<GameRoundDTO?> GetRound(Guid gameSessionID, Guid gameRoundID);
     
-    
+    /// <summary>
+    /// Gets the round role for a user for a round.
+    /// </summary>
+    /// <param name="userID">The ID of the user.</param>
+    /// <param name="gameSessionID">The ID of the GameSession.</param>
+    /// <param name="gameRoundID">The ID of the GameRound.</param>
+    /// <returns>A DTO representing the round role or null if none was found.</returns>
+    public Task<GameSessionMemberRoundRoleDTO?> GetRoundRole(
+        Guid userID,
+        Guid gameSessionID,
+        Guid gameRoundID);
 }

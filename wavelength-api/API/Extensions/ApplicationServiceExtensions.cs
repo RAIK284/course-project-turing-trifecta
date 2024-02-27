@@ -23,6 +23,10 @@ public static class ApplicationServiceExtensions
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         services.AddAutoMapper(typeof(UserMappingProfiles).Assembly);
         services.AddScoped<IUsersRepository, UsersRepository>();
+        services.AddScoped<IGameSessionMemberRepository, GameSessionMemberRepository>();
+        services.AddScoped<IGameSessionRepository, GameSessionRepository>();
+        services.AddScoped<IGameRoundRepository, GameRoundRepository>();
+        services.AddScoped<ISpectrumCardRepository, SpectrumCardRepository>();
 
         return services;
     }

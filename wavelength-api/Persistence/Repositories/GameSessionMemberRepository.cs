@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Persistence.DataTransferObject;
@@ -34,5 +35,14 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
         return await context.SaveChangesAsync() > 0
             ? mapper.Map<GameSessionMemberDTO>(existingMember)
             : null;
+    }
+
+    public async Task<GameSessionMemberDTO?> Get(Guid userID, Guid gameSessionID)
+    {
+        return await context.GameSessionMembers
+            .Where(gs => gs.GameSessionID == gameSessionID)
+            .Where(gs => gs.UserID == userID)
+            .ProjectTo<GameSessionMemberDTO>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
     }
 }

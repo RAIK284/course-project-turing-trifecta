@@ -1,7 +1,9 @@
 ﻿using System.Text;
+using API.Authorization;
 using API.Services;
 using Domain;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
 
@@ -35,6 +37,48 @@ public static class IdentityServiceExtensions
                     ValidateAudience = false
                 };
             });
+        _ = services.AddAuthorization(opt =>
+        {
+            opt.AddPolicy(AuthPolicy.IsGameSessionMember, policy =>
+            {
+                policy.Requirements.Add(new GameMemberHandlerRequirement(true));
+            });
+            opt.AddPolicy(AuthPolicy.IsGhostOnTeamTurn, policy =>
+            {
+                policy.Requirements.Add(new GameRoundRoleRequirement(true, TeamRole.GHOST));
+            });
+            opt.AddPolicy(AuthPolicy.IsSelectorOnTeamTurn, policy =>
+            {
+                policy.Requirements.Add(new GameRoundRoleRequirement(true, TeamRole.SELECTOR));
+            });
+            opt.AddPolicy(AuthPolicy.IsPsychicOnTeamTurn, policy =>
+            {
+                policy.Requirements.Add(new GameRoundRoleRequirement(true, TeamRole.PSYCHIC));
+            });
+            opt.AddPolicy(AuthPolicy.HasNoRoleOnTeamTurn, policy =>
+            {
+                policy.Requirements.Add(new GameRoundRoleRequirement(true, TeamRole.NONE));
+            });
+            opt.AddPolicy(AuthPolicy.IsGhostOnOpposingTeam, policy =>
+            {
+                policy.Requirements.Add(new GameRoundRoleRequirement(false, TeamRole.GHOST));
+            });
+            opt.AddPolicy(AuthPolicy.IsSelectorOnOpposingTeam, policy =>
+            {
+                policy.Requirements.Add(new GameRoundRoleRequirement(false, TeamRole.SELECTOR));
+            });
+            opt.AddPolicy(AuthPolicy.HasNoRoleOnOpposingTeam, policy =>
+            {
+                policy.Requirements.Add(new GameRoundRoleRequirement(false, TeamRole.NONE));
+            });
+            opt.AddPolicy(AuthPolicy.IsGameSessionOwner, policy =>
+            {
+                policy.Requirements.Add(new GameSessionOwnerRequirement());
+            });
+        });
+        services.AddTransient<IAuthorizationHandler, IsGameMemberHandler>();
+        services.AddTransient<IAuthorizationHandler, HasGameRoundRoleHandler>();
+        services.AddTransient<IAuthorizationHandler, IsGameSessionOwnerHandler>();
         services.AddScoped<TokenService>();
 
         return services;
