@@ -10,18 +10,18 @@ public class GameRoundRepository : IGameRoundRepository
 {
     private readonly DataContext context;
     private readonly IMapper mapper;
-    private readonly ISpectrumCardRepository spectrumCardRepository;
     private readonly Random random;
+    private readonly ISpectrumCardRepository spectrumCardRepository;
 
     public GameRoundRepository(DataContext context, IMapper mapper, ISpectrumCardRepository spectrumCardRepository)
     {
         this.context = context;
         this.mapper = mapper;
         this.spectrumCardRepository = spectrumCardRepository;
-        this.random = new Random();
+        random = new Random();
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public async Task<GameRoundDTO?> StartRound(Guid gameSessionID)
     {
         var previousRoundsForGameSession = await context.GameRounds
@@ -68,12 +68,13 @@ public class GameRoundRepository : IGameRoundRepository
         return null;
     }
 
-    /// <inheritdoc/>
-    public async Task<GameRoundGhostGuessDTO?> PerformGhostGuess(Guid userID, Guid gameSessionID, Guid gameRoundID, int targetOffset)
+    /// <inheritdoc />
+    public async Task<GameRoundGhostGuessDTO?> PerformGhostGuess(Guid userID, Guid gameSessionID, Guid gameRoundID,
+        int targetOffset)
     {
         var gameSessionMember = await context.GameSessionMembers
             .Where(gsm => gsm.GameSessionID == gameSessionID)
-            .Where(gsm => gsm.UserID == userID)
+            .Where(gsm => gsm.UserID == userID.ToString())
             .FirstOrDefaultAsync();
         var existingGuess = await context.GameRoundGhostGuesses
             .Where(gg => gg.GameSessionID == gameSessionID)
@@ -103,12 +104,13 @@ public class GameRoundRepository : IGameRoundRepository
             : null;
     }
 
-    /// <inheritdoc/>
-    public async Task<GameRoundSelectorSelectionDTO?> SelectTarget(Guid userID, Guid gameSessionID, Guid gameRoundID, int targetOffset)
+    /// <inheritdoc />
+    public async Task<GameRoundSelectorSelectionDTO?> SelectTarget(Guid userID, Guid gameSessionID, Guid gameRoundID,
+        int targetOffset)
     {
         var gameSessionMember = await context.GameSessionMembers
             .Where(gsm => gsm.GameSessionID == gameSessionID)
-            .Where(gsm => gsm.UserID == userID)
+            .Where(gsm => gsm.UserID == userID.ToString())
             .FirstOrDefaultAsync();
         var existingSelection = await context.GameRoundSelectorSelections
             .Where(gg => gg.GameSessionID == gameSessionID)
@@ -120,7 +122,7 @@ public class GameRoundRepository : IGameRoundRepository
 
         if (existingSelection == null)
         {
-            existingSelection = new GameRoundSelectorSelection()
+            existingSelection = new GameRoundSelectorSelection
             {
                 GameSessionID = gameSessionID,
                 UserID = userID,
@@ -138,12 +140,13 @@ public class GameRoundRepository : IGameRoundRepository
             : null;
     }
 
-    /// <inheritdoc/>
-    public async Task<GameRoundOpposingTeamGuessDTO?> PerformOpposingTeamGuess(Guid userID, Guid gameSessionID, Guid gameRoundID, bool isLeft)
+    /// <inheritdoc />
+    public async Task<GameRoundOpposingTeamGuessDTO?> PerformOpposingTeamGuess(Guid userID, Guid gameSessionID,
+        Guid gameRoundID, bool isLeft)
     {
         var gameSessionMember = await context.GameSessionMembers
             .Where(gsm => gsm.GameSessionID == gameSessionID)
-            .Where(gsm => gsm.UserID == userID)
+            .Where(gsm => gsm.UserID == userID.ToString())
             .FirstOrDefaultAsync();
         var existingGuess = await context.GameRoundOpposingTeamGuesses
             .Where(gg => gg.GameSessionID == gameSessionID)
@@ -173,12 +176,13 @@ public class GameRoundRepository : IGameRoundRepository
             : null;
     }
 
-    /// <inheritdoc/>
-    public async Task<GameRoundOpposingTeamSelectionDTO?> PerformOpposingTeamSelection(Guid userID, Guid gameSessionID, Guid gameRoundID, bool isLeft)
+    /// <inheritdoc />
+    public async Task<GameRoundOpposingTeamSelectionDTO?> PerformOpposingTeamSelection(Guid userID, Guid gameSessionID,
+        Guid gameRoundID, bool isLeft)
     {
         var gameSessionMember = await context.GameSessionMembers
             .Where(gsm => gsm.GameSessionID == gameSessionID)
-            .Where(gsm => gsm.UserID == userID)
+            .Where(gsm => gsm.UserID == userID.ToString())
             .FirstOrDefaultAsync();
         var existingSelection = await context.GameRoundOpposingTeamSelections
             .Where(gg => gg.GameSessionID == gameSessionID)
@@ -208,7 +212,28 @@ public class GameRoundRepository : IGameRoundRepository
             : null;
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
+    public async Task<GameSessionMemberRoundRoleDTO?> GetRoundRole(Guid userID, Guid gameSessionID, Guid gameRoundID)
+    {
+        return await context.GameSessionMemberRoundRoles
+            .Where(rr => rr.GameSessionID == gameSessionID)
+            .Where(rr => rr.GameRoundID == gameRoundID)
+            .Where(rr => rr.UserID == userID)
+            .ProjectTo<GameSessionMemberRoundRoleDTO>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
+    }
+
+    /// <inheritdoc />
+    public async Task<GameRoundDTO?> GetRound(Guid gameSessionID, Guid gameRoundID)
+    {
+        return await context.GameRounds
+            .Where(rr => rr.GameSessionID == gameSessionID)
+            .Where(rr => rr.ID == gameRoundID)
+            .ProjectTo<GameRoundDTO>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
+    }
+
+    /// <inheritdoc />
     private async void CreateUserRolesForRound(GameRound newRound, List<GameRound> previousRounds)
     {
         var gameSessionMembers = await context.GameSessionMembers
@@ -222,12 +247,12 @@ public class GameRoundRepository : IGameRoundRepository
             var roundRole = new GameSessionMemberRoundRole
             {
                 GameSessionID = newRound.GameSessionID,
-                UserID = gameSessionMember.UserID,
+                UserID = Guid.Parse(gameSessionMember.UserID),
                 Team = gameSessionMember.Team,
                 GameRoundID = newRound.ID,
-                Role = TeamRole.GHOST,
+                Role = TeamRole.GHOST
             };
-            
+
             gameRoundRoles.Add(roundRole);
         }
 
@@ -246,7 +271,7 @@ public class GameRoundRepository : IGameRoundRepository
             var currentRoundRolesThatHaventBeenPsychic = roundTeamRoles
                 .Where(rr => !HasUserHadRoleBefore(rr.UserID, TeamRole.PSYCHIC, previousRounds))
                 .ToList();
-            
+
             var roundRoleListToUse = currentRoundRolesThatHaventBeenPsychic.Any()
                 ? currentRoundRolesThatHaventBeenPsychic
                 : roundTeamRoles;
@@ -254,18 +279,18 @@ public class GameRoundRepository : IGameRoundRepository
             var psychicIndex = random.Next(roundRoleListToUse.Count);
             var psychicRoundRole = roundRoleListToUse[psychicIndex];
             psychicRoundRole.Role = TeamRole.PSYCHIC;
-            
+
             // Ensure we prioritize users that haven't been selectors. Also ensure we don't select the
             // user who was made psychic.
             var currentRoundRolesThatHaventBeenSelector = roundTeamRoles
                 .Where(rr => rr.UserID != psychicRoundRole.UserID)
                 .Where(rr => !HasUserHadRoleBefore(rr.UserID, TeamRole.SELECTOR, previousRounds))
                 .ToList();
-            
+
             roundRoleListToUse = currentRoundRolesThatHaventBeenSelector.Any()
                 ? currentRoundRolesThatHaventBeenSelector
                 : roundTeamRoles.Where(rr => rr.UserID != psychicRoundRole.UserID).ToList();
-            
+
             var selectorIndex = random.Next(roundRoleListToUse.Count);
             var selectorRoundRole = roundRoleListToUse[selectorIndex];
             selectorRoundRole.Role = TeamRole.SELECTOR;
@@ -285,31 +310,10 @@ public class GameRoundRepository : IGameRoundRepository
             var selectorIndex = random.Next(roundRoleListToUse.Count);
             roundRoleListToUse[selectorIndex].Role = TeamRole.SELECTOR;
         }
-        
+
         context.GameSessionMemberRoundRoles.AddRange(gameRoundRoles);
 
         await context.SaveChangesAsync();
-    }
-
-    /// <inheritdoc/>
-    public async Task<GameSessionMemberRoundRoleDTO?> GetRoundRole(Guid userID, Guid gameSessionID, Guid gameRoundID)
-    {
-        return await context.GameSessionMemberRoundRoles
-            .Where(rr => rr.GameSessionID == gameSessionID)
-            .Where(rr => rr.GameRoundID == gameRoundID)
-            .Where(rr => rr.UserID == userID)
-            .ProjectTo<GameSessionMemberRoundRoleDTO>(mapper.ConfigurationProvider)
-            .SingleOrDefaultAsync();
-    }
-
-    /// <inheritdoc/>
-    public async Task<GameRoundDTO?> GetRound(Guid gameSessionID, Guid gameRoundID)
-    {
-        return await context.GameRounds
-            .Where(rr => rr.GameSessionID == gameSessionID)
-            .Where(rr => rr.ID == gameRoundID)
-            .ProjectTo<GameRoundDTO>(mapper.ConfigurationProvider)
-            .SingleOrDefaultAsync();
     }
 
     private bool HasUserHadRoleBefore(Guid userID, TeamRole role, List<GameRound> previousRounds)

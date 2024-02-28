@@ -21,14 +21,11 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
     {
         var existingMember = await context.GameSessionMembers
             .Where(gs => gs.GameSessionID == gameSessionID)
-            .Where(gs => gs.UserID == userID)
+            .Where(gs => gs.UserID == userID.ToString())
             .FirstOrDefaultAsync();
 
         // There is no existing member-- something isn't right
-        if (existingMember == null)
-        {
-            return null;
-        }
+        if (existingMember == null) return null;
 
         existingMember.Team = team;
 
@@ -41,7 +38,7 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
     {
         return await context.GameSessionMembers
             .Where(gs => gs.GameSessionID == gameSessionID)
-            .Where(gs => gs.UserID == userID)
+            .Where(gs => gs.UserID == userID.ToString())
             .ProjectTo<GameSessionMemberDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }
