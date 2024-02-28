@@ -503,3 +503,7 @@ playwright-tests/playwright-screenshots/*
 playwright-tests/.auth/*
 playwright-screenshots
 
+# SQLite DB
+*.db
+*.db-shm
+*.db-wal
