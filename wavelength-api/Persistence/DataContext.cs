@@ -29,4 +29,10 @@ public class DataContext : IdentityDbContext<User>
     public DbSet<GameSessionResult> GameSessionResults { get; set; }
 
     public DbSet<SpectrumCard> SpectrumCards { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.SeedSpectrumCards();
+    }
 }
