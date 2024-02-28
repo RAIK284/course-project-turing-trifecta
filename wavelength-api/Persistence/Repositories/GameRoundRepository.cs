@@ -74,7 +74,7 @@ public class GameRoundRepository : IGameRoundRepository
     {
         var gameSessionMember = await context.GameSessionMembers
             .Where(gsm => gsm.GameSessionID == gameSessionID)
-            .Where(gsm => gsm.UserID == userID.ToString())
+            .Where(gsm => gsm.UserID == userID)
             .FirstOrDefaultAsync();
         var existingGuess = await context.GameRoundGhostGuesses
             .Where(gg => gg.GameSessionID == gameSessionID)
@@ -110,7 +110,7 @@ public class GameRoundRepository : IGameRoundRepository
     {
         var gameSessionMember = await context.GameSessionMembers
             .Where(gsm => gsm.GameSessionID == gameSessionID)
-            .Where(gsm => gsm.UserID == userID.ToString())
+            .Where(gsm => gsm.UserID == userID)
             .FirstOrDefaultAsync();
         var existingSelection = await context.GameRoundSelectorSelections
             .Where(gg => gg.GameSessionID == gameSessionID)
@@ -146,7 +146,7 @@ public class GameRoundRepository : IGameRoundRepository
     {
         var gameSessionMember = await context.GameSessionMembers
             .Where(gsm => gsm.GameSessionID == gameSessionID)
-            .Where(gsm => gsm.UserID == userID.ToString())
+            .Where(gsm => gsm.UserID == userID)
             .FirstOrDefaultAsync();
         var existingGuess = await context.GameRoundOpposingTeamGuesses
             .Where(gg => gg.GameSessionID == gameSessionID)
@@ -182,7 +182,7 @@ public class GameRoundRepository : IGameRoundRepository
     {
         var gameSessionMember = await context.GameSessionMembers
             .Where(gsm => gsm.GameSessionID == gameSessionID)
-            .Where(gsm => gsm.UserID == userID.ToString())
+            .Where(gsm => gsm.UserID == userID)
             .FirstOrDefaultAsync();
         var existingSelection = await context.GameRoundOpposingTeamSelections
             .Where(gg => gg.GameSessionID == gameSessionID)
@@ -247,7 +247,7 @@ public class GameRoundRepository : IGameRoundRepository
             var roundRole = new GameSessionMemberRoundRole
             {
                 GameSessionID = newRound.GameSessionID,
-                UserID = Guid.Parse(gameSessionMember.UserID),
+                UserID = gameSessionMember.UserID,
                 Team = gameSessionMember.Team,
                 GameRoundID = newRound.ID,
                 Role = TeamRole.GHOST

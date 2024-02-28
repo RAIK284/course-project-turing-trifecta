@@ -13,7 +13,7 @@ public class BaseAPIController : ControllerBase
     protected IMediator Mediator => mediator ??=
         HttpContext.RequestServices.GetService<IMediator>();
 
-    protected ActionResult HandleResult<T>(Result<T> result)
+    protected ActionResult HandleResult<T>(Result<T>? result)
     {
         if (result == null) return NotFound();
 

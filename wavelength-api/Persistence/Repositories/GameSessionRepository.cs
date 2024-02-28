@@ -46,7 +46,7 @@ public class GameSessionRepository : IGameSessionRepository
     {
         var gameSessionMember = new GameSessionMember
         {
-            UserID = userID.ToString(),
+            UserID = userID,
             GameSessionID = gameSessionID,
             Team = 0
         };
@@ -65,7 +65,7 @@ public class GameSessionRepository : IGameSessionRepository
             .FirstOrDefaultAsync();
         var gameSessionMember = await context.GameSessionMembers
             .Where(gsm => gsm.GameSessionID == gameSessionID)
-            .Where(gsm => gsm.UserID == userID.ToString())
+            .Where(gsm => gsm.UserID == userID)
             .FirstOrDefaultAsync();
 
         // If the game sessions owner is the user, delete the game session

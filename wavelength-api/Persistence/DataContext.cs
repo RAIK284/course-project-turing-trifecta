@@ -29,21 +29,4 @@ public class DataContext : IdentityDbContext<User>
     public DbSet<GameSessionResult> GameSessionResults { get; set; }
 
     public DbSet<SpectrumCard> SpectrumCards { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        base.OnModelCreating(builder);
-
-        builder.Entity<GameSessionMember>(x => x.HasKey(aa => new { aa.UserID, aa.GameSessionID }));
-
-        builder.Entity<GameSessionMember>()
-            .HasOne(u => u.User)
-            .WithMany(a => a.GameSessions)
-            .HasForeignKey(aa => aa.UserID);
-
-        builder.Entity<GameSessionMember>()
-            .HasOne(u => u.GameSession)
-            .WithMany(a => a.Members)
-            .HasForeignKey(aa => aa.GameSessionID);
-    }
 }

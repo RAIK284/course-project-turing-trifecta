@@ -22,37 +22,24 @@ public class AccountController : BaseAPIController
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<ActionResult<UserDTO>> Login(Login.Params param)
+    public async Task<ActionResult> Login(Login.Params param)
     {
-        var user = await Mediator.Send(new Login.Command(param));
-
-        if (user != null) return user;
-
-        return Unauthorized();
+        return HandleResult(await Mediator.Send(new Login.Command(param)));
     }
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<ActionResult<UserDTO>> Register(Register.Params param)
+    public async Task<ActionResult> Register(Register.Params param)
     {
-        var user = await Mediator.Send(new Register.Command(param));
-
-        if (user != null) return user;
-
-        return Unauthorized();
+        return HandleResult(await Mediator.Send(new Register.Command(param)));
     }
-
-    [Authorize]
+    
     [HttpGet]
     public async Task<ActionResult<UserDTO>> GetCurrentUser()
     {
-        var user = await Mediator.Send(new CurrentUser.Query(new CurrentUser.Params
+        return HandleResult(await Mediator.Send(new CurrentUser.Query(new CurrentUser.Params
         {
             Email = User.FindFirstValue(ClaimTypes.Email)
-        }));
-
-        if (user != null) return user;
-
-        return Unauthorized();
+        })));
     }
 }

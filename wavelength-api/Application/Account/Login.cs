@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using API.Services;
+using Application.Core;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +17,7 @@ public class Login
         [Required] public string Password { get; init; }
     }
 
-    public class Command : IRequest<UserDTO?>
+    public class Command : IRequest<Result<UserDTO>>
     {
         public Params Param;
 
@@ -26,7 +27,7 @@ public class Login
         }
     }
 
-    public class Handler : IRequestHandler<Command, UserDTO?>
+    public class Handler : IRequestHandler<Command, Result<UserDTO>>
     {
         private readonly TokenService tokenService;
         private readonly UserManager<User> userManager;
@@ -37,24 +38,24 @@ public class Login
             this.tokenService = tokenService;
         }
 
-        public async Task<UserDTO?> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<UserDTO>> Handle(Command request, CancellationToken cancellationToken)
         {
             var user = await userManager.FindByEmailAsync(request.Param.Email);
 
-            if (user == null) return null;
+            if (user == null) return Result<UserDTO>.Failure("A user with that email does not exist.");
 
             var result = await userManager.CheckPasswordAsync(user, request.Param.Password);
 
-            if (!result) return null;
+            if (!result) return Result<UserDTO>.Failure("Incorrect password.");
 
-            return new UserDTO
+            return Result<UserDTO>.Success(new UserDTO
             {
                 UserName = user.UserName,
                 Email = user.Email,
                 Token = tokenService.CreateToken(user),
                 AvatarID = user.AvatarID,
                 ID = Guid.Parse(user.Id)
-            };
+            });
         }
     }
 }

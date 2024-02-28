@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Application.Core;
 using AutoMapper;
 using Domain;
 using MediatR;
@@ -14,7 +15,7 @@ public class CurrentUser
         [Required] public string Email { get; init; }
     }
 
-    public class Query : IRequest<UserDTO?>
+    public class Query : IRequest<Result<UserDTO>>
     {
         public readonly Params Param;
 
@@ -24,7 +25,7 @@ public class CurrentUser
         }
     }
 
-    public class Handler : IRequestHandler<Query, UserDTO?>
+    public class Handler : IRequestHandler<Query, Result<UserDTO>>
     {
         private readonly IMapper mapper;
         private readonly UserManager<User> userManager;
@@ -35,13 +36,13 @@ public class CurrentUser
             this.mapper = mapper;
         }
 
-        public async Task<UserDTO?> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<UserDTO>> Handle(Query request, CancellationToken cancellationToken)
         {
             var user = await userManager.FindByEmailAsync(request.Param.Email);
 
-            if (user == null) return null;
+            if (user == null) return Result<UserDTO>.Failure("User not found.");
 
-            return mapper.Map<UserDTO>(user);
+            return Result<UserDTO>.Success(mapper.Map<UserDTO>(user));
         }
     }
 }

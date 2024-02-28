@@ -5,6 +5,8 @@ public class GameSessionResult
     public Guid ID { get; set; }
 
     public Guid GameSessionID { get; set; }
+    
+    public GameSession GameSession { get; set; }
 
     public Team WinningTeam { get; set; }
 

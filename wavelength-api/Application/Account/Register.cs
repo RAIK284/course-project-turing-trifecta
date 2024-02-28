@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using API.Services;
+using Application.Core;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,7 @@ public class Register
         [Required] public Guid AvatarID { get; init; }
     }
 
-    public class Command : IRequest<UserDTO?>
+    public class Command : IRequest<Result<UserDTO>>
     {
         public Params Param;
 
@@ -34,7 +35,7 @@ public class Register
         }
     }
 
-    public class Handler : IRequestHandler<Command, UserDTO?>
+    public class Handler : IRequestHandler<Command, Result<UserDTO>>
     {
         private readonly TokenService tokenService;
         private readonly UserManager<User> userManager;
@@ -45,12 +46,16 @@ public class Register
             this.tokenService = tokenService;
         }
 
-        public async Task<UserDTO?> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<UserDTO>> Handle(Command request, CancellationToken cancellationToken)
         {
             var doesUsernameExist = await userManager.Users.AnyAsync(u => u.UserName == request.Param.UserName);
             var doesEmailExist = await userManager.Users.AnyAsync(u => u.Email == request.Param.Email);
 
-            if (doesUsernameExist || doesEmailExist) return null;
+            if (doesUsernameExist) 
+                return Result<UserDTO>.Failure("A user with this username already exists.");
+
+            if (doesEmailExist)
+                return Result<UserDTO>.Failure("A user with this email already exists.");
 
             var user = new User
             {
@@ -62,15 +67,15 @@ public class Register
             var result = await userManager.CreateAsync(user, request.Param.Password);
 
             if (result.Succeeded)
-                return new UserDTO
+                return Result<UserDTO>.Success(new UserDTO
                 {
                     Email = user.Email,
                     Token = tokenService.CreateToken(user),
                     UserName = user.UserName,
                     AvatarID = user.AvatarID
-                };
+                });
 
-            return null;
+            return Result<UserDTO>.Failure("Something went wrong when trying to register.");
         }
     }
 }

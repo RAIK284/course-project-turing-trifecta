@@ -7,6 +7,8 @@ public class GameRoundOpposingTeamSelection
     public Guid GameSessionID { get; set; }
 
     public Guid GameRoundID { get; set; }
+    
+    public GameRound GameRound { get; set; }
 
     /// <summary>
     ///     Gets or sets the value that represents whether this team chose left or right of the opposing team's guess.
