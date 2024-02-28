@@ -8,10 +8,7 @@ public class GameSessionMemberDTO
 
     public Guid GameSessionID { get; set; }
 
-    public GameSessionDTO? GameSession { get; set; }
-
     public Guid UserID { get; set; }
 
     public Team Team { get; set; }
-    
 }
