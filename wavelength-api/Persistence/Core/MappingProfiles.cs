@@ -4,9 +4,9 @@ using Persistence.DataTransferObject;
 
 namespace Persistence.Core;
 
-public class UserMappingProfiles : Profile
+public class MappingProfiles : Profile
 {
-    public UserMappingProfiles()
+    public MappingProfiles()
     {
         _ = CreateMap<User, UserDTO>()
             .ForMember(dto => dto.ID,

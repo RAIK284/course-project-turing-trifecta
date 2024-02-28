@@ -1,5 +1,4 @@
-﻿using Application.Core;
-using Application.GameSessions;
+﻿using Application.GameSessions;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Core;
@@ -21,7 +20,6 @@ public static class ApplicationServiceExtensions
             policy => policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000")));
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Get.Handler).Assembly));
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-        services.AddAutoMapper(typeof(UserMappingProfiles).Assembly);
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IGameSessionMemberRepository, GameSessionMemberRepository>();
         services.AddScoped<IGameSessionRepository, GameSessionRepository>();
