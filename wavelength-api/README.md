@@ -8,3 +8,5 @@
 - `dotnet clean; dotnet build` cleans and builds the backend
 - `dotnet run` runs the backend
 - `dotnet ef migrations add <migration_name> -s API -p Persistence` creates an entity framework migration
+- `dotnet ef database update -s API` updates the database
+- `dotnet ef database drop -s API` drops the database
