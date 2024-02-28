@@ -7,9 +7,11 @@ public class Seed
 {
     public static async Task SeedData(DataContext context, UserManager<User> userManager)
     {
-        var ID_User_Peyton = Guid.Parse("5e5136b2-3445-4286-9121-084123021882");
-        var JoinCode_GameSession_1 = "193245";
-        var ID_GameSession_1 = Guid.Parse("5e5136b8-5845-4256-92c1-084237021882");
+        var ID_User_Peyton = "33c91baa-77f3-44df-8907-53585a595f92";
+        var ID_User_Nathan = "18029e32-f118-47ce-8470-5e267440ed75";
+        var ID_User_Jake = "d2b4ce48-7df8-4c59-b1f0-0470a1261040";
+        var ID_User_Harith = "7f7a2345-bc69-428e-ac23-9119d30e1a20";
+        var ID_User_Kevin = "def3e622-e958-468d-b366-8596b285c3c8";
         var User_Password = "Wavelength1";
 
         if (!userManager.Users.Any())
@@ -18,29 +20,41 @@ public class Seed
             {
                 new()
                 {
-                    Id = ID_User_Peyton.ToString(),
+                    Id = ID_User_Peyton,
                     Email = "peyton@wavelength.net",
                     UserName = "P_Sizzle"
+                },
+                new()
+                {
+                    Id = ID_User_Nathan,
+                    Email = "nathan@wavelength.net",
+                    UserName = "Nathaniel"
+                },
+                new()
+                {
+                    Id = ID_User_Jake,
+                    Email = "jake@wavelength.net",
+                    UserName = "Jakester"
+                },
+                new()
+                {
+                    Id = ID_User_Harith,
+                    Email = "harith@wavelength.net",
+                    UserName = "HHarith_"
+                },
+                new()
+                {
+                    Id = ID_User_Kevin,
+                    Email = "kevin@wavelength.net",
+                    UserName = "Keviq"
                 }
             };
 
-            foreach (var user in users) await userManager.CreateAsync(user, User_Password);
+            foreach (var user in users)
+                if (await userManager.FindByEmailAsync(user.Email) == null)
+                    await userManager.CreateAsync(user, User_Password);
         }
 
-        if (context.GameSessions.Any()) return;
-
-        var gameSessions = new List<GameSession>
-        {
-            new()
-            {
-                ID = ID_GameSession_1,
-                JoinCode = JoinCode_GameSession_1,
-                StartTime = DateTime.Now,
-                OwnerID = ID_User_Peyton
-            }
-        };
-
-        context.AddRangeAsync(gameSessions);
         await context.SaveChangesAsync();
     }
 }
