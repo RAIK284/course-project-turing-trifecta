@@ -21,6 +21,7 @@ public static class IdentityServiceExtensions
                 opt.Password.RequiredLength = 8;
                 opt.Password.RequireLowercase = true;
                 opt.Password.RequireUppercase = true;
+                opt.Password.RequireNonAlphanumeric = false;
                 opt.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<DataContext>();

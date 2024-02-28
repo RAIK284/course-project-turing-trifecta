@@ -16,25 +16,22 @@ public class Seed
         {
             var users = new List<User>
             {
-                new User
+                new()
                 {
                     Id = ID_User_Peyton.ToString(),
                     Email = "peyton@wavelength.net",
-                    UserName = "P_Sizzle",
+                    UserName = "P_Sizzle"
                 }
             };
 
-            foreach (var user in users)
-            {
-                await userManager.CreateAsync(user, User_Password);
-            }
+            foreach (var user in users) await userManager.CreateAsync(user, User_Password);
         }
-        
+
         if (context.GameSessions.Any()) return;
 
         var gameSessions = new List<GameSession>
         {
-            new GameSession()
+            new()
             {
                 ID = ID_GameSession_1,
                 JoinCode = JoinCode_GameSession_1,
@@ -44,6 +41,6 @@ public class Seed
         };
 
         context.AddRangeAsync(gameSessions);
-        context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 }

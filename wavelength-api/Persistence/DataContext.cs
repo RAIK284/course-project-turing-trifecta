@@ -15,8 +15,8 @@ public class DataContext : IdentityDbContext<User>
     public DbSet<GameSessionMember> GameSessionMembers { get; set; }
 
     public DbSet<GameRound> GameRounds { get; set; }
-    
-    public DbSet<GameSessionMemberRoundRole> GameSessionMemberRoundRoles {get; set; }
+
+    public DbSet<GameSessionMemberRoundRole> GameSessionMemberRoundRoles { get; set; }
 
     public DbSet<GameRoundGhostGuess> GameRoundGhostGuesses { get; set; }
 

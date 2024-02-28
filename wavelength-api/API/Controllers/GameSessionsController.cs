@@ -1,16 +1,18 @@
 using Application.GameSessions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 public class GameSessionsController : BaseAPIController
 {
-    [HttpGet("{id}")]
-    public async Task<ActionResult> GetGameSession(Guid id)
+    [Authorize(Policy = "IsGameSessionMember")]
+    [HttpGet("{gameSessionID}")]
+    public async Task<ActionResult> GetGameSession(Guid gameSessionID)
     {
         return HandleResult(await Mediator.Send(new Get.Query(new Get.Params
         {
-            ID = id
+            GameSessionID = gameSessionID
         })));
     }
 

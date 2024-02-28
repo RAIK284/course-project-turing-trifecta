@@ -1,6 +1,4 @@
-﻿using Domain;
-
-namespace Persistence.DataTransferObject;
+﻿namespace Persistence.DataTransferObject;
 
 public class GameSessionDTO
 {
@@ -14,7 +12,7 @@ public class GameSessionDTO
 
     public DateTime? EndTime { get; set; }
 
-    public List<GameSessionMember>? Members { get; set; }
-    
+    public List<GameSessionMemberDTO>? Members { get; set; }
+
     public int GameRound { get; set; }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -10,9 +11,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240228051538_AddGameRound")]
+    partial class AddGameRound
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.0");
@@ -46,7 +49,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("SpectrumCardID");
 
-                    b.ToTable("GameRounds", (string)null);
+                    b.ToTable("GameRounds");
                 });
 
             modelBuilder.Entity("Domain.GameRoundGhostGuess", b =>
@@ -74,7 +77,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameRoundID");
 
-                    b.ToTable("GameRoundGhostGuesses", (string)null);
+                    b.ToTable("GameRoundGhostGuesses");
                 });
 
             modelBuilder.Entity("Domain.GameRoundOpposingTeamGuess", b =>
@@ -102,7 +105,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameRoundID");
 
-                    b.ToTable("GameRoundOpposingTeamGuesses", (string)null);
+                    b.ToTable("GameRoundOpposingTeamGuesses");
                 });
 
             modelBuilder.Entity("Domain.GameRoundOpposingTeamSelection", b =>
@@ -131,7 +134,7 @@ namespace Persistence.Migrations
                     b.HasIndex("GameRoundID")
                         .IsUnique();
 
-                    b.ToTable("GameRoundOpposingTeamSelections", (string)null);
+                    b.ToTable("GameRoundOpposingTeamSelections");
                 });
 
             modelBuilder.Entity("Domain.GameRoundSelectorSelection", b =>
@@ -160,7 +163,7 @@ namespace Persistence.Migrations
                     b.HasIndex("GameRoundID")
                         .IsUnique();
 
-                    b.ToTable("GameRoundSelectorSelections", (string)null);
+                    b.ToTable("GameRoundSelectorSelections");
                 });
 
             modelBuilder.Entity("Domain.GameSession", b =>
@@ -187,7 +190,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("GameSessions", (string)null);
+                    b.ToTable("GameSessions");
                 });
 
             modelBuilder.Entity("Domain.GameSessionMember", b =>
@@ -209,7 +212,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameSessionID");
 
-                    b.ToTable("GameSessionMembers", (string)null);
+                    b.ToTable("GameSessionMembers");
                 });
 
             modelBuilder.Entity("Domain.GameSessionMemberRoundRole", b =>
@@ -237,7 +240,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameRoundID");
 
-                    b.ToTable("GameSessionMemberRoundRoles", (string)null);
+                    b.ToTable("GameSessionMemberRoundRoles");
                 });
 
             modelBuilder.Entity("Domain.GameSessionResult", b =>
@@ -266,7 +269,7 @@ namespace Persistence.Migrations
                     b.HasIndex("GameSessionID")
                         .IsUnique();
 
-                    b.ToTable("GameSessionResults", (string)null);
+                    b.ToTable("GameSessionResults");
                 });
 
             modelBuilder.Entity("Domain.SpectrumCard", b =>
@@ -285,7 +288,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("SpectrumCards", (string)null);
+                    b.ToTable("SpectrumCards");
                 });
 
             modelBuilder.Entity("Domain.User", b =>

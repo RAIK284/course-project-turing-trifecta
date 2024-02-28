@@ -11,9 +11,11 @@ public class GameSession
     public string JoinCode { get; set; }
 
     public Guid OwnerID { get; set; }
-    
+
+    public int GameRound { get; set; }
+
     /// <summary>
-    /// Gets or sets the object that holds the score for each team for this game.
+    ///     Gets or sets the object that holds the score for each team for this game.
     /// </summary>
     public GameSessionResult GameSessionResult { get; set; }
 

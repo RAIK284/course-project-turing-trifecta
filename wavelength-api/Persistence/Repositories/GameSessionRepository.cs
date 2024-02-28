@@ -27,6 +27,8 @@ public class GameSessionRepository : IGameSessionRepository
 
         context.GameSessions.Add(newGameSession);
 
+        await context.SaveChangesAsync();
+
         // Have the user join the game
         await Join(newGameSession.ID, ownerID);
 

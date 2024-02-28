@@ -9,7 +9,7 @@ public class Get
 {
     public class Params
     {
-        public Guid ID { get; init; }
+        public Guid GameSessionID { get; init; }
     }
 
     public class Query : IRequest<Result<GameSessionDTO>>
@@ -33,7 +33,7 @@ public class Get
 
         public async Task<Result<GameSessionDTO>> Handle(Query request, CancellationToken cancellationToken)
         {
-            var result = await gameSessionRepository.Get(request.Param.ID);
+            var result = await gameSessionRepository.Get(request.Param.GameSessionID);
 
             return result == null
                 ? Result<GameSessionDTO>.Failure("The game session you requested was not found.")
