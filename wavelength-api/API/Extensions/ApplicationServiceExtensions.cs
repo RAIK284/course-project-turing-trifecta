@@ -25,6 +25,7 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IGameSessionRepository, GameSessionRepository>();
         services.AddScoped<IGameRoundRepository, GameRoundRepository>();
         services.AddScoped<ISpectrumCardRepository, SpectrumCardRepository>();
+        services.AddSignalR();
 
         return services;
     }
