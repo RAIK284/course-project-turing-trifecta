@@ -1,30 +1,20 @@
-# React + TypeScript + Vite
+# Wavelength Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### To run in development:
 
-Currently, two official plugins are available:
+- `npm install`
+- `npm run dev`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### To run in a specific build mode:
 
-## Expanding the ESLint configuration
+- `npm run build -- -- <mode (e.g. production or staging)>`
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Environment Variables
 
-- Configure the top-level `parserOptions` property like this:
+Environment variables are important so we can use different values in different run environments in the application. For example, if the frontend is being ran in development mode, we want to connect to an http://localhost:xxxx route for the API, whereas in production we want to connect to a different url, e.g. https://wavelength.net/api/****
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+Using environment variables in code:
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- `console.log(import.meta.env.APP_<name>)`
+
+NOTE: each environment variable must be prefixed with `APP_` when being defined and being used, or else Vite won't recognize it as a variable. The prefix for environment variables is set in `wavelength/vite.config.ts`.

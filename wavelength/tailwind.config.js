@@ -15,6 +15,8 @@ export default {
       "selector-red": "#D22736",
       "team-1-score-holder": "#CD9529",
       "team-2-score-holder": "#E86733",
+      white: "#FFFFFF",
+      black: "#000000",
     },
   },
   plugins: [],
