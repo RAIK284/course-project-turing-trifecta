@@ -1,4 +1,6 @@
-﻿using Application.GameSessions;
+﻿using API.SignalR.HubServices;
+using Application.GameSessions;
+using Application.HubServices;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Core;
@@ -26,6 +28,8 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IGameRoundRepository, GameRoundRepository>();
         services.AddScoped<ISpectrumCardRepository, SpectrumCardRepository>();
         services.AddSignalR();
+        services.AddScoped<IGameRoundHubService, GameRoundHubService>();
+        services.AddScoped<IGameSessionHubService, GameSessionHubService>();
 
         return services;
     }

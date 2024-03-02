@@ -13,19 +13,14 @@ public class GameSessionHub : Hub
         this.mediator = mediator;
     }
 
-    public static string GroupNameForTeamOne(Guid gameSessionID)
+    public static string GroupNameForIndividual(Guid userID, Guid gameSessionID)
     {
-        return $"${gameSessionID}-TeamOne";
-    }
-
-    public static string GroupNameForTeamTwo(Guid gameSessionID)
-    {
-        return $"${gameSessionID}-TeamTwo";
+        return $"{gameSessionID}-Member-{userID}";
     }
 
     public static string GroupNameForAllGameSessionMembers(Guid gameSessionID)
     {
-        return $"${gameSessionID}-AllMembers";
+        return $"{gameSessionID}-AllMembers";
     }
 
     [Authorize(Policy = "IsGameSessionMember")]
@@ -38,21 +33,14 @@ public class GameSessionHub : Hub
 
         if (gameSessionID == null || !canParseGameSessionID || !canParseUserID) return;
 
-        base.OnConnectedAsync();
+        await JoinGameSessionGroup(userID, gameSessionID);
+
+        await base.OnConnectedAsync();
     }
 
-    private async Task JoinGameSessionGroup(Guid gameSessionID)
+    private async Task JoinGameSessionGroup(Guid userID, Guid gameSessionID)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, GroupNameForAllGameSessionMembers(gameSessionID));
-    }
-
-    private async Task JoinGameSessionTeamOne(Guid gameSessionID)
-    {
-        await Groups.AddToGroupAsync(Context.ConnectionId, GroupNameForTeamOne(gameSessionID));
-    }
-
-    private async Task JoinGameSessionTeamTwo(Guid gameSessionID)
-    {
-        await Groups.AddToGroupAsync(Context.ConnectionId, GroupNameForTeamTwo(gameSessionID));
+        await Groups.AddToGroupAsync(Context.ConnectionId, GroupNameForIndividual(userID, gameSessionID));
     }
 }
