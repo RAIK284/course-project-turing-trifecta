@@ -17,6 +17,7 @@ export default {
       "team-2-score-holder": "#E86733",
       white: "#FFFFFF",
       black: "#000000",
+      "white-hover": "#f1f1f1",
     },
   },
   plugins: [],
