@@ -3,4 +3,5 @@
   -moz-box-shadow: 0px 0px 21px 1px rgba(134, 145, 207, 0.25);
   box-shadow: 0px 0px 21px 1px rgba(134, 145, 207, 0.25);
   border-radius: 50%;
+  z-index: -1;
 }
