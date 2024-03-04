@@ -14,11 +14,13 @@ const NavBarMobile: React.FC<NavBarMobileProps> = ({
   joinCodeButton,
   profileButton,
 }) => (
-  <nav className="NavBar Mobile flex flex-col p-1">
-    <div className="uppercase text-3xl w-full text-center">Wavelength</div>
-    <div className="absolute right-3 top-1">{profileButton}</div>
+  <nav className="NavBar Mobile flex flex-col">
+    <div className="uppercase text-[2.5rem] w-full text-center font-light">
+      Wavelength
+    </div>
+    <div className="absolute right-4 top-2.5">{profileButton}</div>
     {registerButton && loginButton && (
-      <div className="flex gap-1 justify-center mt-2">
+      <div className="flex gap-1 justify-center">
         {registerButton}
         {loginButton}
       </div>
