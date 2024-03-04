@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+  safelist: ["bg-star-1", "bg-star-2", "bg-star-3"], // These are values that need to be added when we conditionally use tailwind values in components
   theme: {
     extend: {},
     colors: {
@@ -17,6 +18,9 @@ export default {
       "team-2-score-holder": "#E86733",
       white: "#FFFFFF",
       black: "#000000",
+      "star-1": "#4e5ba3",
+      "star-2": "#2c3670",
+      "star-3": "#2f3557",
       "white-hover": "#f1f1f1",
     },
   },
