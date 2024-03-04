@@ -21,6 +21,7 @@ export default {
       "star-1": "#4e5ba3",
       "star-2": "#2c3670",
       "star-3": "#2f3557",
+      "white-hover": "#f1f1f1",
     },
   },
   plugins: [],
