@@ -7,6 +7,7 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import ChooseTeamPage from "../pages/ChooseTeamPage";
 import NotFound from "./NotFound";
+import ProfilePage from "../pages/ProfilePage";
 
 export enum WavelengthPath {
   LANDING = "/",
@@ -40,6 +41,14 @@ const router = createBrowserRouter([
         element: <RegisterPage />,
       },
       { path: WavelengthPath.CHOOSE_TEAM, element: <ChooseTeamPage /> },
+      {
+        path: WavelengthPath.PROFILE,
+        element: (
+          <AuthenticatedRoute>
+            <ProfilePage />
+          </AuthenticatedRoute>
+        ),
+      },
       { path: "*", element: <NotFound /> },
     ],
   },

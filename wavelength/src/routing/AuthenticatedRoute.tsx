@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
-import NotFound from "./NotFound";
+import { Navigate } from "react-router-dom";
+import { WavelengthPath } from "./Routes";
 
 /**
  *
@@ -14,7 +15,10 @@ type AuthenticatedRouteProps = {
  */
 const AuthenticatedRoute: React.FC<
   PropsWithChildren<AuthenticatedRouteProps>
-> = ({ children, unauthenticatedComponent }) => {
+> = ({
+  children,
+  unauthenticatedComponent = <Navigate to={WavelengthPath.LOGIN} />,
+}) => {
   const isAuthenticated = true; // TODO: CHANGE THIS ONCE STORES ARE SET UP
   console.log("AuthenticatedRoute component needs to be configured"); // TODO: REMOVE THIS ONCE STORES ARE SET UP
 
@@ -22,11 +26,7 @@ const AuthenticatedRoute: React.FC<
     return children;
   }
 
-  if (unauthenticatedComponent) {
-    return unauthenticatedComponent;
-  }
-
-  return <NotFound />;
+  return unauthenticatedComponent;
 };
 
 export default AuthenticatedRoute;
