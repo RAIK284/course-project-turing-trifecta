@@ -15,7 +15,7 @@ type AuthenticatedRouteProps = {
 const AuthenticatedRoute: React.FC<
   PropsWithChildren<AuthenticatedRouteProps>
 > = ({ children, unauthenticatedComponent }) => {
-  const isAuthenticated = true; // TODO: CHANGE THIS ONCE STORES ARE SET UP
+  const isAuthenticated = false; // TODO: CHANGE THIS ONCE STORES ARE SET UP
   console.log("AuthenticatedRoute component needs to be configured"); // TODO: REMOVE THIS ONCE STORES ARE SET UP
 
   if (isAuthenticated) {
