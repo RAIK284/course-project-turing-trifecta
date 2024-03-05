@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import useTailwind from "../../hooks/useTailwind";
 
 type SpinnerProps = {
@@ -8,10 +8,12 @@ type SpinnerProps = {
 
 const targetDegreeWidth = 8;
 
-const Spinner: React.FC<SpinnerProps> = ({ size = 500, targetOffset = 90 }) => {
+const Spinner: React.FC<SpinnerProps> = ({
+  size = 1000,
+  targetOffset = 20,
+}) => {
   const tailwind = useTailwind();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const ratio = window.devicePixelRatio;
 
   const canvas = canvasRef.current;
   const context = canvas?.getContext("2d");
@@ -20,7 +22,10 @@ const Spinner: React.FC<SpinnerProps> = ({ size = 500, targetOffset = 90 }) => {
   const getRadians = (degrees: number) => (Math.PI / 180) * degrees;
 
   const clearCanvas = (ctx: CanvasRenderingContext2D) => {
-    ctx?.clearRect(0, 0, size, size);
+    ctx.beginPath();
+    ctx.clearRect(0, 0, size, size);
+    ctx.closePath();
+    ctx.fill();
   };
 
   const drawBackground = (ctx: CanvasRenderingContext2D) => {
@@ -35,7 +40,7 @@ const Spinner: React.FC<SpinnerProps> = ({ size = 500, targetOffset = 90 }) => {
   };
 
   const drawWhiteBoard = (ctx: CanvasRenderingContext2D) => {
-    const radius = halfSize - 20;
+    const radius = halfSize - (20 / 500) * size;
     const offsetX = halfSize;
     const offsetY = halfSize;
     ctx.beginPath();
@@ -50,10 +55,10 @@ const Spinner: React.FC<SpinnerProps> = ({ size = 500, targetOffset = 90 }) => {
     color: string,
     offsetDegrees: number
   ) => {
-    const radius = halfSize - 20;
+    const radius = halfSize - (20 / 500) * size;
     ctx.beginPath();
     ctx.moveTo(halfSize, halfSize);
-    ctx.lineTo(size, size - 20);
+    ctx.lineTo(size, size - (20 / 500) * size);
     ctx.moveTo(halfSize, halfSize);
     ctx.arc(
       halfSize,
@@ -69,48 +74,64 @@ const Spinner: React.FC<SpinnerProps> = ({ size = 500, targetOffset = 90 }) => {
 
   const drawMiddleCircle = (ctx: CanvasRenderingContext2D) => {
     ctx.beginPath();
-    ctx.ellipse(halfSize, halfSize, 50, 50, 0, 0, 2 * Math.PI);
+    ctx.ellipse(halfSize, halfSize, size / 10, size / 10, 0, 0, 2 * Math.PI);
     ctx.fillStyle = tailwind.theme.colors["center-red"];
     ctx.closePath();
     ctx.fill();
   };
 
-  if (context) {
-    clearCanvas(context);
-    drawBackground(context);
-    drawWhiteBoard(context);
-    drawSingleTarget(context, tailwind.theme.colors["target-4"], targetOffset);
-    drawSingleTarget(
-      context,
-      tailwind.theme.colors["target-3"],
-      targetOffset + targetDegreeWidth
-    );
-    drawSingleTarget(
-      context,
-      tailwind.theme.colors["target-2"],
-      targetOffset + 2 * targetDegreeWidth
-    );
-    drawSingleTarget(
-      context,
-      tailwind.theme.colors["target-3"],
-      targetOffset - targetDegreeWidth
-    );
-    drawSingleTarget(
-      context,
-      tailwind.theme.colors["target-2"],
-      targetOffset - 2 * targetDegreeWidth
-    );
-    drawMiddleCircle(context);
-    context.scale(ratio, ratio);
-  }
+  useEffect(() => {
+    if (context) {
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      clearCanvas(context);
+      drawBackground(context);
+      drawWhiteBoard(context);
+      drawSingleTarget(
+        context,
+        tailwind.theme.colors["target-4"],
+        targetOffset
+      );
+      drawSingleTarget(
+        context,
+        tailwind.theme.colors["target-3"],
+        targetOffset + targetDegreeWidth
+      );
+      drawSingleTarget(
+        context,
+        tailwind.theme.colors["target-2"],
+        targetOffset + 2 * targetDegreeWidth
+      );
+      drawSingleTarget(
+        context,
+        tailwind.theme.colors["target-3"],
+        targetOffset - targetDegreeWidth
+      );
+      drawSingleTarget(
+        context,
+        tailwind.theme.colors["target-2"],
+        targetOffset - 2 * targetDegreeWidth
+      );
+      drawMiddleCircle(context);
+    }
+  }, []);
+
+  useEffect(() => {
+    let listener;
+    if (canvas) {
+      listener = canvas.addEventListener("mouseover", () => {
+
+      });
+      listener.
+    }
+  }, [])
 
   return (
     <canvas
-      width={size * ratio}
-      height={halfSize * ratio}
+      width={size}
+      height={halfSize}
       style={{
-        width: `${size}px`,
-        height: `${halfSize}px`,
+        width: `${size / 2}px`,
+        height: `${halfSize / 2}px`,
       }}
       ref={canvasRef}
     ></canvas>
