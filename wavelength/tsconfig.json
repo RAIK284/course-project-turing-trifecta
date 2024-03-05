@@ -10,10 +10,6 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
-    "paths": {
-      "react": ["./node_modules/react"],
-      "react-dom": ["./node_modules/react-dom"]
-    },
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
