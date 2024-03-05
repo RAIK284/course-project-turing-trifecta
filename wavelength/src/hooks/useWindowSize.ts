@@ -9,7 +9,9 @@ export const mobileWidth = 768;
  * @param widthDelimiters A list of widths that should determine when the windowSize state is updated for this hook to reduce rerendering.
  * @returns the width and height of the screen as well as if the screen is in a mobile or desktop view.
  */
-function useWindowSize(widthDelimiters: number[] = [mobileWidth]) {
+export default function useWindowSize(
+  widthDelimiters: number[] = [mobileWidth]
+) {
   const [windowSize, setWindowSize] = useState<{
     width: number;
     height: number;
@@ -58,5 +60,3 @@ function useWindowSize(widthDelimiters: number[] = [mobileWidth]) {
     isDesktop: windowSize.width > mobileWidth,
   };
 }
-
-export default useWindowSize;
