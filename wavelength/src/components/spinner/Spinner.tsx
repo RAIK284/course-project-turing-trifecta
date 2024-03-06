@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useTailwind from "../../hooks/useTailwind";
 
 type SpinnerProps = {
@@ -13,6 +13,13 @@ const Spinner: React.FC<SpinnerProps> = ({
   targetOffset = 20,
 }) => {
   const tailwind = useTailwind();
+  const [mousePosition, setMousePosition] = useState<{
+    x: number;
+    y: number;
+  }>({
+    x: -1,
+    y: -1,
+  });
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const canvas = canvasRef.current;
@@ -111,19 +118,29 @@ const Spinner: React.FC<SpinnerProps> = ({
         tailwind.theme.colors["target-2"],
         targetOffset - 2 * targetDegreeWidth
       );
+      if (mousePosition.x != -1 && mousePosition.y != -1) {
+        const oppositeOverAdjacent =
+          (mousePosition.y - halfSize) / (halfSize - mousePosition.x);
+        let angle = Math.atan(oppositeOverAdjacent);
+        angle = angle < 0 ? angle + Math.PI : angle;
+        drawSingleTarget(context, "blue", (angle * 180) / Math.PI);
+      }
       drawMiddleCircle(context);
     }
-  }, []);
+  }, [mousePosition]);
 
   useEffect(() => {
-    let listener;
     if (canvas) {
-      listener = canvas.addEventListener("mouseover", () => {
+      const listener = (ev: MouseEvent) => {
+        const { x: canvasX, y: canvasY } = canvas.getBoundingClientRect();
+        const [x, y] = [ev.clientX - canvasX, ev.clientY - canvasY];
 
-      });
-      listener.
+        setMousePosition({ x: x * 2, y: y * 2 });
+      };
+      canvas.addEventListener("mousemove", listener);
+      return () => window.removeEventListener("mousemove", listener);
     }
-  }, [])
+  }, []);
 
   return (
     <canvas
