@@ -37,21 +37,39 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 20 }) => {
   useEffect(() => {
     if (!canvas) return;
 
-    const listener = (ev: MouseEvent) => {
+    const handlePositionUpdate = (clientX: number, clientY: number) => {
       if (!canvas || selectorLocked) return;
 
-      const { x: canvasX, y: canvasY } = canvas.getBoundingClientRect();
-      const [x, y] = [ev.clientX - canvasX, ev.clientY - canvasY];
+      const {
+        x: canvasX,
+        y: canvasY,
+        width: canvasWidth,
+        height: canvasHeight,
+      } = canvas.getBoundingClientRect();
+      const [x, y] = [clientX - canvasX, clientY - canvasY];
 
-      setMousePosition({ x: x * 2, y: y * 2 });
+      // Scale the user's x and y to match the canvas' size
+      setMousePosition({
+        x: (x * size) / canvasWidth,
+        y: (y * halfSize) / canvasHeight,
+      });
     };
 
-    if (!selectorLocked) canvas.addEventListener("mousemove", listener);
-    // else canvas.removeEventListener("mousemove", listener);
+    // Support desktop (mouse) and mobile (touch)
+    const mouseListener = (e: MouseEvent) =>
+      handlePositionUpdate(e.clientX, e.clientY);
+    const touchListener = (e: TouchEvent) =>
+      handlePositionUpdate(e.touches[0].clientX, e.touches[0].clientY);
 
-    console.log(selectorLocked);
+    if (!selectorLocked) {
+      canvas.addEventListener("mousemove", mouseListener);
+      canvas.addEventListener("touchmove", touchListener);
+    }
 
-    return () => canvas.removeEventListener("mousemove", listener);
+    return () => {
+      canvas.removeEventListener("mousemove", mouseListener);
+      canvas.removeEventListener("touchmove", touchListener);
+    };
   }, [selectorLocked]);
 
   return (
