@@ -62,7 +62,7 @@ const drawSingleTarget = (
   offsetDegrees: number,
   degreeWidth: number,
   size: number,
-  displayNumber?: string
+  targetNumber?: number
 ) => {
   const halfSize = size / 2;
   const radius = halfSize - (20 / 500) * size;
@@ -81,14 +81,13 @@ const drawSingleTarget = (
   ctx.fillStyle = color;
   ctx.fill();
 
-  if (displayNumber) {
+  if (targetNumber) {
     const y =
       Math.sin(getRadians(180 - offsetDegrees)) *
       (halfSize - (1 / 6) * halfSize);
     const x =
       Math.cos(getRadians(180 - offsetDegrees)) *
       (halfSize - (1 / 6) * halfSize);
-    console.log(x, y);
     ctx.save();
     // when we rotate we will be pinching the
     // top-left hand corner with our thumb and finger
@@ -96,17 +95,16 @@ const drawSingleTarget = (
 
     // now rotate the canvas anti-clockwise by 90 degrees
     // holding onto the translate point
-    ctx.rotate(getRadians(offsetDegrees + 3));
-
+    ctx.rotate(getRadians(90 - offsetDegrees));
     // specify the font and colour of the text
-    ctx.font = "32px spartan";
-    ctx.fillStyle = "black"; // red
+    ctx.font = 'bold 32px "League Spartan"';
+    ctx.fillStyle = "black";
 
     // set alignment of text at writing point (left-align)
     ctx.textAlign = "center";
 
     // write the text
-    ctx.fillText(displayNumber, 0, 0);
+    ctx.fillText(Math.abs(targetNumber).toString(), 0, 0);
 
     // now restore the canvas flipping it back to its original orientation
     ctx.restore();
@@ -150,7 +148,7 @@ export const drawSpinner = (
       options.targetOffset,
       targetDegreeWidth,
       size,
-      "4"
+      4
     );
     drawSingleTarget(
       ctx,
@@ -158,7 +156,7 @@ export const drawSpinner = (
       options.targetOffset + targetDegreeWidth,
       targetDegreeWidth,
       size,
-      "3"
+      3
     );
     drawSingleTarget(
       ctx,
@@ -166,7 +164,7 @@ export const drawSpinner = (
       options.targetOffset + 2 * targetDegreeWidth,
       targetDegreeWidth,
       size,
-      "2"
+      2
     );
     drawSingleTarget(
       ctx,
@@ -174,7 +172,7 @@ export const drawSpinner = (
       options.targetOffset - targetDegreeWidth,
       targetDegreeWidth,
       size,
-      "3"
+      -3
     );
     drawSingleTarget(
       ctx,
@@ -182,7 +180,7 @@ export const drawSpinner = (
       options.targetOffset - 2 * targetDegreeWidth,
       targetDegreeWidth,
       size,
-      "2"
+      -2
     );
   }
 

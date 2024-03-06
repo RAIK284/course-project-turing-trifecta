@@ -6,7 +6,7 @@ type SpinnerProps = {
   targetOffset?: number;
 };
 
-const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 25 }) => {
+const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 50 }) => {
   const [mousePosition, setMousePosition] = useState<{
     x: number;
     y: number;
