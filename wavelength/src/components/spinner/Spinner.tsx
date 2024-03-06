@@ -37,8 +37,12 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 20 }) => {
   useEffect(() => {
     if (!canvas) return;
 
-    const handlePositionUpdate = (clientX: number, clientY: number) => {
-      if (!canvas || selectorLocked) return;
+    const handlePositionUpdate = (
+      clientX: number,
+      clientY: number,
+      isTouch?: boolean
+    ) => {
+      if (!canvas || (!isTouch && selectorLocked)) return;
 
       const {
         x: canvasX,
@@ -59,12 +63,13 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 20 }) => {
     const mouseListener = (e: MouseEvent) =>
       handlePositionUpdate(e.clientX, e.clientY);
     const touchListener = (e: TouchEvent) =>
-      handlePositionUpdate(e.touches[0].clientX, e.touches[0].clientY);
+      handlePositionUpdate(e.touches[0].clientX, e.touches[0].clientY, true);
 
     if (!selectorLocked) {
       canvas.addEventListener("mousemove", mouseListener);
-      canvas.addEventListener("touchmove", touchListener);
     }
+    // If it is touch, we don't need to worry about locking the selector
+    canvas.addEventListener("touchmove", touchListener);
 
     return () => {
       canvas.removeEventListener("mousemove", mouseListener);
