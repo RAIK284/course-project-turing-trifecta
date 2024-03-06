@@ -61,7 +61,8 @@ const drawSingleTarget = (
   color: string,
   offsetDegrees: number,
   degreeWidth: number,
-  size: number
+  size: number,
+  displayNumber?: string
 ) => {
   const halfSize = size / 2;
   const radius = halfSize - (20 / 500) * size;
@@ -79,6 +80,37 @@ const drawSingleTarget = (
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.fill();
+
+  if (displayNumber) {
+    const y =
+      Math.sin(getRadians(180 - offsetDegrees)) *
+      (halfSize - (1 / 6) * halfSize);
+    const x =
+      Math.cos(getRadians(180 - offsetDegrees)) *
+      (halfSize - (1 / 6) * halfSize);
+    console.log(x, y);
+    ctx.save();
+    // when we rotate we will be pinching the
+    // top-left hand corner with our thumb and finger
+    ctx.translate(halfSize - x, halfSize - y);
+
+    // now rotate the canvas anti-clockwise by 90 degrees
+    // holding onto the translate point
+    ctx.rotate(getRadians(offsetDegrees + 3));
+
+    // specify the font and colour of the text
+    ctx.font = "32px spartan";
+    ctx.fillStyle = "black"; // red
+
+    // set alignment of text at writing point (left-align)
+    ctx.textAlign = "center";
+
+    // write the text
+    ctx.fillText(displayNumber, 0, 0);
+
+    // now restore the canvas flipping it back to its original orientation
+    ctx.restore();
+  }
 };
 
 const drawMiddleCircle = (
@@ -117,35 +149,40 @@ export const drawSpinner = (
       colors["target-4"],
       options.targetOffset,
       targetDegreeWidth,
-      size
+      size,
+      "4"
     );
     drawSingleTarget(
       ctx,
       colors["target-3"],
       options.targetOffset + targetDegreeWidth,
       targetDegreeWidth,
-      size
+      size,
+      "3"
     );
     drawSingleTarget(
       ctx,
       colors["target-2"],
       options.targetOffset + 2 * targetDegreeWidth,
       targetDegreeWidth,
-      size
+      size,
+      "2"
     );
     drawSingleTarget(
       ctx,
       colors["target-3"],
       options.targetOffset - targetDegreeWidth,
       targetDegreeWidth,
-      size
+      size,
+      "3"
     );
     drawSingleTarget(
       ctx,
       colors["target-2"],
       options.targetOffset - 2 * targetDegreeWidth,
       targetDegreeWidth,
-      size
+      size,
+      "2"
     );
   }
 
@@ -156,7 +193,7 @@ export const drawSpinner = (
       const oppositeOverAdjacent = (y - halfSize) / (halfSize - x);
       let angle = Math.atan(oppositeOverAdjacent);
       angle = angle < 0 ? angle + Math.PI : angle;
-      drawSingleTarget(ctx, "blue", (angle * 180) / Math.PI, 4, size);
+      drawSingleTarget(ctx, "blue", (angle * 180) / Math.PI, 3, size);
     }
   }
 

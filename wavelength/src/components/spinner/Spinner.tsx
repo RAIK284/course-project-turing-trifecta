@@ -6,7 +6,7 @@ type SpinnerProps = {
   targetOffset?: number;
 };
 
-const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 20 }) => {
+const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 25 }) => {
   const [mousePosition, setMousePosition] = useState<{
     x: number;
     y: number;
@@ -24,7 +24,7 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 20 }) => {
   useEffect(() => {
     if (context) {
       drawSpinner(context, size, {
-        cover: true,
+        cover: false,
         targetOffset,
         userMousePosition: {
           x: mousePosition.x,
