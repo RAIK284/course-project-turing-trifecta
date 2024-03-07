@@ -5,12 +5,13 @@ import { WavelengthPath } from "../../routing/Routes";
 import NavBarMobile from "./NavBarMobile";
 import NavBarDesktop from "./NavBarDesktop";
 import useWindowSize from "../../hooks/useWindowSize";
+import UserCircle from "../../assets/icons/UserCircleIcon";
 
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
   // TODO: SET UP GAME SESSION AND ISAUTHENICATED VARIABLES
   // WHEN STORES ARE COMPLETE
-  const isAuthenticated = false;
+  const isAuthenticated = true;
   const gameSession = {
     joinCode: "123456",
   } as GameSession;
@@ -29,6 +30,10 @@ const NavBar: React.FC = () => {
   // Navigates the user to the register page
   const handleRegisterButtonClick = () => {
     navigate(WavelengthPath.REGISTER);
+  };
+
+  const handleProfileButtonClick = () => {
+    navigate(WavelengthPath.PROFILE);
   };
 
   const showGameSessionDetails = isAuthenticated && !!gameSession;
@@ -53,7 +58,11 @@ const NavBar: React.FC = () => {
       onClick={handleRegisterButtonClick}
     />
   );
-  const profileButton = isAuthenticated && <p>PROFILE</p>; // TODO: MAKE THIS AN ICON
+  const profileButton = isAuthenticated && (
+    <button onClick={handleProfileButtonClick} type="button">
+      <UserCircle />
+    </button>
+  );
 
   return isMobile ? (
     <NavBarMobile

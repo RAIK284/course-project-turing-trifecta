@@ -15,6 +15,7 @@ const NavBarButton: React.FC<NavBarProps> = ({
   filled = true,
 }) => (
   <button
+    type="button"
     onClick={onClick}
     className={cn(
       "border-white border-2 px-6 py-0.4 font-bold rounded-lg h-fit hover:border-white-hover",
