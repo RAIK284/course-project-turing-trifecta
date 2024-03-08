@@ -14,9 +14,9 @@ const NavBarDesktop: React.FC<NavBarDesktopProps> = ({
   joinCodeButton,
   profileButton,
 }) => (
-  <nav className="NavBar Mobile flex flex-row w-full items-center py-1 px-5">
+  <nav className="NavBar Mobile flex flex-row w-full items-center px-5 h-fit">
     <div className="w-1/3">{joinCodeButton}</div>
-    <div className="uppercase text-3xl w-full text-center w-1/3">
+    <div className="uppercase text-[2.5rem] w-1/3 font-light text-center h-fit">
       Wavelength
     </div>
     <div className="w-1/3 flex justify-end gap-1">
