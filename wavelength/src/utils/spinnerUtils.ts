@@ -97,8 +97,8 @@ const drawSingleTarget = (
     // holding onto the translate point
     ctx.rotate(getRadians(90 - offsetDegrees));
     // specify the font and colour of the text
-    ctx.font = 'bold 32px "League Spartan"';
-    ctx.fillStyle = "black";
+    ctx.font = 'bold 32px "Inter"';
+    ctx.fillStyle = tailWindConfig.colors["grey-spinner-text"];
 
     // set alignment of text at writing point (left-align)
     ctx.textAlign = "center";
