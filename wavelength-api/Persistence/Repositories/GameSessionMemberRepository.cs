@@ -17,6 +17,7 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
         this.mapper = mapper;
     }
 
+    /// <inheritdoc/>
     public async Task<GameSessionMemberDTO?> JoinTeam(Guid userID, Guid gameSessionID, Team team)
     {
         var existingMember = await context.GameSessionMembers
@@ -34,6 +35,16 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
             : null;
     }
 
+    /// <inheritdoc/>
+    public async Task<List<GameSessionMemberDTO>> GetAll(Guid gameSessionID)
+    {
+        return await context.GameSessionMembers
+            .Where(gs => gs.GameSessionID == gameSessionID)
+            .ProjectTo<GameSessionMemberDTO>(mapper.ConfigurationProvider)
+            .ToListAsync();
+    }
+
+    /// <inheritdoc/>
     public async Task<GameSessionMemberDTO?> Get(Guid userID, Guid gameSessionID)
     {
         return await context.GameSessionMembers

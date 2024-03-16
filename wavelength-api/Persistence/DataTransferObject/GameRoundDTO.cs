@@ -23,4 +23,14 @@ public class GameRoundDTO
     public string Clue { get; set; }
 
     public int TargetOffset { get; set; }
+    
+    public List<GameSessionMemberRoundRoleDTO> RoundRoles { get; set; }
+    
+    public List<GameRoundGhostGuessDTO> GhostGuesses { get; set; }
+    
+    public GameRoundSelectorSelectionDTO SelectorSelection { get; set; }
+    
+    public List<GameRoundOpposingTeamGuessDTO> OpposingGhostGuesses { get; set; }
+    
+    public GameRoundOpposingTeamSelectionDTO OpposingTeamSelection { get; set; }
 }

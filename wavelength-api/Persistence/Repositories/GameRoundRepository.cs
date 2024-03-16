@@ -229,6 +229,11 @@ public class GameRoundRepository : IGameRoundRepository
         return await context.GameRounds
             .Where(rr => rr.GameSessionID == gameSessionID)
             .Where(rr => rr.ID == gameRoundID)
+            .Include(rr => rr.RoundRoles)
+            .Include(rr => rr.GhostGuesses)
+            .Include(rr => rr.OpposingGhostGuesses)
+            .Include(rr => rr.SelectorSelection)
+            .Include(rr => rr.OpposingSelectorSelection)
             .ProjectTo<GameRoundDTO>(mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
     }
