@@ -30,6 +30,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Used to grab body values in authorization handlers
+app.Use(async (context, next) =>
+{
+    context.Request.EnableBuffering();
+    await next();
+});
+
 app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");

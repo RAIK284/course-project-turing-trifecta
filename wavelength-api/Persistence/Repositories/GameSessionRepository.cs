@@ -84,6 +84,8 @@ public class GameSessionRepository : IGameSessionRepository
             .Where(gs => gs.ID == gameSessionID)
             .FirstOrDefaultAsync();
 
+        if (gameSession == null) return false;
+
         gameSession.EndTime = DateTime.Now;
 
         return await context.SaveChangesAsync() > 0;
@@ -94,6 +96,8 @@ public class GameSessionRepository : IGameSessionRepository
         var gameSession = await context.GameSessions
             .Where(gs => gs.ID == gameSessionID)
             .FirstOrDefaultAsync();
+
+        if (gameSession == null || gameSession.StartTime != null) return false;
 
         gameSession.StartTime = DateTime.Now;
 

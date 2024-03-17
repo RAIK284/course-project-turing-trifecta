@@ -46,9 +46,7 @@ public static class IdentityServiceExtensions
                         var accessToken = context.Request.Query["access_token"];
                         var path = context.HttpContext.Request.Path;
                         if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/gameSession"))
-                        {
                             context.Token = accessToken;
-                        }
 
                         return Task.CompletedTask;
                     }
@@ -57,6 +55,8 @@ public static class IdentityServiceExtensions
         _ = services.AddAuthorization(opt =>
         {
             opt.AddPolicy(AuthPolicy.IsGameSessionMember,
+                policy => { policy.Requirements.Add(new GameMemberHandlerRequirement(false)); });
+            opt.AddPolicy(AuthPolicy.IsNotGameSessionMember,
                 policy => { policy.Requirements.Add(new GameMemberHandlerRequirement(true)); });
             opt.AddPolicy(AuthPolicy.IsGhostOnTeamTurn,
                 policy => { policy.Requirements.Add(new GameRoundRoleRequirement(true, TeamRole.GHOST)); });
