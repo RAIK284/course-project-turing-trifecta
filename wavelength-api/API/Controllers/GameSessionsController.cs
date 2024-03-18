@@ -38,4 +38,12 @@ public class GameSessionsController : BaseAPIController
         param.UserID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         return HandleResult(await Mediator.Send(new Join.Command(param)));
     }
+
+    [Authorize(Policy = "IsGameSessionMember")]
+    [HttpPost("switchTeams")]
+    public async Task<ActionResult> SwitchTeams(SwitchTeams.Params param)
+    {
+        param.UserID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        return HandleResult(await Mediator.Send(new SwitchTeams.Command(param)));
+    }
 }
