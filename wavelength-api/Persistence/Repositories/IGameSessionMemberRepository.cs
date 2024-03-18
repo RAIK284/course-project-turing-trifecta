@@ -21,4 +21,11 @@ public interface IGameSessionMemberRepository
     /// <param name="gameSessionID">The ID of the GameSession for which to grab the member entity.</param>
     /// <returns></returns>
     public Task<GameSessionMemberDTO?> Get(Guid userID, Guid gameSessionID);
+
+    /// <summary>
+    /// Gets all members for a game session.
+    /// </summary>
+    /// <param name="gameSessionID">The ID of the GameSession for which to grab all members.</param>
+    /// <returns></returns>
+    public Task<List<GameSessionMemberDTO>> GetAll(Guid gameSessionID);
 }
