@@ -41,7 +41,8 @@ public class GameRoundRepository : IGameRoundRepository
         var newRound = new GameRound
         {
             GameSessionID = gameSessionID,
-            SpectrumCardID = unusedSpectrumCards[random.Next(unusedSpectrumCards.Count)].ID
+            SpectrumCardID = unusedSpectrumCards[random.Next(unusedSpectrumCards.Count)].ID,
+            TargetOffset = random.Next(20, 161) // Generate between 20 and 160 inclusive
         };
 
         if (previousRoundsForGameSession.Any())
@@ -73,6 +74,56 @@ public class GameRoundRepository : IGameRoundRepository
         }
 
         return null;
+    }
+
+    /// <inheritdoc />
+    public async Task<GameRoundDTO?> PsychicGiveClue(Guid gameSessionID, string clue)
+    {
+        var gameSession = await context.GameSessions
+            .Where(gs => gs.ID == gameSessionID)
+            .Where(gs => gs.EndTime == null)
+            .FirstOrDefaultAsync();
+
+        if (gameSession == null) return null;
+
+        var lastRound = await context.GameRounds
+            .Where(gr => gr.GameSessionID == gameSession.ID)
+            .Include(gr => gr.RoundRoles)
+            .OrderBy(gr => gr.RoundNumber)
+            .LastOrDefaultAsync();
+
+        if (lastRound == null) return null;
+
+        lastRound.Clue = clue;
+
+        await context.SaveChangesAsync();
+
+        return mapper.Map<GameRoundDTO>(lastRound);
+    }
+
+    /// <inheritdoc />
+    public async Task<GameRoundDTO?> GetCurrentRound(Guid gameSessionID)
+    {
+        var gameSession = await context.GameSessions
+            .Where(gs => gs.ID == gameSessionID)
+            .Where(gs => gs.EndTime == null)
+            .FirstOrDefaultAsync();
+
+        if (gameSession == null) return null;
+
+        var lastRound = await context.GameRounds
+            .Where(gr => gr.GameSessionID == gameSession.ID)
+            .Include(gr => gr.RoundRoles)
+            .Include(gr => gr.GhostGuesses)
+            .Include(gr => gr.SelectorSelection)
+            .Include(gr => gr.OpposingGhostGuesses)
+            .Include(gr => gr.OpposingSelectorSelection)
+            .OrderBy(gr => gr.RoundNumber)
+            .LastOrDefaultAsync();
+
+        if (lastRound == null) return null;
+
+        return mapper.Map<GameRoundDTO>(lastRound);
     }
 
     /// <inheritdoc />

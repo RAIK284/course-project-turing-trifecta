@@ -20,11 +20,8 @@ public class GameSessionRepository : IGameSessionRepository
     public async Task<GameSessionDTO?> Create(Guid ownerID)
     {
         // If a user is a part of an active game session, disallow them from creating a new one.
-        if (await GetActiveSession(ownerID) != null)
-        {
-            return null;
-        }
-        
+        if (await GetActiveSession(ownerID) != null) return null;
+
         var newGameSession = new GameSession
         {
             OwnerID = ownerID,
@@ -110,6 +107,22 @@ public class GameSessionRepository : IGameSessionRepository
         return await context.SaveChangesAsync() > 0;
     }
 
+    public async Task<GameSessionDTO?> GetActiveSession(Guid userID)
+    {
+        var gameSessionIDsForUser = await context.GameSessionMembers
+            .Where(gsm => gsm.UserID == userID)
+            .Select(gsm => gsm.GameSessionID)
+            .ToListAsync();
+
+        if (!gameSessionIDsForUser.Any()) return null;
+
+        return await context.GameSessions
+            .Where(gs => gs.EndTime == null)
+            .Where(gs => gameSessionIDsForUser.Contains(gs.ID))
+            .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
+    }
+
     private string GenerateRandomJoinCode()
     {
         var random = new Random();
@@ -129,21 +142,5 @@ public class GameSessionRepository : IGameSessionRepository
         }
 
         return joinCode;
-    }
-
-    public async Task<GameSessionDTO?> GetActiveSession(Guid userID)
-    {
-        var gameSessionIDsForUser = await context.GameSessionMembers
-            .Where(gsm => gsm.UserID == userID)
-            .Select(gsm => gsm.GameSessionID)
-            .ToListAsync();
-
-        if (!gameSessionIDsForUser.Any()) return null;
-
-        return await context.GameSessions
-            .Where(gs => gs.EndTime != null)
-            .Where(gs => gameSessionIDsForUser.Contains(gs.ID))
-            .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync();
     }
 }
