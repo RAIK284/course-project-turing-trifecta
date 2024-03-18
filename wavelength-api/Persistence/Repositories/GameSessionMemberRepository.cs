@@ -17,7 +17,7 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
         this.mapper = mapper;
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public async Task<GameSessionMemberDTO?> JoinTeam(Guid userID, Guid gameSessionID, Team team)
     {
         var existingMember = await context.GameSessionMembers
@@ -35,7 +35,7 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
             : null;
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public async Task<List<GameSessionMemberDTO>> GetAll(Guid gameSessionID)
     {
         return await context.GameSessionMembers
@@ -44,7 +44,33 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
             .ToListAsync();
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
+    public async Task<List<GameSessionMemberDTO>> AssignTeamlessPlayersToTeam(Guid gameSessionID)
+    {
+        var members = await context.GameSessionMembers
+            .Where(gs => gs.GameSessionID == gameSessionID)
+            .ToListAsync();
+        var teamlessPlayers = members
+            .Where(m => m.Team == Team.NONE)
+            .ToList();
+
+        foreach (var member in teamlessPlayers)
+        {
+            var numTeamOnePlayers = members.Count(m => m.Team == Team.ONE);
+            var numTeamTwoPlayers = members.Count(m => m.Team == Team.TWO);
+
+            if (numTeamOnePlayers > numTeamTwoPlayers)
+                member.Team = Team.TWO;
+            else
+                member.Team = Team.ONE;
+        }
+
+        await context.SaveChangesAsync();
+
+        return mapper.Map<List<GameSessionMemberDTO>>(members);
+    }
+
+    /// <inheritdoc />
     public async Task<GameSessionMemberDTO?> Get(Guid userID, Guid gameSessionID)
     {
         return await context.GameSessionMembers

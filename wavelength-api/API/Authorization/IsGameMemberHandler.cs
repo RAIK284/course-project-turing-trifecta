@@ -10,15 +10,15 @@ public class GameMemberHandlerRequirement : IAuthorizationRequirement
     }
 
     public GameMemberHandlerRequirement(
-        bool gameSessionMember)
+        bool succeedIfUserIsNotMember)
     {
-        GameSessionMember = gameSessionMember;
+        SucceedIfUserIsNotMember = succeedIfUserIsNotMember;
     }
 
     /// <summary>
-    ///     Gets the value indicating whether the handlers should check that the user is in the requested game session.
+    ///     Gets the value indicating whether the handler should succeed if the user isn't a part of the game.
     /// </summary>
-    public bool GameSessionMember { get; init; }
+    public bool SucceedIfUserIsNotMember { get; set; }
 }
 
 public class IsGameMemberHandler : BaseAuthorizationHandler<GameMemberHandlerRequirement>
@@ -36,19 +36,19 @@ public class IsGameMemberHandler : BaseAuthorizationHandler<GameMemberHandlerReq
     protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context,
         GameMemberHandlerRequirement requirement)
     {
-        if (!requirement.GameSessionMember) return Task.CompletedTask;
+        var _userID = GetRequesterID(context);
+        var _gameSessionID = await GetValueFromRequest("gameSessionID");
 
-        var stringRequestorID = GetRequesterID(context);
-        var gameSessionID = await GetValueFromRequest("gameSessionID");
+        if (_userID == null || _gameSessionID == null) return Task.CompletedTask;
 
-        if (gameSessionID == null || stringRequestorID == null) return Task.CompletedTask;
+        if (!Guid.TryParse(_userID, out var userID) || !Guid.TryParse(_gameSessionID, out var gameSessionID))
+            return Task.CompletedTask;
 
-        var gameSessionMember = await gameSessionMemberRepository.Get(
-            Guid.Parse(stringRequestorID),
-            Guid.Parse(gameSessionID)
-        );
+        var gameSessionMember = await gameSessionMemberRepository.Get(userID, gameSessionID);
 
-        if (gameSessionMember != null) context.Succeed(requirement);
+        if (gameSessionMember != null && !requirement.SucceedIfUserIsNotMember) context.Succeed(requirement);
+
+        if (gameSessionMember == null && requirement.SucceedIfUserIsNotMember) context.Succeed(requirement);
 
         return Task.CompletedTask;
     }

@@ -29,5 +29,6 @@ public class MappingProfiles : Profile
                 opt => opt.MapFrom(round => round.OpposingGhostGuesses))
             .ForMember(round => round.OpposingTeamSelection,
                 opt => opt.MapFrom(round => round.OpposingSelectorSelection));
+        _ = CreateMap<SpectrumCard, SpectrumCardDTO>();
     }
 }

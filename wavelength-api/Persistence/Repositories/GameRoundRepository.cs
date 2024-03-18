@@ -61,8 +61,15 @@ public class GameRoundRepository : IGameRoundRepository
 
         if (await context.SaveChangesAsync() > 0)
         {
-            CreateUserRolesForRound(newRound, previousRoundsForGameSession);
-            return mapper.Map<GameRoundDTO>(newRound);
+            var userRoles = await CreateUserRolesForRound(newRound, previousRoundsForGameSession);
+
+            if (userRoles == null || !userRoles.Any()) return null;
+
+            var result = mapper.Map<GameRoundDTO>(newRound);
+
+            result.RoundRoles = userRoles;
+
+            return result;
         }
 
         return null;
@@ -239,10 +246,12 @@ public class GameRoundRepository : IGameRoundRepository
     }
 
     /// <inheritdoc />
-    private async void CreateUserRolesForRound(GameRound newRound, List<GameRound> previousRounds)
+    private async Task<List<GameSessionMemberRoundRoleDTO>> CreateUserRolesForRound(GameRound newRound,
+        List<GameRound> previousRounds)
     {
         var gameSessionMembers = await context.GameSessionMembers
             .Where(gs => gs.GameSessionID == newRound.GameSessionID)
+            .Where(gs => gs.Team != Team.NONE)
             .ToListAsync();
 
         var gameRoundRoles = new List<GameSessionMemberRoundRole>();
@@ -319,6 +328,8 @@ public class GameRoundRepository : IGameRoundRepository
         context.GameSessionMemberRoundRoles.AddRange(gameRoundRoles);
 
         await context.SaveChangesAsync();
+
+        return mapper.Map<List<GameSessionMemberRoundRoleDTO>>(gameRoundRoles);
     }
 
     private bool HasUserHadRoleBefore(Guid userID, TeamRole role, List<GameRound> previousRounds)

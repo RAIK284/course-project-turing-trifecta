@@ -32,7 +32,7 @@ public class DataContext : IdentityDbContext<User>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(builder);
         builder.SeedSpectrumCards();
+        base.OnModelCreating(builder);
     }
 }
