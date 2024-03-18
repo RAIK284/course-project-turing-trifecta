@@ -5,7 +5,7 @@ namespace Persistence.Repositories;
 
 public interface IGameSessionRepository
 {
-    public Task<GameSessionDTO> Create(Guid ownerID);
+    public Task<GameSessionDTO?> Create(Guid ownerID);
 
     public Task<GameSessionDTO?> Get(Guid gameSessionID);
 
@@ -16,4 +16,6 @@ public interface IGameSessionRepository
     public Task<bool> End(Guid gameSessionID);
 
     public Task<bool> Start(Guid gameSessionID);
+
+    public Task<GameSessionDTO?> GetActiveSession(Guid userID);
 }
