@@ -8,6 +8,7 @@ import RegisterPage from "../pages/RegisterPage";
 import ChooseTeamPage from "../pages/ChooseTeamPage";
 import NotFound from "./NotFound";
 import ProfilePage from "../pages/ProfilePage";
+import RulesPage from "../pages/RulesPage";
 
 export enum WavelengthPath {
   LANDING = "/",
@@ -15,6 +16,7 @@ export enum WavelengthPath {
   REGISTER = "/register",
   CHOOSE_TEAM = "/chooseTeam/:gameSessionID", // Choosing a team occurs in a game session, so we need to access the game's ID
   PROFILE = "/profile",
+  RULES = "/rules",
 }
 
 const router = createBrowserRouter([
@@ -35,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: WavelengthPath.LOGIN,
         element: <LoginPage />,
+      },
+      {
+        path: WavelengthPath.RULES,
+        element: <RulesPage />
       },
       {
         path: WavelengthPath.REGISTER,
