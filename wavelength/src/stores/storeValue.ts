@@ -1,3 +1,5 @@
+import { makeAutoObservable } from "mobx";
+
 export class StoreValue<T> {
   /**
    * The value this StoreValue holds. Undefined by default.
@@ -7,6 +9,10 @@ export class StoreValue<T> {
   isLoading = false;
 
   error: string | undefined;
+
+  constructor() {
+    makeAutoObservable(this);
+  }
 
   setValue = (newValue: T | undefined) => {
     this.value = newValue;
@@ -34,21 +40,21 @@ export class StoreValue<T> {
     }
 
     try {
-      this.isLoading = true;
+      this.setLoading(true);
       const result = await logic();
-      this.isLoading = false;
-      this.error = undefined;
+      this.setLoading(false);
+      this.setError(undefined);
       return result;
     } catch (error) {
       if (error instanceof Error) {
-        this.error = error.message;
+        this.setError(error.message);
       }
-      this.isLoading = false;
+      this.setLoading(false);
       return undefined;
     }
   };
 }
 
 export function useStoreValue<T>(storeValue: StoreValue<T>) {
-  return [storeValue.value, storeValue.isLoading, storeValue.error];
+  return [storeValue.value, storeValue.isLoading, storeValue.error] as const;
 }
