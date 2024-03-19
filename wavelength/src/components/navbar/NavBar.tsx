@@ -6,6 +6,9 @@ import NavBarMobile from "./NavBarMobile";
 import NavBarDesktop from "./NavBarDesktop";
 import useWindowSize from "../../hooks/useWindowSize";
 import UserCircle from "../../assets/icons/UserCircleIcon";
+import { useState } from "react";
+import ProfileDropdown from "./ProfileDropdown";
+import User from "../../models/User";
 
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
@@ -16,6 +19,8 @@ const NavBar: React.FC = () => {
     joinCode: "123456",
   } as GameSession;
   const { isMobile } = useWindowSize();
+  const [showProfileDropdown, setShowProfileDropdown] =
+    useState<boolean>(false);
 
   // Copies the text of the game code to the user's clipboard
   const handleJoinCodeButtonClick = () => {
@@ -33,7 +38,7 @@ const NavBar: React.FC = () => {
   };
 
   const handleProfileButtonClick = () => {
-    navigate(WavelengthPath.PROFILE);
+    setShowProfileDropdown(!showProfileDropdown);
   };
 
   const showGameSessionDetails = isAuthenticated && !!gameSession;
@@ -59,9 +64,14 @@ const NavBar: React.FC = () => {
     />
   );
   const profileButton = isAuthenticated && (
-    <button onClick={handleProfileButtonClick} type="button">
-      <UserCircle />
-    </button>
+    <div>
+      <button onClick={handleProfileButtonClick} type="button">
+        <UserCircle />
+      </button>
+      {showProfileDropdown && (
+        <ProfileDropdown user={{ username: "P_Sizzle" } as User} />
+      )}
+    </div>
   );
 
   return isMobile ? (
