@@ -3,6 +3,7 @@ namespace API.Authorization;
 public class AuthPolicy
 {
     public static readonly string IsGameSessionMember = "IsGameSessionMember";
+    public static readonly string IsNotGameSessionMember = "IsNotGameSessionMember";
     public static readonly string IsGhostOnTeamTurn = "IsGhostOnTeamTurn";
     public static readonly string IsSelectorOnTeamTurn = "IsSelectorOnTeamTurn";
     public static readonly string IsPsychicOnTeamTurn = "IsPsychicOnTeamTurn";

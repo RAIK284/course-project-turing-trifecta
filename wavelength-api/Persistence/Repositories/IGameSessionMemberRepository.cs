@@ -6,7 +6,7 @@ namespace Persistence.Repositories;
 public interface IGameSessionMemberRepository
 {
     /// <summary>
-    /// Allows a user to join or switch a team.
+    ///     Allows a user to join or switch a team.
     /// </summary>
     /// <param name="userID">The ID of the user who is trying to join a team.</param>
     /// <param name="gameSessionID">The ID of the GameSession for which the user is trying to join a team in.</param>
@@ -15,10 +15,24 @@ public interface IGameSessionMemberRepository
     public Task<GameSessionMemberDTO?> JoinTeam(Guid userID, Guid gameSessionID, Team team);
 
     /// <summary>
-    /// Gets the member entity for a user in a game session.
+    ///     Gets the member entity for a user in a game session.
     /// </summary>
     /// <param name="userID">The ID of the user for this request.</param>
     /// <param name="gameSessionID">The ID of the GameSession for which to grab the member entity.</param>
     /// <returns></returns>
     public Task<GameSessionMemberDTO?> Get(Guid userID, Guid gameSessionID);
+
+    /// <summary>
+    ///     Gets all members for a game session.
+    /// </summary>
+    /// <param name="gameSessionID">The ID of the GameSession for which to grab all members.</param>
+    /// <returns></returns>
+    public Task<List<GameSessionMemberDTO>> GetAll(Guid gameSessionID);
+
+    /// <summary>
+    ///     Assigns all players who have no team to a team.
+    /// </summary>
+    /// <param name="gameSessionID">The ID of the GameSession for which to assign teams.</param>
+    /// <returns></returns>
+    public Task<List<GameSessionMemberDTO>> AssignTeamlessPlayersToTeam(Guid gameSessionID);
 }

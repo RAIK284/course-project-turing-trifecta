@@ -41,7 +41,8 @@ public class GameRoundRepository : IGameRoundRepository
         var newRound = new GameRound
         {
             GameSessionID = gameSessionID,
-            SpectrumCardID = unusedSpectrumCards[random.Next(unusedSpectrumCards.Count)].ID
+            SpectrumCardID = unusedSpectrumCards[random.Next(unusedSpectrumCards.Count)].ID,
+            TargetOffset = random.Next(20, 161) // Generate between 20 and 160 inclusive
         };
 
         if (previousRoundsForGameSession.Any())
@@ -61,11 +62,68 @@ public class GameRoundRepository : IGameRoundRepository
 
         if (await context.SaveChangesAsync() > 0)
         {
-            CreateUserRolesForRound(newRound, previousRoundsForGameSession);
-            return mapper.Map<GameRoundDTO>(newRound);
+            var userRoles = await CreateUserRolesForRound(newRound, previousRoundsForGameSession);
+
+            if (userRoles == null || !userRoles.Any()) return null;
+
+            var result = mapper.Map<GameRoundDTO>(newRound);
+
+            result.RoundRoles = userRoles;
+
+            return result;
         }
 
         return null;
+    }
+
+    /// <inheritdoc />
+    public async Task<GameRoundDTO?> PsychicGiveClue(Guid gameSessionID, string clue)
+    {
+        var gameSession = await context.GameSessions
+            .Where(gs => gs.ID == gameSessionID)
+            .Where(gs => gs.EndTime == null)
+            .FirstOrDefaultAsync();
+
+        if (gameSession == null) return null;
+
+        var lastRound = await context.GameRounds
+            .Where(gr => gr.GameSessionID == gameSession.ID)
+            .Include(gr => gr.RoundRoles)
+            .OrderBy(gr => gr.RoundNumber)
+            .LastOrDefaultAsync();
+
+        if (lastRound == null) return null;
+
+        lastRound.Clue = clue;
+
+        await context.SaveChangesAsync();
+
+        return mapper.Map<GameRoundDTO>(lastRound);
+    }
+
+    /// <inheritdoc />
+    public async Task<GameRoundDTO?> GetCurrentRound(Guid gameSessionID)
+    {
+        var gameSession = await context.GameSessions
+            .Where(gs => gs.ID == gameSessionID)
+            .Where(gs => gs.EndTime == null)
+            .FirstOrDefaultAsync();
+
+        if (gameSession == null) return null;
+
+        var lastRound = await context.GameRounds
+            .Where(gr => gr.GameSessionID == gameSession.ID)
+            .Include(gr => gr.RoundRoles)
+            .Include(gr => gr.GhostGuesses)
+            .Include(gr => gr.SelectorSelection)
+            .Include(gr => gr.OpposingGhostGuesses)
+            .Include(gr => gr.OpposingSelectorSelection)
+            .OrderBy(gr => gr.RoundNumber)
+            .LastOrDefaultAsync();
+
+        if (lastRound == null) return null;
+
+        return mapper.Map<GameRoundDTO>(lastRound);
     }
 
     /// <inheritdoc />
@@ -229,15 +287,22 @@ public class GameRoundRepository : IGameRoundRepository
         return await context.GameRounds
             .Where(rr => rr.GameSessionID == gameSessionID)
             .Where(rr => rr.ID == gameRoundID)
+            .Include(rr => rr.RoundRoles)
+            .Include(rr => rr.GhostGuesses)
+            .Include(rr => rr.OpposingGhostGuesses)
+            .Include(rr => rr.SelectorSelection)
+            .Include(rr => rr.OpposingSelectorSelection)
             .ProjectTo<GameRoundDTO>(mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
     }
 
     /// <inheritdoc />
-    private async void CreateUserRolesForRound(GameRound newRound, List<GameRound> previousRounds)
+    private async Task<List<GameSessionMemberRoundRoleDTO>> CreateUserRolesForRound(GameRound newRound,
+        List<GameRound> previousRounds)
     {
         var gameSessionMembers = await context.GameSessionMembers
             .Where(gs => gs.GameSessionID == newRound.GameSessionID)
+            .Where(gs => gs.Team != Team.NONE)
             .ToListAsync();
 
         var gameRoundRoles = new List<GameSessionMemberRoundRole>();
@@ -314,6 +379,8 @@ public class GameRoundRepository : IGameRoundRepository
         context.GameSessionMemberRoundRoles.AddRange(gameRoundRoles);
 
         await context.SaveChangesAsync();
+
+        return mapper.Map<List<GameSessionMemberRoundRoleDTO>>(gameRoundRoles);
     }
 
     private bool HasUserHadRoleBefore(Guid userID, TeamRole role, List<GameRound> previousRounds)

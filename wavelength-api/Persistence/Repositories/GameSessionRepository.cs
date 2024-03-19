@@ -17,8 +17,11 @@ public class GameSessionRepository : IGameSessionRepository
         this.mapper = mapper;
     }
 
-    public async Task<GameSessionDTO> Create(Guid ownerID)
+    public async Task<GameSessionDTO?> Create(Guid ownerID)
     {
+        // If a user is a part of an active game session, disallow them from creating a new one.
+        if (await GetActiveSession(ownerID) != null) return null;
+
         var newGameSession = new GameSession
         {
             OwnerID = ownerID,
@@ -84,6 +87,8 @@ public class GameSessionRepository : IGameSessionRepository
             .Where(gs => gs.ID == gameSessionID)
             .FirstOrDefaultAsync();
 
+        if (gameSession == null) return false;
+
         gameSession.EndTime = DateTime.Now;
 
         return await context.SaveChangesAsync() > 0;
@@ -95,9 +100,27 @@ public class GameSessionRepository : IGameSessionRepository
             .Where(gs => gs.ID == gameSessionID)
             .FirstOrDefaultAsync();
 
+        if (gameSession == null || gameSession.StartTime != null) return false;
+
         gameSession.StartTime = DateTime.Now;
 
         return await context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<GameSessionDTO?> GetActiveSession(Guid userID)
+    {
+        var gameSessionIDsForUser = await context.GameSessionMembers
+            .Where(gsm => gsm.UserID == userID)
+            .Select(gsm => gsm.GameSessionID)
+            .ToListAsync();
+
+        if (!gameSessionIDsForUser.Any()) return null;
+
+        return await context.GameSessions
+            .Where(gs => gs.EndTime == null)
+            .Where(gs => gameSessionIDsForUser.Contains(gs.ID))
+            .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
     }
 
     private string GenerateRandomJoinCode()

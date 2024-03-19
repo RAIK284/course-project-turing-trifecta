@@ -8,7 +8,6 @@ public class GameRoundRoleRequirement : IAuthorizationRequirement
 {
     public GameRoundRoleRequirement()
     {
-        
     }
 
     public GameRoundRoleRequirement(
@@ -20,12 +19,13 @@ public class GameRoundRoleRequirement : IAuthorizationRequirement
     }
 
     /// <summary>
-    /// Gets the value that the handler will use to determine if the user should be on the team who has or does not have a turn.
+    ///     Gets the value that the handler will use to determine if the user should be on the team who has or does not have a
+    ///     turn.
     /// </summary>
-    public bool UsersTeamHasTurn { get; init; } 
-    
+    public bool UsersTeamHasTurn { get; init; }
+
     /// <summary>
-    /// Gets the value that the handler will use to determine if the user has a role.
+    ///     Gets the value that the handler will use to determine if the user has a role.
     /// </summary>
     public TeamRole RequiredRole { get; init; }
 }
@@ -34,9 +34,9 @@ public class HasGameRoundRoleHandler : BaseAuthorizationHandler<GameRoundRoleReq
 {
     private readonly IGameRoundRepository gameRoundRepository;
     private readonly IGameSessionMemberRepository gameSessionMemberRepository;
-    
+
     public HasGameRoundRoleHandler(
-        IHttpContextAccessor httpContextAccessor, 
+        IHttpContextAccessor httpContextAccessor,
         IGameRoundRepository gameRoundRepository,
         IGameSessionMemberRepository gameSessionMemberRepository)
         : base(httpContextAccessor)
@@ -45,51 +45,36 @@ public class HasGameRoundRoleHandler : BaseAuthorizationHandler<GameRoundRoleReq
         this.gameSessionMemberRepository = gameSessionMemberRepository;
     }
 
-    protected async override Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context,
+    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context,
         GameRoundRoleRequirement requirement)
     {
-        string? _gameSessionID = await GetValueFromRequest("gameSessionID");
-        string? _gameRoundID = await GetValueFromRequest("gameRoundID");
-        string? _team = await GetValueFromRequest("team");
-        string? _requesterID = GetRequesterID(context);
+        var _gameSessionID = await GetValueFromRequest("gameSessionID");
+        var _requesterID = GetRequesterID(context);
 
         if (_gameSessionID == null
-            || _gameRoundID == null
-            || _team == null
             || _requesterID == null) return Task.CompletedTask;
 
-        Guid gameSessionID = Guid.Parse(_gameSessionID);
-        Guid gameRoundID = Guid.Parse(_gameRoundID);
-        Guid userID = Guid.Parse(_requesterID);
-        Team? team = TeamHelper.GetTeamFromString(_team);
+        var gameSessionID = Guid.Parse(_gameSessionID);
+        var userID = Guid.Parse(_requesterID);
 
-        var gameRound = await gameRoundRepository.GetRound(gameSessionID, gameRoundID);
+        var gameRound = await gameRoundRepository.GetCurrentRound(gameSessionID);
 
-        if (gameRound == null) 
-            return Task.CompletedTask;
+        if (gameRound == null) return Task.CompletedTask;
 
-        if (requirement.UsersTeamHasTurn && gameRound.TeamTurn != team) 
+        var userRole = gameRound.RoundRoles
+            .FirstOrDefault(rr => rr.UserID == userID);
+
+        if (userRole == null) return Task.CompletedTask;
+
+        var team = userRole.Team;
+        var role = userRole.Role;
+
+        if (requirement.UsersTeamHasTurn && gameRound.TeamTurn != team)
             return Task.CompletedTask;
         if (!requirement.UsersTeamHasTurn && gameRound.TeamTurn == team)
             return Task.CompletedTask;
 
-        var gameSessionMember = await gameSessionMemberRepository.Get(userID, gameSessionID);
-
-        if (gameSessionMember == null)
-            return Task.CompletedTask;
-
-        if (gameSessionMember.Team != team)
-            return Task.CompletedTask;
-
-        var gameSessionRoundRole =
-            await gameRoundRepository.GetRoundRole(userID, gameSessionID, gameRoundID);
-
-        if (gameSessionRoundRole == null) return Task.CompletedTask;
-
-        if (gameSessionRoundRole.Role == requirement.RequiredRole)
-        {
-            context.Succeed(requirement);
-        }
+        if (role == requirement.RequiredRole) context.Succeed(requirement);
 
         return Task.CompletedTask;
     }

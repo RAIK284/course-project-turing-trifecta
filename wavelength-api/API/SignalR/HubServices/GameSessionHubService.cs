@@ -13,6 +13,12 @@ public class GameSessionHubService : IGameSessionHubService
         this.gameSessionHub = gameSessionHub;
     }
 
+    public async Task NotifyUserJoinedTeam(Guid gameSessionID, GameSessionMemberDTO member)
+    {
+        await gameSessionHub.Clients.Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionID))
+            .SendAsync("UserSwitchedTeams", member);
+    }
+
     public async Task NotifyUserJoined(Guid gameSessionID, GameSessionMemberDTO member)
     {
         await gameSessionHub.Clients.Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionID))
