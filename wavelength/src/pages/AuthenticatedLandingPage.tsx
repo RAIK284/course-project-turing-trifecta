@@ -1,6 +1,6 @@
+import Spinner from "../components/spinner/Spinner";
 import { useNavigate } from 'react-router-dom';
 import { WavelengthPath } from '../routing/Routes';
-
 
 const AuthenticatedLandingPage: React.FC = () => {
   
@@ -29,9 +29,9 @@ const AuthenticatedLandingPage: React.FC = () => {
           </div>
         </div>
       </div>
+       <Spinner />
     </div>
   );
 };
-
 
 export default AuthenticatedLandingPage;

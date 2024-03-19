@@ -1,3 +1,6 @@
+import resolveConfig from "tailwindcss/resolveConfig";
+import tailwindConfig from "../../tailwind.config.ts";
+
 /**
  * A utility type where each key is a class name and each value represents whether that
  * key should be applied to a full class name.
@@ -34,3 +37,5 @@ export function cn(...classNames: ClassName[]): string {
 
   return returnedClassNames.join(" ");
 }
+
+export const tailWindConfig = resolveConfig(tailwindConfig).theme;
