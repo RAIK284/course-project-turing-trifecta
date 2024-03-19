@@ -83,4 +83,9 @@ export default class UserStore {
 
     return result;
   };
+
+  logout = async () => {
+    this.setToken(null);
+    this.userStoreValue.setValue(undefined);
+  };
 }

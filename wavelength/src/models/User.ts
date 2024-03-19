@@ -1,6 +1,6 @@
 type User = {
   id: string;
-  username: string;
+  userName: string;
   email: string;
   avatarID: string;
   token?: string;
