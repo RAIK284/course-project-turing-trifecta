@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import AuthenticatedLandingPage from "../pages/AuthenticatedLandingPage";
@@ -34,11 +34,21 @@ const router = createBrowserRouter([
       },
       {
         path: WavelengthPath.LOGIN,
-        element: <LoginPage />,
+        element: (
+          <AuthenticatedRoute unauthenticatedComponent={<LoginPage />}>
+            {/* Reverse the logic of the authenticated route component to redirect authenticated users to landing*/}
+            <Navigate to={WavelengthPath.LANDING} />
+          </AuthenticatedRoute>
+        ),
       },
       {
         path: WavelengthPath.REGISTER,
-        element: <RegisterPage />,
+        element: (
+          <AuthenticatedRoute unauthenticatedComponent={<RegisterPage />}>
+            {/* Reverse the logic of the authenticated route component to redirect authenticated users to landing*/}
+            <Navigate to={WavelengthPath.LANDING} />
+          </AuthenticatedRoute>
+        ),
       },
       { path: WavelengthPath.CHOOSE_TEAM, element: <ChooseTeamPage /> },
       {
