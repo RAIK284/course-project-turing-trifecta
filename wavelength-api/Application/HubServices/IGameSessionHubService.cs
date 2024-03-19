@@ -7,4 +7,6 @@ public interface IGameSessionHubService
     public Task NotifyUserJoined(Guid gameSessionID, GameSessionMemberDTO member);
 
     public Task NotifyUserLeft(Guid gameSessionID, Guid userID);
+
+    public Task NotifyUserJoinedTeam(Guid gameSessionID, GameSessionMemberDTO member);
 }

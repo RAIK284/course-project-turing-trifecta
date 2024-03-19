@@ -1,3 +1,5 @@
+import type { Config } from "tailwindcss";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
@@ -22,7 +24,8 @@ export default {
       "star-2": "#2c3670",
       "star-3": "#2f3557",
       "white-hover": "#f1f1f1",
+      "grey-spinner-text": "#262626",
     },
   },
   plugins: [],
-};
+} satisfies Config;

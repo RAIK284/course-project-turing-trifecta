@@ -1,47 +1,59 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application.Core;
 using MediatR;
 using Persistence.DataTransferObject;
 using Persistence.Repositories;
 
-namespace Application.GameRound
-{
-    public class PerformOpposingTeamSelection
-    {
-        public class Command : IRequest<Result<GameRoundOpposingTeamSelectionDTO>>
-        {
-            public GameRoundOpposingTeamSelectionDTO Param;
+namespace Application.GameRound;
 
-            public Command(GameRoundOpposingTeamSelectionDTO param)
-            {
-                Param = param;
-            }
+public class PerformOpposingTeamSelection
+{
+    public class Param
+    {
+        public Guid GameSessionID { get; set; }
+
+        public Guid UserID { get; set; }
+
+        public bool IsLeft { get; set; }
+    }
+
+    public class Command : IRequest<Result<GameRoundOpposingTeamSelectionDTO>>
+    {
+        public Param Param;
+
+        public Command(Param param)
+        {
+            Param = param;
+        }
+    }
+
+    public class Handler : IRequestHandler<Command, Result<GameRoundOpposingTeamSelectionDTO>>
+    {
+        private readonly IGameRoundRepository gameRoundRepository;
+
+        public Handler(IGameRoundRepository gameRoundRepository)
+        {
+            this.gameRoundRepository = gameRoundRepository;
         }
 
-        public class Handler : IRequestHandler<Command, Result<GameRoundOpposingTeamSelectionDTO>>
+        public async Task<Result<GameRoundOpposingTeamSelectionDTO>> Handle(Command request,
+            CancellationToken cancellationToken)
         {
-            private readonly IGameRoundRepository gameRoundRepository;
+            var currentRound = await gameRoundRepository.GetCurrentRound(request.Param.GameSessionID);
 
-            public Handler(IGameRoundRepository gameRoundRepository)
-            {
-                this.gameRoundRepository = gameRoundRepository;
-            }
+            if (currentRound == null)
+                return Result<GameRoundOpposingTeamSelectionDTO>.Failure(
+                    "The current round does not exist, so no guess can be made.");
 
-            public async Task<Result<GameRoundOpposingTeamSelectionDTO>> Handle(Command request, CancellationToken cancellationToken)
-            {
-                var result = await gameRoundRepository.PerformOpposingTeamSelection(
-                    request.Param.UserID,
-                    request.Param.GameSessionID,
-                    request.Param.GameRoundID,
-                    request.Param.IsLeft
-                );
-                return result == null
-                    ? Result<GameRoundOpposingTeamSelectionDTO>.Failure("Game round selection cannot be performed")
-                    : Result<GameRoundOpposingTeamSelectionDTO>.Success(result);
-            }
+            var result = await gameRoundRepository.PerformOpposingTeamSelection(
+                request.Param.UserID,
+                request.Param.GameSessionID,
+                currentRound.ID,
+                request.Param.IsLeft
+            );
+
+            return result == null
+                ? Result<GameRoundOpposingTeamSelectionDTO>.Failure("Game round selection cannot be performed")
+                : Result<GameRoundOpposingTeamSelectionDTO>.Success(result);
+        }
     }
-}
 }
