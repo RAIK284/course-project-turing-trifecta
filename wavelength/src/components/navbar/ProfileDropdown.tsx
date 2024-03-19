@@ -1,18 +1,22 @@
 import { useState } from "react";
 import User from "../../models/User";
+import { useStore } from "../../stores/store";
 
 type ProfileDropdownProps = {
   user: User;
 };
 
 const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
+  const { userStore } = useStore();
   const [editedUser, setEditedUser] = useState<User>({ ...user });
 
   const updateUserValue = (key: keyof User, value: unknown) => {
     setEditedUser({ ...editedUser, [key]: value });
   };
 
-  const handleLogoutButtonClick = () => {};
+  const handleLogoutButtonClick = () => {
+    userStore.logout();
+  };
 
   const canSaveChanges = editedUser.username !== user.username;
 

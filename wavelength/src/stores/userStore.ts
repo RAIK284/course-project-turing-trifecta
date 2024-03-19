@@ -67,4 +67,9 @@ export default class UserStore {
       return user;
     });
   };
+
+  logout = async () => {
+    this.setToken(null);
+    this.user.setValue(undefined);
+  };
 }
