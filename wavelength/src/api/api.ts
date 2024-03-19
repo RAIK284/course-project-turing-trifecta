@@ -1,33 +1,39 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import User from "../models/User";
+import { store } from "../stores/store";
 
-axios.defaults.baseURL = import.meta.env.APP_API_URL;
+axios.defaults.baseURL = import.meta.env.APP_API_URL + "/api";
 
 axios.interceptors.request.use((config) => {
-  const token: string = ""; // TODO: USE STORE TO GET TOKEN
-  console.log("making a request, but the token isnt set yet"); // TODO: REMOVE THIS WHEN TOKEN IS SET
+  const { token } = store.userStore;
 
   if (token && config && config.headers)
     config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
+const handleResponse = (axiosResponse: AxiosResponse) => {
+  if (axiosResponse.status === 200) {
+    return axiosResponse.data;
+  }
+
+  throw new Error(axiosResponse.data);
+};
+
 const requests = {
   get: <T>(
     url: string,
     params: URLSearchParams = new URLSearchParams()
-  ): Promise<T> =>
-    axios.get<T>(url, { params }).then((response) => response.data),
+  ): Promise<T> => axios.get<T>(url, { params }).then(handleResponse),
   post: <T>(
     url: string,
     body: unknown,
     config?: AxiosRequestConfig<unknown> | undefined
-  ): Promise<T> =>
-    axios.post<T>(url, body, config).then((response) => response.data),
+  ): Promise<T> => axios.post<T>(url, body, config).then(handleResponse),
   put: <T>(url: string, body: unknown): Promise<T> =>
-    axios.put<T>(url, body).then((response) => response.data),
+    axios.put<T>(url, body).then(handleResponse),
   delete: <T>(url: string, body: unknown): Promise<T> =>
-    axios.delete<T>(url, { data: body }).then((response) => response.data),
+    axios.delete<T>(url, { data: body }).then(handleResponse),
 };
 
 const Account = {

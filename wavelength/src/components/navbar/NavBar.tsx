@@ -6,12 +6,16 @@ import NavBarMobile from "./NavBarMobile";
 import NavBarDesktop from "./NavBarDesktop";
 import useWindowSize from "../../hooks/useWindowSize";
 import UserCircle from "../../assets/icons/UserCircleIcon";
+import { useStore } from "../../stores/store";
+import { useStoreValue } from "../../stores/storeValue";
 
 const NavBar: React.FC = () => {
+  const { userStore } = useStore();
+  const [user] = useStoreValue(userStore.userStoreValue);
   const navigate = useNavigate();
-  // TODO: SET UP GAME SESSION AND ISAUTHENICATED VARIABLES
+  // TODO: SET UP GAME SESSION
   // WHEN STORES ARE COMPLETE
-  const isAuthenticated = true;
+  const isAuthenticated = !!user;
   const gameSession = {
     joinCode: "123456",
   } as GameSession;
