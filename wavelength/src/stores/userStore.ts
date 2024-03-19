@@ -86,6 +86,6 @@ export default class UserStore {
 
   logout = async () => {
     this.setToken(null);
-    this.user.setValue(undefined);
+    this.userStoreValue.setValue(undefined);
   };
 }

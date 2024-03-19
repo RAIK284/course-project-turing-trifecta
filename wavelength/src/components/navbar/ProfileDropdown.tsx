@@ -18,7 +18,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
     userStore.logout();
   };
 
-  const canSaveChanges = editedUser.username !== user.username;
+  const canSaveChanges = editedUser.userName !== user.userName;
 
   return (
     <div
@@ -29,8 +29,8 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
         <label className="w-fit uppercase text-xs font-bold">Username</label>
         <input
           className="text-black rounded-sm p-1"
-          onChange={(e) => updateUserValue("username", e.target.value)}
-          value={editedUser.username}
+          onChange={(e) => updateUserValue("userName", e.target.value)}
+          value={editedUser.userName}
         />
         <button
           className="bg-theme-blue px-3 py-1 mt-3"
