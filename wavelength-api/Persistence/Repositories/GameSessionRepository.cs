@@ -43,6 +43,7 @@ public class GameSessionRepository : IGameSessionRepository
         return await context.GameSessions
             .Where(gs => gs.ID == gameSessionID)
             .Include(gs => gs.Members)
+            .ThenInclude(gsm => gsm.User)
             .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }
@@ -67,6 +68,8 @@ public class GameSessionRepository : IGameSessionRepository
     {
         return await context.GameSessions
             .Where(gs => gs.JoinCode == joinCode)
+            .Include(gs => gs.Members)
+            .ThenInclude(gsm => gsm.User)
             .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }
@@ -127,6 +130,8 @@ public class GameSessionRepository : IGameSessionRepository
         return await context.GameSessions
             .Where(gs => gs.EndTime == null)
             .Where(gs => gameSessionIDsForUser.Contains(gs.ID))
+            .Include(gs => gs.Members)
+            .ThenInclude(gsm => gsm.User)
             .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }

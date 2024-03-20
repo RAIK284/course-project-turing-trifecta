@@ -10,5 +10,7 @@ public class GameSessionMemberDTO
 
     public Guid UserID { get; set; }
 
+    public User? User { get; set; }
+
     public Team Team { get; set; }
 }

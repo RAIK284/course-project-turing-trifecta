@@ -14,7 +14,8 @@ public class MappingProfiles : Profile
         _ = CreateMap<GameSession, GameSessionDTO>()
             .ForMember(gs => gs.Rounds,
                 opt => opt.MapFrom(gs => gs.Rounds));
-        _ = CreateMap<GameSessionMember, GameSessionMemberDTO>();
+        _ = CreateMap<GameSessionMember, GameSessionMemberDTO>()
+            .ForMember(gs => gs.User, opt => opt.MapFrom(gs => gs.User));
         _ = CreateMap<GameSessionMemberRoundRole, GameSessionMemberRoundRoleDTO>();
         _ = CreateMap<GameRoundGhostGuess, GameRoundGhostGuessDTO>();
         _ = CreateMap<GameRoundSelectorSelection, GameRoundSelectorSelectionDTO>();

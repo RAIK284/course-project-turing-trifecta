@@ -5,6 +5,7 @@ import { useStoreValue } from "../stores/storeValue";
 import ChooseTeams from "../components/game/chooseTeams/ChooseTeams";
 import { Navigate } from "react-router-dom";
 import { WavelengthPath } from "../routing/Routes";
+import { ReactNode } from "react";
 
 enum GameStatus {
   CHOOSE_TEAMS,
@@ -30,12 +31,19 @@ const GamePage: React.FC = observer(() => {
     return <Navigate to={WavelengthPath.LANDING} />;
   }
 
+  let element: ReactNode;
+
   switch (getGameStatus(game)) {
     case GameStatus.CHOOSE_TEAMS:
-      return <ChooseTeams game={game} />;
+      element = <ChooseTeams game={game} />;
+      break;
   }
 
-  return <div className="GamePage">CHOOSE TEAM PAGE</div>;
+  return (
+    <div className="GamePage flex items-center justify-center h-full">
+      {element && element}
+    </div>
+  );
 });
 
 export default GamePage;

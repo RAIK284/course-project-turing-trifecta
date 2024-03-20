@@ -3,6 +3,7 @@ import GameSession from "../../../models/GameSession";
 import Team from "../../../models/Team";
 import { useStore } from "../../../stores/store";
 import { useStoreValue } from "../../../stores/storeValue";
+import { cn } from "../../../utils/utils";
 
 type TeamSelectorProps = {
   game: GameSession;
@@ -34,8 +35,17 @@ const TeamSelector: React.FC<TeamSelectorProps> = ({
     <button
       disabled={disabled}
       onClick={handleTeamSelect}
-      className={`TeamSelector flex flex-column bg-team-${team.toString()}-score-holder w-80 h-80`}
+      className={cn(
+        "TeamSelector flex flex-col items-center w-80 h-96 rounded-md",
+        {
+          "bg-team-1-score-holder": team === Team.ONE,
+          "bg-team-2-score-holder": team === Team.TWO,
+        }
+      )}
     >
+      <span className="text-black font-bold text-3xl">
+        Team {team === Team.ONE ? "One" : "Two"}
+      </span>
       {members.map((member) => (
         <span key={member.id}>{member.id}</span>
       ))}

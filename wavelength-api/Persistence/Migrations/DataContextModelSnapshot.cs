@@ -46,7 +46,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("SpectrumCardID");
 
-                    b.ToTable("GameRounds");
+                    b.ToTable("GameRounds", (string)null);
                 });
 
             modelBuilder.Entity("Domain.GameRoundGhostGuess", b =>
@@ -74,7 +74,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameRoundID");
 
-                    b.ToTable("GameRoundGhostGuesses");
+                    b.ToTable("GameRoundGhostGuesses", (string)null);
                 });
 
             modelBuilder.Entity("Domain.GameRoundOpposingTeamGuess", b =>
@@ -102,7 +102,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameRoundID");
 
-                    b.ToTable("GameRoundOpposingTeamGuesses");
+                    b.ToTable("GameRoundOpposingTeamGuesses", (string)null);
                 });
 
             modelBuilder.Entity("Domain.GameRoundOpposingTeamSelection", b =>
@@ -131,7 +131,7 @@ namespace Persistence.Migrations
                     b.HasIndex("GameRoundID")
                         .IsUnique();
 
-                    b.ToTable("GameRoundOpposingTeamSelections");
+                    b.ToTable("GameRoundOpposingTeamSelections", (string)null);
                 });
 
             modelBuilder.Entity("Domain.GameRoundSelectorSelection", b =>
@@ -160,7 +160,7 @@ namespace Persistence.Migrations
                     b.HasIndex("GameRoundID")
                         .IsUnique();
 
-                    b.ToTable("GameRoundSelectorSelections");
+                    b.ToTable("GameRoundSelectorSelections", (string)null);
                 });
 
             modelBuilder.Entity("Domain.GameSession", b =>
@@ -187,7 +187,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("GameSessions");
+                    b.ToTable("GameSessions", (string)null);
                 });
 
             modelBuilder.Entity("Domain.GameSessionMember", b =>
@@ -209,7 +209,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameSessionID");
 
-                    b.ToTable("GameSessionMembers");
+                    b.ToTable("GameSessionMembers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.GameSessionMemberRoundRole", b =>
@@ -237,7 +237,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameRoundID");
 
-                    b.ToTable("GameSessionMemberRoundRoles");
+                    b.ToTable("GameSessionMemberRoundRoles", (string)null);
                 });
 
             modelBuilder.Entity("Domain.GameSessionResult", b =>
@@ -266,7 +266,7 @@ namespace Persistence.Migrations
                     b.HasIndex("GameSessionID")
                         .IsUnique();
 
-                    b.ToTable("GameSessionResults");
+                    b.ToTable("GameSessionResults", (string)null);
                 });
 
             modelBuilder.Entity("Domain.SpectrumCard", b =>
@@ -285,7 +285,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("SpectrumCards");
+                    b.ToTable("SpectrumCards", (string)null);
 
                     b.HasData(
                         new
