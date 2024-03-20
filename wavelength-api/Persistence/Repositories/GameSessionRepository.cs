@@ -63,6 +63,14 @@ public class GameSessionRepository : IGameSessionRepository
         return mapper.Map<GameSessionMemberDTO>(gameSessionMember);
     }
 
+    public async Task<GameSessionDTO?> GetByJoinCode(string joinCode)
+    {
+        return await context.GameSessions
+            .Where(gs => gs.JoinCode == joinCode)
+            .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<bool> Leave(Guid gameSessionID, Guid userID)
     {
         var gameSession = await context.GameSessions

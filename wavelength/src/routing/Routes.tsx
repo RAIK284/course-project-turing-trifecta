@@ -5,7 +5,7 @@ import AuthenticatedLandingPage from "../pages/AuthenticatedLandingPage";
 import UnauthenticatedLandingPage from "../pages/UnauthenticatedLandingPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-import ChooseTeamPage from "../pages/ChooseTeamPage";
+import GamePage from "../pages/GamePage";
 import NotFound from "./NotFound";
 import ProfilePage from "../pages/ProfilePage";
 import RulesPage from "../pages/RulesPage";
@@ -14,7 +14,7 @@ export enum WavelengthPath {
   LANDING = "/",
   LOGIN = "/login",
   REGISTER = "/register",
-  CHOOSE_TEAM = "/chooseTeam/:gameSessionID", // Choosing a team occurs in a game session, so we need to access the game's ID
+  GAME = "/game/:gameSessionID",
   PROFILE = "/profile",
   RULES = "/rules",
 }
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
       },
       {
         path: WavelengthPath.RULES,
-        element: <RulesPage />
+        element: <RulesPage />,
       },
       {
         path: WavelengthPath.REGISTER,
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
           </AuthenticatedRoute>
         ),
       },
-      { path: WavelengthPath.CHOOSE_TEAM, element: <ChooseTeamPage /> },
+      { path: WavelengthPath.GAME, element: <GamePage /> },
       {
         path: WavelengthPath.PROFILE,
         element: (

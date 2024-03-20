@@ -7,7 +7,7 @@ type GameSession = {
   joinCode: string;
   ownerID: string;
   gameRound: number;
-  members?: GameSessionMember[];
+  members: GameSessionMember[];
 };
 
 export default GameSession;

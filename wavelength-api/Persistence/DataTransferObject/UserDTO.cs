@@ -11,4 +11,8 @@ public class UserDTO
     public Guid AvatarID { get; set; }
 
     public string? Token { get; set; }
+
+    public Guid? ActiveGameSessionID { get; set; }
+
+    public GameSessionDTO? ActiveGameSession { get; set; }
 }

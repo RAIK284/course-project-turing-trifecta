@@ -1,5 +1,4 @@
-﻿using Domain;
-using Persistence.DataTransferObject;
+﻿using Persistence.DataTransferObject;
 
 namespace Persistence.Repositories;
 
@@ -10,6 +9,8 @@ public interface IGameSessionRepository
     public Task<GameSessionDTO?> Get(Guid gameSessionID);
 
     public Task<GameSessionMemberDTO?> Join(Guid gameSessionID, Guid userID);
+
+    public Task<GameSessionDTO?> GetByJoinCode(string joinCode);
 
     public Task<bool> Leave(Guid gameSessionID, Guid userID);
 

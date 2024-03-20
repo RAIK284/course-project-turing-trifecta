@@ -20,4 +20,6 @@ public class GameSession
     public GameSessionResult GameSessionResult { get; set; }
 
     public ICollection<GameSessionMember> Members { get; set; } = new List<GameSessionMember>();
+
+    public ICollection<GameRound> Rounds { get; set; } = new List<GameRound>();
 }
