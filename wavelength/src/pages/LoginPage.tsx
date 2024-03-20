@@ -35,7 +35,8 @@ const LoginPage: React.FC = observer(() => {
           name="email"
           type="email"
           placeholder="ENTER EMAIL"
-          className="w-full h-10 p-2 bg-cover-blue rounded-lg text-white text-center placeholder-white"
+          className="bg-theme-blue border-2 border-target-4 text-center w-full h-10 p-2 rounded-lg placeholder-white text-white"
+          style={{ textShadow: "0 0 5px #ffffff" }}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -43,13 +44,15 @@ const LoginPage: React.FC = observer(() => {
           name="password"
           type="password"
           placeholder="ENTER PASSWORD"
-          className="w-full h-10 p-2 bg-target-2 rounded-lg text-white text-center placeholder-white"
+          className="bg-theme-blue border-2 border-target-2 text-center w-full h-10 p-2 rounded-lg placeholder-white text-white"
+          style={{ textShadow: "0 0 5px #ffffff" }}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
           type="submit"
           className="h-15 md:text-2xl font-sans bg-blue-500 text-white rounded-lg px-4"
+          style={{ textShadow: "0 0 5px #ffffff" }}
           disabled={isLoading || !email || !password}
         >
           LOGIN
