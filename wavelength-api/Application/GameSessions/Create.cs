@@ -9,7 +9,7 @@ public class Create
 {
     public class Params
     {
-        public Guid OwnerID { get; set; }
+        public Guid OwnerId { get; set; }
     }
 
     public class Command : IRequest<Result<GameSessionDTO>>
@@ -33,7 +33,7 @@ public class Create
 
         public async Task<Result<GameSessionDTO>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var result = await gameSessionRepository.Create(request.Param.OwnerID);
+            var result = await gameSessionRepository.Create(request.Param.OwnerId);
 
             return result == null
                 ? Result<GameSessionDTO>.Failure("Unable to create game session.")

@@ -1,12 +1,19 @@
 import Spinner from "../components/spinner/Spinner";
 import { useNavigate } from "react-router-dom";
 import { WavelengthPath } from "../routing/Routes";
+import { useStore } from "../stores/store";
+import { useStoreValue } from "../stores/storeValue";
 
 const AuthenticatedLandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { gameSessionStore, userStore } = useStore();
+  const { create: createGameSession } = gameSessionStore;
+  const [user] = useStoreValue(userStore.userStoreValue);
 
   const createSession = () => {
-    navigate(WavelengthPath.CHOOSE_TEAM);
+    if (user) {
+      createGameSession(user.id);
+    }
   };
 
   const handleRulesPageButtonClick = () => {

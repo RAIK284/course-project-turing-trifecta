@@ -2,7 +2,7 @@ namespace Domain;
 
 public class GameSession
 {
-    public Guid ID { get; set; }
+    public Guid Id { get; set; }
 
     public DateTime? StartTime { get; set; }
 
@@ -10,7 +10,7 @@ public class GameSession
 
     public string JoinCode { get; set; }
 
-    public Guid OwnerID { get; set; }
+    public Guid OwnerId { get; set; }
 
     public int GameRound { get; set; }
 
@@ -20,4 +20,6 @@ public class GameSession
     public GameSessionResult GameSessionResult { get; set; }
 
     public ICollection<GameSessionMember> Members { get; set; } = new List<GameSessionMember>();
+
+    public ICollection<GameRound> Rounds { get; set; } = new List<GameRound>();
 }

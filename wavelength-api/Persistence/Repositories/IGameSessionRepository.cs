@@ -1,21 +1,22 @@
-﻿using Domain;
-using Persistence.DataTransferObject;
+﻿using Persistence.DataTransferObject;
 
 namespace Persistence.Repositories;
 
 public interface IGameSessionRepository
 {
-    public Task<GameSessionDTO?> Create(Guid ownerID);
+    public Task<GameSessionDTO?> Create(Guid ownerId);
 
-    public Task<GameSessionDTO?> Get(Guid gameSessionID);
+    public Task<GameSessionDTO?> Get(Guid gameSessionId);
 
-    public Task<GameSessionMemberDTO?> Join(Guid gameSessionID, Guid userID);
+    public Task<GameSessionMemberDTO?> Join(Guid gameSessionId, Guid userId);
 
-    public Task<bool> Leave(Guid gameSessionID, Guid userID);
+    public Task<GameSessionDTO?> GetByJoinCode(string joinCode);
 
-    public Task<bool> End(Guid gameSessionID);
+    public Task<bool> Leave(Guid gameSessionId, Guid userId);
 
-    public Task<bool> Start(Guid gameSessionID);
+    public Task<bool> End(Guid gameSessionId);
 
-    public Task<GameSessionDTO?> GetActiveSession(Guid userID);
+    public Task<bool> Start(Guid gameSessionId);
+
+    public Task<GameSessionDTO?> GetActiveSession(Guid userId);
 }

@@ -10,9 +10,9 @@ public class Join
 {
     public class Params
     {
-        public Guid GameSessionID { get; set; }
+        public string JoinCode { get; set; }
 
-        public Guid UserID { get; set; }
+        public Guid UserId { get; set; }
     }
 
     public class Command : IRequest<Result<GameSessionDTO>>
@@ -39,17 +39,20 @@ public class Join
 
         public async Task<Result<GameSessionDTO>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var member = await gameSessionRepository.Join(request.Param.GameSessionID, request.Param.UserID);
+            var gameSession = await gameSessionRepository.GetByJoinCode(request.Param.JoinCode);
+
+            if (gameSession == null) return Result<GameSessionDTO>.Failure("Invalid join code.");
+
+            var member = await gameSessionRepository.Join(gameSession.Id, request.Param.UserId);
 
             if (member == null) return Result<GameSessionDTO>.Failure("You cannot join this game session.");
 
-            var gameSession = await gameSessionRepository.Get(request.Param.GameSessionID);
+            await sessionHubService.NotifyUserJoined(gameSession.Id, member);
 
-            await sessionHubService.NotifyUserJoined(request.Param.GameSessionID, member);
+            if (gameSession.Members != null)
+                gameSession.Members.Add(member);
 
-            return gameSession == null
-                ? Result<GameSessionDTO>.Failure("Something went wrong when joining the game.")
-                : Result<GameSessionDTO>.Success(gameSession);
+            return Result<GameSessionDTO>.Success(gameSession);
         }
     }
 }

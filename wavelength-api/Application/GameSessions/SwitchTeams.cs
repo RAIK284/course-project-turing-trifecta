@@ -11,9 +11,9 @@ public class SwitchTeams
 {
     public class Params
     {
-        public Guid GameSessionID { get; set; }
+        public Guid GameSessionId { get; set; }
 
-        public Guid UserID { get; set; }
+        public Guid UserId { get; set; }
 
         public Team Team { get; set; }
     }
@@ -49,19 +49,19 @@ public class SwitchTeams
             if (request.Param.Team != Team.ONE && request.Param.Team != Team.TWO)
                 return Result<GameSessionMemberDTO>.Failure("Either team one or team two must be chosen.");
 
-            var gameSession = await gameSessionRepository.Get(request.Param.GameSessionID);
+            var gameSession = await gameSessionRepository.Get(request.Param.GameSessionId);
 
             if (gameSession == null) return Result<GameSessionMemberDTO>.Failure("The game session does not exist.");
 
             if (gameSession.StartTime != null)
                 return Result<GameSessionMemberDTO>.Failure("You cannot switch teams after the game has started.");
 
-            var members = await gameSessionMemberRepository.GetAll(request.Param.GameSessionID);
+            var members = await gameSessionMemberRepository.GetAll(request.Param.GameSessionId);
             var membersOnTeamOne = members.Count(m => m.Team == Team.ONE);
             var membersOnTeamTwo = members.Count(m => m.Team == Team.TWO);
 
             var isAlreadyOnTeam = members
-                .Where(gm => gm.UserID == request.Param.UserID)
+                .Where(gm => gm.UserId == request.Param.UserId)
                 .Any(gm => gm.Team == request.Param.Team);
 
             if (isAlreadyOnTeam) return Result<GameSessionMemberDTO>.Failure("You are already on this team.");
@@ -73,13 +73,13 @@ public class SwitchTeams
             if (request.Param.Team == Team.TWO && membersOnTeamTwo - membersOnTeamTwo > 0)
                 return Result<GameSessionMemberDTO>.Failure("Team two is too full to join.");
 
-            var result = await gameSessionMemberRepository.JoinTeam(request.Param.UserID, request.Param.GameSessionID,
+            var result = await gameSessionMemberRepository.JoinTeam(request.Param.UserId, request.Param.GameSessionId,
                 request.Param.Team);
 
             if (result == null)
                 return Result<GameSessionMemberDTO>.Failure("Something went wrong when switching teams.");
 
-            await gameSessionHubService.NotifyUserJoinedTeam(request.Param.GameSessionID, result);
+            await gameSessionHubService.NotifyUserJoinedTeam(request.Param.GameSessionId, result);
 
             return Result<GameSessionMemberDTO>.Success(result);
         }

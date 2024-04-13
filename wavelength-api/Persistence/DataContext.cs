@@ -33,6 +33,18 @@ public class DataContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.SeedSpectrumCards();
+
+        builder.Entity<User>()
+            .HasIndex(u => u.UserId)
+            .IsUnique();
+            
+
+        builder.Entity<GameSessionMember>()
+            .HasOne(u => u.User)
+            .WithMany()
+            .HasForeignKey(gsm => gsm.UserId)
+            .HasPrincipalKey(u => u.UserId);
+
         base.OnModelCreating(builder);
     }
 }

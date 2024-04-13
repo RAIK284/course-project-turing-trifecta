@@ -4,9 +4,9 @@ namespace Persistence.DataTransferObject;
 
 public class GameSessionResultDTO
 {
-    public Guid ID { get; set; }
+    public Guid Id { get; set; }
 
-    public Guid GameSessionID { get; set; }
+    public Guid GameSessionId { get; set; }
 
     public Team WinningTeam { get; set; }
 

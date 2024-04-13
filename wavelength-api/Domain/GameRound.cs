@@ -2,16 +2,16 @@
 
 public class GameRound
 {
-    public Guid ID { get; set; }
+    public Guid Id { get; set; }
 
-    public Guid GameSessionID { get; set; }
+    public Guid GameSessionId { get; set; }
 
     /// <summary>
     ///     Gets or sets the value that determines the team who's turn it is this round.
     /// </summary>
     public Team TeamTurn { get; set; }
 
-    public Guid SpectrumCardID { get; set; }
+    public Guid SpectrumCardId { get; set; }
 
     public SpectrumCard SpectrumCard { get; set; }
 

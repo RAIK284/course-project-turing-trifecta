@@ -2,9 +2,9 @@
 
 public class GameSessionResult
 {
-    public Guid ID { get; set; }
+    public Guid Id { get; set; }
 
-    public Guid GameSessionID { get; set; }
+    public Guid GameSessionId { get; set; }
     
     public GameSession GameSession { get; set; }
 

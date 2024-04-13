@@ -9,9 +9,9 @@ public class PerformOpposingTeamGuess
 {
     public class Param
     {
-        public Guid GameSessionID { get; set; }
+        public Guid GameSessionId { get; set; }
 
-        public Guid UserID { get; set; }
+        public Guid UserId { get; set; }
 
         public bool IsLeft { get; set; }
     }
@@ -38,16 +38,16 @@ public class PerformOpposingTeamGuess
         public async Task<Result<GameRoundOpposingTeamGuessDTO>> Handle(Command request,
             CancellationToken cancellationToken)
         {
-            var currentRound = await gameRoundRepository.GetCurrentRound(request.Param.GameSessionID);
+            var currentRound = await gameRoundRepository.GetCurrentRound(request.Param.GameSessionId);
 
             if (currentRound == null)
                 return Result<GameRoundOpposingTeamGuessDTO>.Failure(
                     "The current round does not exist, so no guess can be made.");
 
             var result = await gameRoundRepository.PerformOpposingTeamGuess(
-                request.Param.UserID,
-                request.Param.GameSessionID,
-                currentRound.ID,
+                request.Param.UserId,
+                request.Param.GameSessionId,
+                currentRound.Id,
                 request.Param.IsLeft
             );
             return result == null

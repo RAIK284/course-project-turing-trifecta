@@ -9,10 +9,13 @@ public class MappingProfiles : Profile
     public MappingProfiles()
     {
         _ = CreateMap<User, UserDTO>()
-            .ForMember(dto => dto.ID,
+            .ForMember(dto => dto.Id,
                 opts => opts.MapFrom(u => Guid.Parse(u.Id)));
-        _ = CreateMap<GameSession, GameSessionDTO>();
-        _ = CreateMap<GameSessionMember, GameSessionMemberDTO>();
+        _ = CreateMap<GameSession, GameSessionDTO>()
+            .ForMember(gs => gs.Rounds,
+                opt => opt.MapFrom(gs => gs.Rounds));
+        _ = CreateMap<GameSessionMember, GameSessionMemberDTO>()
+            .ForMember(gs => gs.User, opt => opt.MapFrom(gs => gs.User));
         _ = CreateMap<GameSessionMemberRoundRole, GameSessionMemberRoundRoleDTO>();
         _ = CreateMap<GameRoundGhostGuess, GameRoundGhostGuessDTO>();
         _ = CreateMap<GameRoundSelectorSelection, GameRoundSelectorSelectionDTO>();

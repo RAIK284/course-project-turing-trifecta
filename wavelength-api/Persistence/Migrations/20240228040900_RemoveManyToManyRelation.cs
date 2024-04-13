@@ -12,7 +12,7 @@ namespace Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_GameSessionMembers_AspNetUsers_UserID",
+                name: "FK_GameSessionMembers_AspNetUsers_UserId",
                 table: "GameSessionMembers");
 
             migrationBuilder.DropPrimaryKey(
@@ -20,7 +20,7 @@ namespace Persistence.Migrations
                 table: "GameSessionMembers");
 
             migrationBuilder.AddColumn<Guid>(
-                name: "ID",
+                name: "Id",
                 table: "GameSessionMembers",
                 type: "TEXT",
                 nullable: false,
@@ -29,74 +29,74 @@ namespace Persistence.Migrations
             migrationBuilder.AddPrimaryKey(
                 name: "PK_GameSessionMembers",
                 table: "GameSessionMembers",
-                column: "ID");
+                column: "Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameSessionResults_GameSessionID",
+                name: "IX_GameSessionResults_GameSessionId",
                 table: "GameSessionResults",
-                column: "GameSessionID",
+                column: "GameSessionId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameRoundSelectorSelections_GameRoundID",
+                name: "IX_GameRoundSelectorSelections_GameRoundId",
                 table: "GameRoundSelectorSelections",
-                column: "GameRoundID",
+                column: "GameRoundId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameRoundOpposingTeamSelections_GameRoundID",
+                name: "IX_GameRoundOpposingTeamSelections_GameRoundId",
                 table: "GameRoundOpposingTeamSelections",
-                column: "GameRoundID",
+                column: "GameRoundId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameRoundOpposingTeamGuesses_GameRoundID",
+                name: "IX_GameRoundOpposingTeamGuesses_GameRoundId",
                 table: "GameRoundOpposingTeamGuesses",
-                column: "GameRoundID");
+                column: "GameRoundId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameRoundGhostGuesses_GameRoundID",
+                name: "IX_GameRoundGhostGuesses_GameRoundId",
                 table: "GameRoundGhostGuesses",
-                column: "GameRoundID");
+                column: "GameRoundId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_GameRoundGhostGuesses_GameRounds_GameRoundID",
+                name: "FK_GameRoundGhostGuesses_GameRounds_GameRoundId",
                 table: "GameRoundGhostGuesses",
-                column: "GameRoundID",
+                column: "GameRoundId",
                 principalTable: "GameRounds",
-                principalColumn: "ID",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_GameRoundOpposingTeamGuesses_GameRounds_GameRoundID",
+                name: "FK_GameRoundOpposingTeamGuesses_GameRounds_GameRoundId",
                 table: "GameRoundOpposingTeamGuesses",
-                column: "GameRoundID",
+                column: "GameRoundId",
                 principalTable: "GameRounds",
-                principalColumn: "ID",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_GameRoundOpposingTeamSelections_GameRounds_GameRoundID",
+                name: "FK_GameRoundOpposingTeamSelections_GameRounds_GameRoundId",
                 table: "GameRoundOpposingTeamSelections",
-                column: "GameRoundID",
+                column: "GameRoundId",
                 principalTable: "GameRounds",
-                principalColumn: "ID",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_GameRoundSelectorSelections_GameRounds_GameRoundID",
+                name: "FK_GameRoundSelectorSelections_GameRounds_GameRoundId",
                 table: "GameRoundSelectorSelections",
-                column: "GameRoundID",
+                column: "GameRoundId",
                 principalTable: "GameRounds",
-                principalColumn: "ID",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_GameSessionResults_GameSessions_GameSessionID",
+                name: "FK_GameSessionResults_GameSessions_GameSessionId",
                 table: "GameSessionResults",
-                column: "GameSessionID",
+                column: "GameSessionId",
                 principalTable: "GameSessions",
-                principalColumn: "ID",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
 
@@ -104,27 +104,27 @@ namespace Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_GameRoundGhostGuesses_GameRounds_GameRoundID",
+                name: "FK_GameRoundGhostGuesses_GameRounds_GameRoundId",
                 table: "GameRoundGhostGuesses");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_GameRoundOpposingTeamGuesses_GameRounds_GameRoundID",
+                name: "FK_GameRoundOpposingTeamGuesses_GameRounds_GameRoundId",
                 table: "GameRoundOpposingTeamGuesses");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_GameRoundOpposingTeamSelections_GameRounds_GameRoundID",
+                name: "FK_GameRoundOpposingTeamSelections_GameRounds_GameRoundId",
                 table: "GameRoundOpposingTeamSelections");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_GameRoundSelectorSelections_GameRounds_GameRoundID",
+                name: "FK_GameRoundSelectorSelections_GameRounds_GameRoundId",
                 table: "GameRoundSelectorSelections");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_GameSessionResults_GameSessions_GameSessionID",
+                name: "FK_GameSessionResults_GameSessions_GameSessionId",
                 table: "GameSessionResults");
 
             migrationBuilder.DropIndex(
-                name: "IX_GameSessionResults_GameSessionID",
+                name: "IX_GameSessionResults_GameSessionId",
                 table: "GameSessionResults");
 
             migrationBuilder.DropPrimaryKey(
@@ -132,34 +132,34 @@ namespace Persistence.Migrations
                 table: "GameSessionMembers");
 
             migrationBuilder.DropIndex(
-                name: "IX_GameRoundSelectorSelections_GameRoundID",
+                name: "IX_GameRoundSelectorSelections_GameRoundId",
                 table: "GameRoundSelectorSelections");
 
             migrationBuilder.DropIndex(
-                name: "IX_GameRoundOpposingTeamSelections_GameRoundID",
+                name: "IX_GameRoundOpposingTeamSelections_GameRoundId",
                 table: "GameRoundOpposingTeamSelections");
 
             migrationBuilder.DropIndex(
-                name: "IX_GameRoundOpposingTeamGuesses_GameRoundID",
+                name: "IX_GameRoundOpposingTeamGuesses_GameRoundId",
                 table: "GameRoundOpposingTeamGuesses");
 
             migrationBuilder.DropIndex(
-                name: "IX_GameRoundGhostGuesses_GameRoundID",
+                name: "IX_GameRoundGhostGuesses_GameRoundId",
                 table: "GameRoundGhostGuesses");
 
             migrationBuilder.DropColumn(
-                name: "ID",
+                name: "Id",
                 table: "GameSessionMembers");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_GameSessionMembers",
                 table: "GameSessionMembers",
-                columns: new[] { "UserID", "GameSessionID" });
+                columns: new[] { "UserId", "GameSessionId" });
 
             migrationBuilder.AddForeignKey(
-                name: "FK_GameSessionMembers_AspNetUsers_UserID",
+                name: "FK_GameSessionMembers_AspNetUsers_UserId",
                 table: "GameSessionMembers",
-                column: "UserID",
+                column: "UserId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);

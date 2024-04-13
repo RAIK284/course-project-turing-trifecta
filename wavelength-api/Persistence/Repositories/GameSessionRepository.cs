@@ -17,14 +17,14 @@ public class GameSessionRepository : IGameSessionRepository
         this.mapper = mapper;
     }
 
-    public async Task<GameSessionDTO?> Create(Guid ownerID)
+    public async Task<GameSessionDTO?> Create(Guid ownerId)
     {
         // If a user is a part of an active game session, disallow them from creating a new one.
-        if (await GetActiveSession(ownerID) != null) return null;
+        if (await GetActiveSession(ownerId) != null) return null;
 
         var newGameSession = new GameSession
         {
-            OwnerID = ownerID,
+            OwnerId = ownerId,
             JoinCode = GenerateRandomJoinCode()
         };
 
@@ -33,26 +33,27 @@ public class GameSessionRepository : IGameSessionRepository
         await context.SaveChangesAsync();
 
         // Have the user join the game
-        await Join(newGameSession.ID, ownerID);
+        await Join(newGameSession.Id, ownerId);
 
         return mapper.Map<GameSessionDTO>(newGameSession);
     }
 
-    public async Task<GameSessionDTO?> Get(Guid gameSessionID)
+    public async Task<GameSessionDTO?> Get(Guid gameSessionId)
     {
         return await context.GameSessions
-            .Where(gs => gs.ID == gameSessionID)
+            .Where(gs => gs.Id == gameSessionId)
             .Include(gs => gs.Members)
+            .ThenInclude(gsm => gsm.User)
             .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }
 
-    public async Task<GameSessionMemberDTO?> Join(Guid gameSessionID, Guid userID)
+    public async Task<GameSessionMemberDTO?> Join(Guid gameSessionId, Guid userId)
     {
         var gameSessionMember = new GameSessionMember
         {
-            UserID = userID,
-            GameSessionID = gameSessionID,
+            UserId = userId,
+            GameSessionId = gameSessionId,
             Team = 0
         };
 
@@ -63,28 +64,38 @@ public class GameSessionRepository : IGameSessionRepository
         return mapper.Map<GameSessionMemberDTO>(gameSessionMember);
     }
 
-    public async Task<bool> Leave(Guid gameSessionID, Guid userID)
+    public async Task<GameSessionDTO?> GetByJoinCode(string joinCode)
+    {
+        return await context.GameSessions
+            .Where(gs => gs.JoinCode == joinCode)
+            .Include(gs => gs.Members)
+            .ThenInclude(gsm => gsm.User)
+            .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> Leave(Guid gameSessionId, Guid userId)
     {
         var gameSession = await context.GameSessions
-            .Where(gs => gs.ID == gameSessionID)
+            .Where(gs => gs.Id == gameSessionId)
             .FirstOrDefaultAsync();
         var gameSessionMember = await context.GameSessionMembers
-            .Where(gsm => gsm.GameSessionID == gameSessionID)
-            .Where(gsm => gsm.UserID == userID)
+            .Where(gsm => gsm.GameSessionId == gameSessionId)
+            .Where(gsm => gsm.UserId == userId)
             .FirstOrDefaultAsync();
 
         // If the game sessions owner is the user, delete the game session
-        if (gameSession != null && gameSession.OwnerID == userID) context.GameSessions.Remove(gameSession);
+        if (gameSession != null && gameSession.OwnerId == userId) context.GameSessions.Remove(gameSession);
 
         if (gameSessionMember != null) context.GameSessionMembers.Remove(gameSessionMember);
 
         return await context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> End(Guid gameSessionID)
+    public async Task<bool> End(Guid gameSessionId)
     {
         var gameSession = await context.GameSessions
-            .Where(gs => gs.ID == gameSessionID)
+            .Where(gs => gs.Id == gameSessionId)
             .FirstOrDefaultAsync();
 
         if (gameSession == null) return false;
@@ -94,10 +105,10 @@ public class GameSessionRepository : IGameSessionRepository
         return await context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Start(Guid gameSessionID)
+    public async Task<bool> Start(Guid gameSessionId)
     {
         var gameSession = await context.GameSessions
-            .Where(gs => gs.ID == gameSessionID)
+            .Where(gs => gs.Id == gameSessionId)
             .FirstOrDefaultAsync();
 
         if (gameSession == null || gameSession.StartTime != null) return false;
@@ -107,18 +118,20 @@ public class GameSessionRepository : IGameSessionRepository
         return await context.SaveChangesAsync() > 0;
     }
 
-    public async Task<GameSessionDTO?> GetActiveSession(Guid userID)
+    public async Task<GameSessionDTO?> GetActiveSession(Guid userId)
     {
-        var gameSessionIDsForUser = await context.GameSessionMembers
-            .Where(gsm => gsm.UserID == userID)
-            .Select(gsm => gsm.GameSessionID)
+        var gameSessionIdsForUser = await context.GameSessionMembers
+            .Where(gsm => gsm.UserId == userId)
+            .Select(gsm => gsm.GameSessionId)
             .ToListAsync();
 
-        if (!gameSessionIDsForUser.Any()) return null;
+        if (!gameSessionIdsForUser.Any()) return null;
 
         return await context.GameSessions
             .Where(gs => gs.EndTime == null)
-            .Where(gs => gameSessionIDsForUser.Contains(gs.ID))
+            .Where(gs => gameSessionIdsForUser.Contains(gs.Id))
+            .Include(gs => gs.Members)
+            .ThenInclude(gsm => gsm.User)
             .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }

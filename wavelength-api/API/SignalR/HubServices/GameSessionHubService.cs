@@ -13,21 +13,21 @@ public class GameSessionHubService : IGameSessionHubService
         this.gameSessionHub = gameSessionHub;
     }
 
-    public async Task NotifyUserJoinedTeam(Guid gameSessionID, GameSessionMemberDTO member)
+    public async Task NotifyUserJoinedTeam(Guid gameSessionId, GameSessionMemberDTO member)
     {
-        await gameSessionHub.Clients.Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionID))
+        await gameSessionHub.Clients.Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
             .SendAsync("UserSwitchedTeams", member);
     }
 
-    public async Task NotifyUserJoined(Guid gameSessionID, GameSessionMemberDTO member)
+    public async Task NotifyUserJoined(Guid gameSessionId, GameSessionMemberDTO member)
     {
-        await gameSessionHub.Clients.Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionID))
+        await gameSessionHub.Clients.Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
             .SendAsync("UserJoinedGameSession", member);
     }
 
-    public async Task NotifyUserLeft(Guid gameSessionID, Guid userID)
+    public async Task NotifyUserLeft(Guid gameSessionId, Guid userId)
     {
-        await gameSessionHub.Clients.Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionID))
-            .SendAsync("UserJoinedGameSession", userID);
+        await gameSessionHub.Clients.Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
+            .SendAsync("UserJoinedGameSession", userId);
     }
 }

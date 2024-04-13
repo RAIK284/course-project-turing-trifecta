@@ -15,33 +15,33 @@ namespace Persistence.Migrations
                 name: "GameSessionMembers",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(type: "TEXT", nullable: false),
-                    GameSessionID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    GameSessionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Team = table.Column<byte>(type: "INTEGER", nullable: false),
                     TeamRole = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameSessionMembers", x => new { x.UserID, x.GameSessionID });
+                    table.PrimaryKey("PK_GameSessionMembers", x => new { x.UserId, x.GameSessionId });
                     table.ForeignKey(
-                        name: "FK_GameSessionMembers_AspNetUsers_UserID",
-                        column: x => x.UserID,
+                        name: "FK_GameSessionMembers_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GameSessionMembers_GameSessions_GameSessionID",
-                        column: x => x.GameSessionID,
+                        name: "FK_GameSessionMembers_GameSessions_GameSessionId",
+                        column: x => x.GameSessionId,
                         principalTable: "GameSessions",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameSessionMembers_GameSessionID",
+                name: "IX_GameSessionMembers_GameSessionId",
                 table: "GameSessionMembers",
-                column: "GameSessionID");
+                column: "GameSessionId");
         }
 
         /// <inheritdoc />

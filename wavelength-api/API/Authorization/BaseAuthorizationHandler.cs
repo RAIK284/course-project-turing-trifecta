@@ -14,7 +14,7 @@ public abstract class BaseAuthorizationHandler<T> : AuthorizationHandler<T> wher
         this.httpContextAccessor = httpContextAccessor;
     }
 
-    protected string? GetRequesterID(AuthorizationHandlerContext context)
+    protected string? GetRequesterId(AuthorizationHandlerContext context)
     {
         return context.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     }

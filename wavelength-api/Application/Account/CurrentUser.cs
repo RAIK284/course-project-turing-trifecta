@@ -5,6 +5,7 @@ using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Persistence.DataTransferObject;
+using Persistence.Repositories;
 
 namespace Application.Account;
 
@@ -27,13 +28,15 @@ public class CurrentUser
 
     public class Handler : IRequestHandler<Query, Result<UserDTO>>
     {
+        private readonly IGameSessionRepository gameSessionRepository;
         private readonly IMapper mapper;
         private readonly UserManager<User> userManager;
 
-        public Handler(UserManager<User> userManager, IMapper mapper)
+        public Handler(UserManager<User> userManager, IMapper mapper, IGameSessionRepository gameSessionRepository)
         {
             this.userManager = userManager;
             this.mapper = mapper;
+            this.gameSessionRepository = gameSessionRepository;
         }
 
         public async Task<Result<UserDTO>> Handle(Query request, CancellationToken cancellationToken)
@@ -42,7 +45,17 @@ public class CurrentUser
 
             if (user == null) return Result<UserDTO>.Failure("User not found.");
 
-            return Result<UserDTO>.Success(mapper.Map<UserDTO>(user));
+            var userDTO = mapper.Map<UserDTO>(user);
+
+            var activeGameSession = await gameSessionRepository.GetActiveSession(userDTO.Id);
+
+            if (activeGameSession != null)
+            {
+                userDTO.ActiveGameSession = activeGameSession;
+                userDTO.ActiveGameSessionId = activeGameSession.Id;
+            }
+
+            return Result<UserDTO>.Success(userDTO);
         }
     }
 }

@@ -13,34 +13,34 @@ public class GameSessionHub : Hub
         this.mediator = mediator;
     }
 
-    public static string GroupNameForIndividual(Guid userID, Guid gameSessionID)
+    public static string GroupNameForIndividual(Guid userId, Guid gameSessionId)
     {
-        return $"{gameSessionID}-Member-{userID}";
+        return $"{gameSessionId}-Member-{userId}";
     }
 
-    public static string GroupNameForAllGameSessionMembers(Guid gameSessionID)
+    public static string GroupNameForAllGameSessionMembers(Guid gameSessionId)
     {
-        return $"{gameSessionID}-AllMembers";
+        return $"{gameSessionId}-AllMembers";
     }
 
     [Authorize(Policy = "IsGameSessionMember")]
     public override async Task OnConnectedAsync()
     {
         var httpContext = Context.GetHttpContext();
-        var _gameSessionID = httpContext.Request.Query["gameSessionID"];
-        var canParseGameSessionID = Guid.TryParse(_gameSessionID, out var gameSessionID);
-        var canParseUserID = Guid.TryParse(Context.UserIdentifier, out var userID);
+        var _gameSessionId = httpContext.Request.Query["gameSessionId"];
+        var canParseGameSessionId = Guid.TryParse(_gameSessionId, out var gameSessionId);
+        var canParseUserId = Guid.TryParse(Context.UserIdentifier, out var userId);
 
-        if (gameSessionID == null || !canParseGameSessionID || !canParseUserID) return;
+        if (gameSessionId == null || !canParseGameSessionId || !canParseUserId) return;
 
-        await JoinGameSessionGroup(userID, gameSessionID);
+        await JoinGameSessionGroup(userId, gameSessionId);
 
         await base.OnConnectedAsync();
     }
 
-    private async Task JoinGameSessionGroup(Guid userID, Guid gameSessionID)
+    private async Task JoinGameSessionGroup(Guid userId, Guid gameSessionId)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, GroupNameForAllGameSessionMembers(gameSessionID));
-        await Groups.AddToGroupAsync(Context.ConnectionId, GroupNameForIndividual(userID, gameSessionID));
+        await Groups.AddToGroupAsync(Context.ConnectionId, GroupNameForAllGameSessionMembers(gameSessionId));
+        await Groups.AddToGroupAsync(Context.ConnectionId, GroupNameForIndividual(userId, gameSessionId));
     }
 }

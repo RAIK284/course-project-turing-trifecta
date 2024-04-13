@@ -28,19 +28,19 @@ public class IsGameSessionOwnerHandler : BaseAuthorizationHandler<GameSessionOwn
     protected async override Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context,
         GameSessionOwnerRequirement requirement)
     {
-        string? _gameSessionID = await GetValueFromRequest("gameSessionID");
-        string? _requesterID = GetRequesterID(context);
+        string? _gameSessionId = await GetValueFromRequest("gameSessionId");
+        string? _requesterId = GetRequesterId(context);
 
-        if (_gameSessionID == null || _requesterID == null) return Task.CompletedTask;
+        if (_gameSessionId == null || _requesterId == null) return Task.CompletedTask;
 
-        Guid gameSessionID = Guid.Parse(_gameSessionID);
-        Guid userID = Guid.Parse(_requesterID);
+        Guid gameSessionId = Guid.Parse(_gameSessionId);
+        Guid userId = Guid.Parse(_requesterId);
 
-        var gameSession = await gameSessionRepository.Get(gameSessionID);
+        var gameSession = await gameSessionRepository.Get(gameSessionId);
 
         if (gameSession == null) return Task.CompletedTask;
 
-        if (gameSession.OwnerID == userID)
+        if (gameSession.OwnerId == userId)
         {
             context.Succeed(requirement);
         }
