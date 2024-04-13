@@ -83,6 +83,14 @@ export default class UserStore {
         return undefined;
       }
 
+      // Ensure that the token isn't expired. If it is, the user should be logged out.
+      const decode = JSON.parse(atob(this.token.split(".")[1]));
+      if (decode.exp * 1000 < new Date().getTime()) {
+        window.localStorage.removeItem("jwt");
+        resolveLoadingOffStart();
+        return undefined;
+      }
+
       const user = await api.Account.getCurrentUser();
 
       if (user) {

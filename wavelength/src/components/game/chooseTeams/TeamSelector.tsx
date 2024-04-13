@@ -47,7 +47,7 @@ const TeamSelector: React.FC<TeamSelectorProps> = ({
         Team {team === Team.ONE ? "One" : "Two"}
       </span>
       {members.map((member) => (
-        <span key={member.id}>{member.id}</span>
+        <span key={member.id}>{member.user.userName}</span>
       ))}
     </button>
   );

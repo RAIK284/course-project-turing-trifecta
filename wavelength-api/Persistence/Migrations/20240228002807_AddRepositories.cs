@@ -12,7 +12,7 @@ namespace Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ID",
+                name: "Id",
                 table: "GameSessionMembers");
 
             migrationBuilder.DropColumn(
@@ -42,7 +42,7 @@ namespace Persistence.Migrations
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<Guid>(
-                name: "UserID",
+                name: "UserId",
                 table: "GameRoundOpposingTeamSelections",
                 type: "TEXT",
                 nullable: false,
@@ -66,28 +66,28 @@ namespace Persistence.Migrations
                 name: "GameSessionMemberRoundRoles",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameSessionID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameRoundID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameSessionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameRoundId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Role = table.Column<int>(type: "INTEGER", nullable: false),
                     Team = table.Column<byte>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameSessionMemberRoundRoles", x => x.ID);
+                    table.PrimaryKey("PK_GameSessionMemberRoundRoles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GameSessionMemberRoundRoles_GameRounds_GameRoundID",
-                        column: x => x.GameRoundID,
+                        name: "FK_GameSessionMemberRoundRoles_GameRounds_GameRoundId",
+                        column: x => x.GameRoundId,
                         principalTable: "GameRounds",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameSessionMemberRoundRoles_GameRoundID",
+                name: "IX_GameSessionMemberRoundRoles_GameRoundId",
                 table: "GameSessionMemberRoundRoles",
-                column: "GameRoundID");
+                column: "GameRoundId");
         }
 
         /// <inheritdoc />
@@ -105,7 +105,7 @@ namespace Persistence.Migrations
                 table: "GameRounds");
 
             migrationBuilder.DropColumn(
-                name: "UserID",
+                name: "UserId",
                 table: "GameRoundOpposingTeamSelections");
 
             migrationBuilder.DropColumn(
@@ -127,7 +127,7 @@ namespace Persistence.Migrations
                 oldNullable: true);
 
             migrationBuilder.AddColumn<Guid>(
-                name: "ID",
+                name: "Id",
                 table: "GameSessionMembers",
                 type: "TEXT",
                 nullable: false,

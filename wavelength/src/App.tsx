@@ -25,7 +25,7 @@ const App: React.FC = observer(() => {
     if (activeGameSession) {
       console.log(activeGameSession);
       navigate(
-        WavelengthPath.GAME.replace(":gameSessionID", activeGameSession.id)
+        WavelengthPath.GAME.replace(":gameSessionId", activeGameSession.id)
       );
     }
   }, [activeGameSession]);

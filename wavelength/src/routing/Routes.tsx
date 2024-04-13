@@ -14,7 +14,7 @@ export enum WavelengthPath {
   LANDING = "/",
   LOGIN = "/login",
   REGISTER = "/register",
-  GAME = "/game/:gameSessionID",
+  GAME = "/game/:gameSessionId",
   PROFILE = "/profile",
   RULES = "/rules",
 }

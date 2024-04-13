@@ -10,7 +10,7 @@ public class GiveClue
 {
     public class Params
     {
-        public Guid GameSessionID { get; set; }
+        public Guid GameSessionId { get; set; }
 
         public string Clue { get; set; }
     }
@@ -40,11 +40,11 @@ public class GiveClue
 
         public async Task<Result<GameRoundDTO>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var result = await gameRoundRepository.PsychicGiveClue(request.Param.GameSessionID, request.Param.Clue);
+            var result = await gameRoundRepository.PsychicGiveClue(request.Param.GameSessionId, request.Param.Clue);
 
             if (result == null) return Result<GameRoundDTO>.Failure("Could not make a clue for the current round.");
 
-            await roundHubService.NotifyPsychicClue(request.Param.GameSessionID, result);
+            await roundHubService.NotifyPsychicClue(request.Param.GameSessionId, result);
 
             return Result<GameRoundDTO>.Success(result);
         }

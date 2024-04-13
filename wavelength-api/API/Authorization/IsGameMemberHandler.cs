@@ -40,14 +40,14 @@ public class IsGameMemberHandler : BaseAuthorizationHandler<GameMemberHandlerReq
     protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context,
         GameMemberHandlerRequirement requirement)
     {
-        var _userID = GetRequesterID(context);
+        var _userId = GetRequesterId(context);
 
-        if (_userID == null) return Task.CompletedTask;
+        if (_userId == null) return Task.CompletedTask;
 
-        if (!Guid.TryParse(_userID, out var userID))
+        if (!Guid.TryParse(_userId, out var userId))
             return Task.CompletedTask;
 
-        var gameSessionMember = await GetGameSessionMemberForRequest(userID);
+        var gameSessionMember = await GetGameSessionMemberForRequest(userId);
 
         if (gameSessionMember != null && !requirement.SucceedIfUserIsNotMember) context.Succeed(requirement);
 
@@ -56,19 +56,19 @@ public class IsGameMemberHandler : BaseAuthorizationHandler<GameMemberHandlerReq
         return Task.CompletedTask;
     }
 
-    private async Task<GameSessionMemberDTO?> GetGameSessionMemberForRequest(Guid userID)
+    private async Task<GameSessionMemberDTO?> GetGameSessionMemberForRequest(Guid userId)
     {
-        var _gameSessionID = await GetValueFromRequest("gameSessionID");
+        var _gameSessionId = await GetValueFromRequest("gameSessionId");
         var _gameSessionJoinCode = await GetValueFromRequest("joinCode");
 
-        if (_gameSessionID != null && Guid.TryParse(_gameSessionID, out var gameSessionID))
-            return await gameSessionMemberRepository.Get(userID, gameSessionID);
+        if (_gameSessionId != null && Guid.TryParse(_gameSessionId, out var gameSessionId))
+            return await gameSessionMemberRepository.Get(userId, gameSessionId);
 
         if (_gameSessionJoinCode != null)
         {
             var gameSession = await gameSessionRepository.GetByJoinCode(_gameSessionJoinCode);
 
-            if (gameSession != null) return await gameSessionMemberRepository.Get(userID, gameSession.ID);
+            if (gameSession != null) return await gameSessionMemberRepository.Get(userId, gameSession.Id);
         }
 
         return null;

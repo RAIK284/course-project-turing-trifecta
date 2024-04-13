@@ -22,7 +22,7 @@ public class GameRoundHubService : IGameRoundHubService
         this.gameSessionMemberRepository = gameSessionMemberRepository;
     }
 
-    public async Task NotifyRoundStart(Guid gameSessionID, GameRoundDTO gameRound)
+    public async Task NotifyRoundStart(Guid gameSessionId, GameRoundDTO gameRound)
     {
         var targetOffset = gameRound.TargetOffset;
         foreach (var roundRole in gameRound.RoundRoles)
@@ -31,26 +31,26 @@ public class GameRoundHubService : IGameRoundHubService
             gameRound.TargetOffset = roundRole.Role == TeamRole.PSYCHIC ? targetOffset : -1;
                 
             await gameSessionHub.Clients
-                .Group(GameSessionHub.GroupNameForIndividual(roundRole.UserID, gameSessionID))
+                .Group(GameSessionHub.GroupNameForIndividual(roundRole.UserId, gameSessionId))
                 .SendAsync("RoundStarted", gameRound);
         }
     }
 
-    public async Task NotifyTeamTurnGhostGuess(Guid gameSessionID, GameRoundGhostGuessDTO guess)
+    public async Task NotifyTeamTurnGhostGuess(Guid gameSessionId, GameRoundGhostGuessDTO guess)
     {
         await gameSessionHub.Clients
-            .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionID))
+            .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
             .SendAsync("TeamTurnGhostGuess", guess);
     }
 
-    public async Task NotifyTeamTurnSelectorSelect(Guid gameSessionID, GameRoundSelectorSelectionDTO selection)
+    public async Task NotifyTeamTurnSelectorSelect(Guid gameSessionId, GameRoundSelectorSelectionDTO selection)
     {
         await gameSessionHub.Clients
-            .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionID))
+            .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
             .SendAsync("TeamTurnSelectorSelect", selection);
     }
 
-    public async Task NotifyPsychicClue(Guid gameSessionID, GameRoundDTO gameRoundWithClue)
+    public async Task NotifyPsychicClue(Guid gameSessionId, GameRoundDTO gameRoundWithClue)
     {
         var targetOffset = gameRoundWithClue.TargetOffset;
         foreach (var roundRole in gameRoundWithClue.RoundRoles)
@@ -59,22 +59,22 @@ public class GameRoundHubService : IGameRoundHubService
             gameRoundWithClue.TargetOffset = roundRole.Role == TeamRole.PSYCHIC ? targetOffset : -1;
                 
             await gameSessionHub.Clients
-                .Group(GameSessionHub.GroupNameForIndividual(roundRole.UserID, gameSessionID))
+                .Group(GameSessionHub.GroupNameForIndividual(roundRole.UserId, gameSessionId))
                 .SendAsync("PsychicGaveClue", gameRoundWithClue);
         }
     }
 
-    public async Task NotifyOpposingTeamGhostGuess(Guid gameSessionID, GameRoundGhostGuessDTO guess)
+    public async Task NotifyOpposingTeamGhostGuess(Guid gameSessionId, GameRoundGhostGuessDTO guess)
     {
         await gameSessionHub.Clients
-            .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionID))
+            .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
             .SendAsync("OpposingTeamGhostGuess", guess);
     }
 
-    public async Task NotifyOpposingTeamSelectorSelect(Guid gameSessionID, GameRoundOpposingTeamSelectionDTO selection)
+    public async Task NotifyOpposingTeamSelectorSelect(Guid gameSessionId, GameRoundOpposingTeamSelectionDTO selection)
     {
         await gameSessionHub.Clients
-            .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionID))
+            .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
             .SendAsync("OpposingTeamSelectorSelect", selection);
     }
 }

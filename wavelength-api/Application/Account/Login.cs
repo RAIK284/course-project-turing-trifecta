@@ -57,16 +57,16 @@ public class Login
                 UserName = user.UserName,
                 Email = user.Email,
                 Token = tokenService.CreateToken(user),
-                AvatarID = user.AvatarID,
-                ID = Guid.Parse(user.Id)
+                AvatarId = user.AvatarId,
+                Id = Guid.Parse(user.Id)
             };
 
-            var activeGameSession = await gameSessionRepository.GetActiveSession(userDTO.ID);
+            var activeGameSession = await gameSessionRepository.GetActiveSession(userDTO.Id);
 
             if (activeGameSession != null)
             {
                 userDTO.ActiveGameSession = activeGameSession;
-                userDTO.ActiveGameSessionID = activeGameSession.ID;
+                userDTO.ActiveGameSessionId = activeGameSession.Id;
             }
 
             return Result<UserDTO>.Success(userDTO);

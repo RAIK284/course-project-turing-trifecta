@@ -47,12 +47,12 @@ public class CurrentUser
 
             var userDTO = mapper.Map<UserDTO>(user);
 
-            var activeGameSession = await gameSessionRepository.GetActiveSession(userDTO.ID);
+            var activeGameSession = await gameSessionRepository.GetActiveSession(userDTO.Id);
 
             if (activeGameSession != null)
             {
                 userDTO.ActiveGameSession = activeGameSession;
-                userDTO.ActiveGameSessionID = activeGameSession.ID;
+                userDTO.ActiveGameSessionId = activeGameSession.Id;
             }
 
             return Result<UserDTO>.Success(userDTO);

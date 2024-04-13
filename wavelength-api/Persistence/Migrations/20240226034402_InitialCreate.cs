@@ -30,7 +30,7 @@ namespace Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
-                    AvatarID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    AvatarId = table.Column<Guid>(type: "TEXT", nullable: false),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -55,15 +55,15 @@ namespace Persistence.Migrations
                 name: "GameSessions",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: true),
                     JoinCode = table.Column<string>(type: "TEXT", nullable: false),
-                    OwnerID = table.Column<Guid>(type: "TEXT", nullable: false)
+                    OwnerId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameSessions", x => x.ID);
+                    table.PrimaryKey("PK_GameSessions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(

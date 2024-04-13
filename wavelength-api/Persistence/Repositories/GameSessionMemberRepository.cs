@@ -18,11 +18,12 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
     }
 
     /// <inheritdoc />
-    public async Task<GameSessionMemberDTO?> JoinTeam(Guid userID, Guid gameSessionID, Team team)
+    public async Task<GameSessionMemberDTO?> JoinTeam(Guid userId, Guid gameSessionId, Team team)
     {
         var existingMember = await context.GameSessionMembers
-            .Where(gs => gs.GameSessionID == gameSessionID)
-            .Where(gs => gs.UserID == userID)
+            .Where(gs => gs.GameSessionId == gameSessionId)
+            .Where(gs => gs.UserId == userId)
+            .Include(gs => gs.User)
             .FirstOrDefaultAsync();
 
         // There is no existing member-- something isn't right
@@ -36,19 +37,19 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
     }
 
     /// <inheritdoc />
-    public async Task<List<GameSessionMemberDTO>> GetAll(Guid gameSessionID)
+    public async Task<List<GameSessionMemberDTO>> GetAll(Guid gameSessionId)
     {
         return await context.GameSessionMembers
-            .Where(gs => gs.GameSessionID == gameSessionID)
+            .Where(gs => gs.GameSessionId == gameSessionId)
             .ProjectTo<GameSessionMemberDTO>(mapper.ConfigurationProvider)
             .ToListAsync();
     }
 
     /// <inheritdoc />
-    public async Task<List<GameSessionMemberDTO>> AssignTeamlessPlayersToTeam(Guid gameSessionID)
+    public async Task<List<GameSessionMemberDTO>> AssignTeamlessPlayersToTeam(Guid gameSessionId)
     {
         var members = await context.GameSessionMembers
-            .Where(gs => gs.GameSessionID == gameSessionID)
+            .Where(gs => gs.GameSessionId == gameSessionId)
             .ToListAsync();
         var teamlessPlayers = members
             .Where(m => m.Team == Team.NONE)
@@ -71,11 +72,11 @@ public class GameSessionMemberRepository : IGameSessionMemberRepository
     }
 
     /// <inheritdoc />
-    public async Task<GameSessionMemberDTO?> Get(Guid userID, Guid gameSessionID)
+    public async Task<GameSessionMemberDTO?> Get(Guid userId, Guid gameSessionId)
     {
         return await context.GameSessionMembers
-            .Where(gs => gs.GameSessionID == gameSessionID)
-            .Where(gs => gs.UserID == userID)
+            .Where(gs => gs.GameSessionId == gameSessionId)
+            .Where(gs => gs.UserId == userId)
             .ProjectTo<GameSessionMemberDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }

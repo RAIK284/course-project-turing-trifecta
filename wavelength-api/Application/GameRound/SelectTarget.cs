@@ -9,9 +9,9 @@ public class SelectTarget
 {
     public class Param
     {
-        public Guid GameSessionID { get; set; }
+        public Guid GameSessionId { get; set; }
 
-        public Guid UserID { get; set; }
+        public Guid UserId { get; set; }
 
         public int TargetOffset { get; set; }
     }
@@ -38,16 +38,16 @@ public class SelectTarget
         public async Task<Result<GameRoundSelectorSelectionDTO>> Handle(Command request,
             CancellationToken cancellationToken)
         {
-            var currentRound = await gameRoundRepository.GetCurrentRound(request.Param.GameSessionID);
+            var currentRound = await gameRoundRepository.GetCurrentRound(request.Param.GameSessionId);
 
             if (currentRound == null)
                 return Result<GameRoundSelectorSelectionDTO>.Failure(
                     "The current round does not exist, so no selection can be made.");
 
             var result = await gameRoundRepository.SelectTarget(
-                request.Param.UserID,
-                request.Param.GameSessionID,
-                currentRound.ID,
+                request.Param.UserId,
+                request.Param.GameSessionId,
+                currentRound.Id,
                 request.Param.TargetOffset
             );
 

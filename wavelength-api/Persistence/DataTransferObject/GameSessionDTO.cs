@@ -2,11 +2,11 @@
 
 public class GameSessionDTO
 {
-    public Guid ID { get; set; }
+    public Guid Id { get; set; }
 
     public string JoinCode { get; set; }
 
-    public Guid OwnerID { get; set; }
+    public Guid OwnerId { get; set; }
 
     public DateTime? StartTime { get; set; }
 

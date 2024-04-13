@@ -51,19 +51,19 @@ const Account = {
 };
 
 const GameSessions = {
-  create: (ownerID: string) =>
-    requests.post<GameSession>("/gameSessions/create", { ownerID }),
-  start: (gameSessionID: string) =>
-    requests.post<GameSession>("/gameSessions/start", { gameSessionID }),
-  join: (userID: string, joinCode: string) =>
-    requests.post<GameSession>("/gameSessions/join", { userID, joinCode }),
-  get: (gameSessionID: string) =>
-    requests.get<GameSession>(`/gameSessions/${gameSessionID}`),
-  switchTeams: (userID: string, gameSessionID: string, team: Team) =>
+  create: (ownerId: string) =>
+    requests.post<GameSession>("/gameSessions/create", { ownerId }),
+  start: (gameSessionId: string) =>
+    requests.post<GameSession>("/gameSessions/start", { gameSessionId }),
+  join: (userId: string, joinCode: string) =>
+    requests.post<GameSession>("/gameSessions/join", { userId, joinCode }),
+  get: (gameSessionId: string) =>
+    requests.get<GameSession>(`/gameSessions/${gameSessionId}`),
+  switchTeams: (userId: string, gameSessionId: string, team: Team) =>
     requests.post<GameSessionMember>("/gameSessions/switchTeams", {
-      gameSessionID,
+      gameSessionId,
       team,
-      userID,
+      userId,
     }),
 };
 

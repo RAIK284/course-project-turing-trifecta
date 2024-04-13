@@ -16,11 +16,11 @@ public class UsersRepository : IUsersRepository
         this.mapper = mapper;
     }
 
-    public async Task<UserDTO?> Get(Guid userID, CancellationToken cancellationToken = default)
+    public async Task<UserDTO?> Get(Guid userId, CancellationToken cancellationToken = default)
     {
-        var userIDString = userID.ToString();
+        var userIdString = userId.ToString();
         var user = await context.Users
-            .Where(u => u.Id == userIDString)
+            .Where(u => u.Id == userIdString)
             .ProjectTo<UserDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
 

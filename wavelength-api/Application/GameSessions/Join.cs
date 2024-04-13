@@ -12,7 +12,7 @@ public class Join
     {
         public string JoinCode { get; set; }
 
-        public Guid UserID { get; set; }
+        public Guid UserId { get; set; }
     }
 
     public class Command : IRequest<Result<GameSessionDTO>>
@@ -43,11 +43,11 @@ public class Join
 
             if (gameSession == null) return Result<GameSessionDTO>.Failure("Invalid join code.");
 
-            var member = await gameSessionRepository.Join(gameSession.ID, request.Param.UserID);
+            var member = await gameSessionRepository.Join(gameSession.Id, request.Param.UserId);
 
             if (member == null) return Result<GameSessionDTO>.Failure("You cannot join this game session.");
 
-            await sessionHubService.NotifyUserJoined(gameSession.ID, member);
+            await sessionHubService.NotifyUserJoined(gameSession.Id, member);
 
             if (gameSession.Members != null)
                 gameSession.Members.Add(member);

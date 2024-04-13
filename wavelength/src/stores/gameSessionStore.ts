@@ -13,9 +13,9 @@ export default class GameSessionStore {
     makeAutoObservable(this);
   }
 
-  create = async (ownerID: string) => {
+  create = async (ownerId: string) => {
     await this.gameSessionStoreValue.handleAPICall(async () => {
-      const result = await api.GameSessions.create(ownerID);
+      const result = await api.GameSessions.create(ownerId);
 
       if (result) {
         this.gameSessionStoreValue.setValue(result);
@@ -25,9 +25,9 @@ export default class GameSessionStore {
     });
   };
 
-  join = async (userID: string, joinCode: string) => {
+  join = async (userId: string, joinCode: string) => {
     await this.gameSessionStoreValue.handleAPICall(async () => {
-      const result = await api.GameSessions.join(userID, joinCode);
+      const result = await api.GameSessions.join(userId, joinCode);
 
       if (result) {
         this.gameSessionStoreValue.setValue(result);
@@ -37,9 +37,9 @@ export default class GameSessionStore {
     });
   };
 
-  start = async (gameSessionID: string) => {
+  start = async (gameSessionId: string) => {
     await this.gameSessionStoreValue.handleAPICall(async () => {
-      const result = await api.GameSessions.start(gameSessionID);
+      const result = await api.GameSessions.start(gameSessionId);
 
       if (result) {
         this.gameSessionStoreValue.setValue(result);
@@ -49,9 +49,9 @@ export default class GameSessionStore {
     });
   };
 
-  get = async (gameSessionID: string) => {
+  get = async (gameSessionId: string) => {
     await this.gameSessionStoreValue.handleAPICall(async () => {
-      const result = await api.GameSessions.get(gameSessionID);
+      const result = await api.GameSessions.get(gameSessionId);
 
       if (result) {
         this.gameSessionStoreValue.setValue(result);
@@ -61,7 +61,7 @@ export default class GameSessionStore {
     });
   };
 
-  switchTeams = async (userID: string, gameSessionID: string, team: Team) => {
+  switchTeams = async (userId: string, gameSessionId: string, team: Team) => {
     const { value: activeGameSession } = this.gameSessionStoreValue;
 
     if (!activeGameSession) return undefined;
@@ -70,8 +70,8 @@ export default class GameSessionStore {
       runInAction(() => (this.selectingTeam = true));
 
       const member = await api.GameSessions.switchTeams(
-        userID,
-        gameSessionID,
+        userId,
+        gameSessionId,
         team
       );
 

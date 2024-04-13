@@ -4,11 +4,11 @@ namespace Persistence.DataTransferObject;
 
 public class GameSessionMemberDTO
 {
-    public Guid ID { get; set; }
+    public Guid Id { get; set; }
 
-    public Guid GameSessionID { get; set; }
+    public Guid GameSessionId { get; set; }
 
-    public Guid UserID { get; set; }
+    public Guid UserId { get; set; }
 
     public User? User { get; set; }
 

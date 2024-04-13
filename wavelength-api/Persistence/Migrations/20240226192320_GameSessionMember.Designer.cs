@@ -22,7 +22,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.GameSession", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
@@ -33,26 +33,26 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("OwnerID")
+                    b.Property<Guid>("OwnerId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("GameSessions");
                 });
 
             modelBuilder.Entity("Domain.GameSessionMember", b =>
                 {
-                    b.Property<string>("UserID")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameSessionID")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
 
                     b.Property<byte>("Team")
@@ -61,9 +61,9 @@ namespace Persistence.Migrations
                     b.Property<int>("TeamRole")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("UserID", "GameSessionID");
+                    b.HasKey("UserId", "GameSessionId");
 
-                    b.HasIndex("GameSessionID");
+                    b.HasIndex("GameSessionId");
 
                     b.ToTable("GameSessionMembers");
                 });
@@ -76,7 +76,7 @@ namespace Persistence.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("AvatarID")
+                    b.Property<Guid>("AvatarId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -267,13 +267,13 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.GameSession", "GameSession")
                         .WithMany("Members")
-                        .HasForeignKey("GameSessionID")
+                        .HasForeignKey("GameSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.User", "User")
                         .WithMany("GameSessions")
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

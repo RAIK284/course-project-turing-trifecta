@@ -1,9 +1,11 @@
 import Team from "./Team";
+import User from "./User";
 
 type GameSessionMember = {
   id: string;
-  gameSessionID: string;
-  userID: string;
+  gameSessionId: string;
+  userId: string;
+  user: User;
   team: Team;
 };
 

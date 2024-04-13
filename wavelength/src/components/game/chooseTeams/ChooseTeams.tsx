@@ -17,7 +17,7 @@ const ChooseTeams: React.FC<ChooseTeamsProps> = observer(({ game }) => {
   const teamTwoMembers = game.members.filter((gm) => gm.team === Team.TWO);
   const canStartGame = game.members.length >= 4;
 
-  const gameMemberForUser = game.members.find((gm) => gm.userID === user?.id);
+  const gameMemberForUser = game.members.find((gm) => gm.userId === user?.id);
 
   // This condition should always be false
   if (!gameMemberForUser) return <></>;
@@ -38,7 +38,7 @@ const ChooseTeams: React.FC<ChooseTeamsProps> = observer(({ game }) => {
           <header>No Team</header>
           {game.members
             .filter((gm) => gm.team === Team.ZERO)
-            .map((gm) => gm.userID)}
+            .map((gm) => gm.user.userName)}
         </div>
       )}
       <div className="flex gap-10">
@@ -53,7 +53,7 @@ const ChooseTeams: React.FC<ChooseTeamsProps> = observer(({ game }) => {
           team={Team.TWO}
         />
       </div>
-      {game.ownerID === user?.id && (
+      {game.ownerId === user?.id && (
         <button
           disabled={!canStartGame}
           className="bg-center-red w-52 p-3 rounded-md"

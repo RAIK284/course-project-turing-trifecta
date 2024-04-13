@@ -5,7 +5,7 @@ type GameSession = {
   startTime?: Date;
   endTime?: Date;
   joinCode: string;
-  ownerID: string;
+  ownerId: string;
   gameRound: number;
   members: GameSessionMember[];
 };

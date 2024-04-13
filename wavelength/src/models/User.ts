@@ -4,9 +4,9 @@ type User = {
   id: string;
   userName: string;
   email: string;
-  avatarID: string;
+  avatarId: string;
   token?: string;
-  activeGameSessionID?: string;
+  activeGameSessionId?: string;
   activeGameSession?: GameSession;
 };
 
