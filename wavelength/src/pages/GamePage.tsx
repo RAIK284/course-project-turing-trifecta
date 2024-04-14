@@ -8,6 +8,7 @@ import { WavelengthPath } from "../routing/Routes";
 import { ReactNode } from "react";
 import { psychicGiveClueRound } from "../api/mockData";
 import PsychicGiveClue from "../components/game/PsychicGiveClue";
+import SelectorSelect from "../components/game/SelectorSelect";
 
 enum GameStatus {
   CHOOSE_TEAMS,
@@ -20,7 +21,7 @@ enum GameStatus {
 }
 
 const getGameStatus = (game: GameSession): GameStatus => {
-  if (game.id) return GameStatus.PSYCHIC_GIVE_CLUE;
+  if (game.id) return GameStatus.SELECTOR_SELECT;
   if (game.startTime === null) return GameStatus.CHOOSE_TEAMS;
 
   return GameStatus.CHOOSE_TEAMS;
@@ -42,6 +43,9 @@ const GamePage: React.FC = observer(() => {
       break;
     case GameStatus.PSYCHIC_GIVE_CLUE:
       element = <PsychicGiveClue game={game} round={psychicGiveClueRound} />;
+      break;
+    case GameStatus.SELECTOR_SELECT:
+      element = <SelectorSelect game={game} round={psychicGiveClueRound} />;
       break;
   }
 
