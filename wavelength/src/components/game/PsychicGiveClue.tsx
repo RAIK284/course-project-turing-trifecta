@@ -17,6 +17,7 @@ const PsychicGiveClue: React.FC<PsychicGiveClueProps> = ({ game, round }) => {
 
   return (
     <GameBoard
+      directions="Enter Your Clue:"
       game={game}
       round={round}
       spinner={
