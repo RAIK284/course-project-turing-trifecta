@@ -1,25 +1,36 @@
 import { useEffect, useRef, useState } from "react";
-import { drawSpinner } from "../../../utils/spinnerUtils";
+import {
+  drawSpinner,
+  getMousePositionDegrees,
+} from "../../../utils/spinnerUtils";
 
 type SpinnerProps = {
   targetOffset?: number;
   clickOption: "none" | "cover" | "select";
+  onTargetSelect?: (targetOffset: number) => void;
+  uncoverByDefault?: boolean;
 };
 
-const Spinner: React.FC<SpinnerProps> = ({ targetOffset, clickOption }) => {
-  const [covered, setCovered] = useState<boolean>(!!targetOffset);
+const size = 1000;
+
+const Spinner: React.FC<SpinnerProps> = ({
+  targetOffset,
+  clickOption,
+  onTargetSelect,
+  uncoverByDefault = false,
+}) => {
+  const [covered, setCovered] = useState<boolean>(!uncoverByDefault);
   const [mousePosition, setMousePosition] = useState<{
     x: number;
     y: number;
   }>({
-    x: -1,
-    y: -1,
+    x: !covered ? -1 : size / 2,
+    y: !covered ? -1 : 0,
   });
   const [selectorLocked, setSelectorLocked] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const canvas = canvasRef.current;
   const context = canvas?.getContext("2d");
-  const size = 1000;
   const halfSize = size / 2;
 
   useEffect(() => {
@@ -27,10 +38,7 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset, clickOption }) => {
       drawSpinner(context, size, {
         cover: covered,
         targetOffset,
-        userMousePosition: {
-          x: mousePosition.x,
-          y: mousePosition.y,
-        },
+        userMousePosition: mousePosition,
       });
     }
   }, [mousePosition, canvas, covered]);
@@ -82,6 +90,11 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset, clickOption }) => {
 
   const handleCanvasClick = () => {
     if (clickOption === "select") {
+      if (!selectorLocked && onTargetSelect) {
+        onTargetSelect(
+          getMousePositionDegrees(mousePosition.x, mousePosition.y, size)
+        );
+      }
       setSelectorLocked(!selectorLocked);
     } else if (clickOption === "cover") {
       setCovered(!covered);
@@ -97,6 +110,7 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset, clickOption }) => {
         maxWidth: `90vw`,
         maxHeight: `45vw`,
         height: `${halfSize / 2}px`,
+        cursor: clickOption !== "none" ? "pointer" : undefined,
       }}
       ref={canvasRef}
       onClick={handleCanvasClick}

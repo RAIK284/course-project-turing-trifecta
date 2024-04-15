@@ -48,7 +48,7 @@ const SingleSpectrumCard: React.FC<SingleSpectrumCardProps> = ({
 const RoundSpectrumCards: React.FC<RoundSpectrumCardsProps> = ({
   spectrumCard,
 }) => (
-  <div className="flex p-3 gap-10 items-center justify-center">
+  <div className="flex p-3 gap-10 items-center justify-center w-full">
     <SingleSpectrumCard direction="left" name={spectrumCard.leftName} />
     <SingleSpectrumCard direction="right" name={spectrumCard.rightName} />
   </div>

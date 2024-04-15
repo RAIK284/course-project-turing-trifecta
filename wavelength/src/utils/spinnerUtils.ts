@@ -114,9 +114,10 @@ const drawSingleTarget = (
 const drawSelector = (
   ctx: CanvasRenderingContext2D,
   color: string,
-  angleRadians: number,
+  angleDegrees: number,
   size: number
 ) => {
+  const angleRadians = (Math.PI * angleDegrees) / 180;
   const halfSize = size / 2;
   const xCos = Math.cos(angleRadians);
   const ySin = Math.sin(angleRadians + Math.PI);
@@ -149,7 +150,6 @@ export const drawSpinner = (
   size: number,
   options: SpinnerOptions
 ) => {
-  const halfSize = size / 2;
   const { colors } = tailWindConfig;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   clearCanvas(ctx, size);
@@ -208,12 +208,22 @@ export const drawSpinner = (
     const { x, y } = options.userMousePosition;
 
     if (x != -1 && y != -1) {
-      const oppositeOverAdjacent = (y - halfSize) / (halfSize - x);
-      let angle = Math.atan(oppositeOverAdjacent);
-      angle = angle < 0 ? angle + Math.PI : angle;
-      drawSelector(ctx, colors["center-red"], angle, size);
+      drawSelector(
+        ctx,
+        colors["center-red"],
+        getMousePositionDegrees(x, y, size),
+        size
+      );
     }
   }
 
   drawMiddleCircle(ctx, colors["center-red"], size);
 };
+
+export function getMousePositionDegrees(x: number, y: number, size: number) {
+  const halfSize = size / 2;
+  const oppositeOverAdjacent = (y - halfSize) / (halfSize - x);
+  let angle = Math.atan(oppositeOverAdjacent);
+  angle = angle < 0 ? angle + Math.PI : angle;
+  return (180 * angle) / Math.PI;
+}
