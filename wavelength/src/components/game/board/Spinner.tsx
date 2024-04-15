@@ -8,7 +8,7 @@ type SpinnerProps = {
   targetOffset?: number;
   clickOption: "none" | "cover" | "select";
   onTargetSelect?: (targetOffset: number) => void;
-  uncoverByDefault?: boolean;
+  ghostGuesses?: number[];
 };
 
 const size = 1000;
@@ -17,9 +17,9 @@ const Spinner: React.FC<SpinnerProps> = ({
   targetOffset,
   clickOption,
   onTargetSelect,
-  uncoverByDefault = false,
+  ghostGuesses,
 }) => {
-  const [covered, setCovered] = useState<boolean>(!uncoverByDefault);
+  const [covered, setCovered] = useState<boolean>(!targetOffset);
   const [mousePosition, setMousePosition] = useState<{
     x: number;
     y: number;
@@ -39,6 +39,7 @@ const Spinner: React.FC<SpinnerProps> = ({
         cover: covered,
         targetOffset,
         userMousePosition: mousePosition,
+        ghostGuesses,
       });
     }
   }, [mousePosition, canvas, covered]);

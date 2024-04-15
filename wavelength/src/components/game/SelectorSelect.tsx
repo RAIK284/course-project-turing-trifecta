@@ -24,8 +24,8 @@ const SelectorSelect: React.FC<SelectorSelectProps> = ({ game, round }) => {
       spinner={
         <Spinner
           clickOption="select"
-          targetOffset={round.targetOffset}
           onTargetSelect={setSelection}
+          ghostGuesses={round.ghostGuesses?.map((gg) => gg.targetOffset)}
         />
       }
     >

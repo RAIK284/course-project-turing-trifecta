@@ -204,6 +204,12 @@ export const drawSpinner = (
     );
   }
 
+  if (options.ghostGuesses) {
+    options.ghostGuesses.forEach((angle) =>
+      drawSelector(ctx, colors["ghost-guess"], angle, size)
+    );
+  }
+
   if (options.userMousePosition) {
     const { x, y } = options.userMousePosition;
 

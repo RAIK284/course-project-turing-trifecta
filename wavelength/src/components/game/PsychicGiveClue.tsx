@@ -26,11 +26,7 @@ const PsychicGiveClue: React.FC<PsychicGiveClueProps> = ({ game, round }) => {
       game={game}
       round={round}
       spinner={
-        <Spinner
-          targetOffset={round.targetOffset}
-          clickOption="cover"
-          uncoverByDefault={true}
-        />
+        <Spinner targetOffset={round.targetOffset} clickOption="cover" />
       }
     >
       <form

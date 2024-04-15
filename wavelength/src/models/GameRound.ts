@@ -1,3 +1,4 @@
+import { GhostGuess } from "./GhostGuess";
 import { SpectrumCard } from "./SpectrumCard";
 import Team from "./Team";
 
@@ -9,4 +10,5 @@ export type GameRound = {
   spectrumCard: SpectrumCard;
   clue: string;
   targetOffset: number;
+  ghostGuesses?: GhostGuess[];
 };
