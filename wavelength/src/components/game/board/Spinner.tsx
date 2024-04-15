@@ -53,6 +53,8 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset, clickOption }) => {
       } = canvas.getBoundingClientRect();
       const [x, y] = [clientX - canvasX, clientY - canvasY];
 
+      if (x < 0 || y <= 0) return;
+
       // Scale the user's x and y to match the canvas' size
       setMousePosition({
         x: (x * size) / canvasWidth,
@@ -76,7 +78,7 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset, clickOption }) => {
       canvas.removeEventListener("mousemove", mouseListener);
       canvas.removeEventListener("touchmove", touchListener);
     };
-  }, [selectorLocked]);
+  }, [selectorLocked, canvas]);
 
   const handleCanvasClick = () => {
     if (clickOption === "select") {

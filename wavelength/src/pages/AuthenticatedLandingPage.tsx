@@ -1,4 +1,3 @@
-import Spinner from "../components/game/board/Spinner";
 import { useNavigate } from "react-router-dom";
 import { WavelengthPath } from "../routing/Routes";
 import { useStore } from "../stores/store";
@@ -64,10 +63,6 @@ const AuthenticatedLandingPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="fixed bottom-100 left-100 w-half">
-        <Spinner />
-      </div>{" "}
-      {/* Adjust this value as needed */}
     </div>
   );
 };
