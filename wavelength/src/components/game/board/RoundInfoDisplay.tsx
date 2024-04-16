@@ -6,7 +6,7 @@ type RoundInfoDisplayProps = {
 };
 
 const RoundInfoDisplay: React.FC<RoundInfoDisplayProps> = ({ round }) => (
-  <div className="mb-5">
+  <div className="mb-5" aria-label="RoundInfoDisplay">
     <header className="text-2xl text-center tracking-wide font-bold">
       Team {getTeamName(round.teamTurn)}'s Turn
     </header>

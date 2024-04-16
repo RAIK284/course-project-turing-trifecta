@@ -115,6 +115,7 @@ const Spinner: React.FC<SpinnerProps> = ({
       }}
       ref={canvasRef}
       onClick={handleCanvasClick}
+      aria-label="Spinner"
     ></canvas>
   );
 };
