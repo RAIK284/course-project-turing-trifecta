@@ -19,7 +19,7 @@ const GameBoard: React.FC<PropsWithChildren<GameBoardProps>> = ({
   directions,
 }) => {
   return (
-    <div>
+    <div aria-label="GameBoard">
       <RoundInfoDisplay round={round} />
       {spinner}
       <div className="bg-scoreboard-blue flex flex-col pt-5 gap-3 justify-center items-center">
