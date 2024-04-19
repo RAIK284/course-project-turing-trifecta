@@ -16,6 +16,8 @@ const NavBar: React.FC = observer(() => {
   const { userStore } = useStore();
   const [user] = useStoreValue(userStore.userStoreValue);
   const navigate = useNavigate();
+  // TODO: SET UP GAME SESSION
+  // WHEN STORES ARE COMPLETE
   const isAuthenticated = !!user;
   const gameSession = {
     joinCode: "123456",
@@ -23,19 +25,19 @@ const NavBar: React.FC = observer(() => {
   const { isMobile } = useWindowSize();
   const [showProfileDropdown, setShowProfileDropdown] =
     useState<boolean>(false);
-
+// If the user logs our or logs in, make sure the profile dropdown isn't showing from prior usage.
   useEffect(() => {
     setShowProfileDropdown(false);
   }, [user]);
-
+// Copies the text of the game code to the user's clipboard
   const handleJoinCodeButtonClick = () => {
     navigator.clipboard.writeText(gameSession.joinCode);
   };
-
+// Navigate to the login page
   const handleLoginButtonClick = () => {
     navigate(WavelengthPath.LOGIN);
   };
-
+// Navigate to the register page
   const handleRegisterButtonClick = () => {
     navigate(WavelengthPath.REGISTER);
   };
