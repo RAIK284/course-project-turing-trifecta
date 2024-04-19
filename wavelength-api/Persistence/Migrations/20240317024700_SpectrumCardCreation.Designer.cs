@@ -22,7 +22,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.GameRound", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
@@ -30,13 +30,13 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameSessionID")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RoundNumber")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("SpectrumCardID")
+                    b.Property<Guid>("SpectrumCardId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("TargetOffset")
@@ -45,23 +45,23 @@ namespace Persistence.Migrations
                     b.Property<byte>("TeamTurn")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("SpectrumCardID");
+                    b.HasIndex("SpectrumCardId");
 
                     b.ToTable("GameRounds");
                 });
 
             modelBuilder.Entity("Domain.GameRoundGhostGuess", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameRoundID")
+                    b.Property<Guid>("GameRoundId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameSessionID")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("TargetOffset")
@@ -70,26 +70,26 @@ namespace Persistence.Migrations
                     b.Property<byte>("Team")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UserID")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GameRoundID");
+                    b.HasIndex("GameRoundId");
 
                     b.ToTable("GameRoundGhostGuesses");
                 });
 
             modelBuilder.Entity("Domain.GameRoundOpposingTeamGuess", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameRoundID")
+                    b.Property<Guid>("GameRoundId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameSessionID")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsLeft")
@@ -98,26 +98,26 @@ namespace Persistence.Migrations
                     b.Property<byte>("Team")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UserID")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GameRoundID");
+                    b.HasIndex("GameRoundId");
 
                     b.ToTable("GameRoundOpposingTeamGuesses");
                 });
 
             modelBuilder.Entity("Domain.GameRoundOpposingTeamSelection", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameRoundID")
+                    b.Property<Guid>("GameRoundId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameSessionID")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsLeft")
@@ -126,12 +126,12 @@ namespace Persistence.Migrations
                     b.Property<byte>("Team")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UserID")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GameRoundID")
+                    b.HasIndex("GameRoundId")
                         .IsUnique();
 
                     b.ToTable("GameRoundOpposingTeamSelections");
@@ -139,14 +139,14 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.GameRoundSelectorSelection", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameRoundID")
+                    b.Property<Guid>("GameRoundId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameSessionID")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("TargetOffset")
@@ -155,12 +155,12 @@ namespace Persistence.Migrations
                     b.Property<byte>("Team")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UserID")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GameRoundID")
+                    b.HasIndex("GameRoundId")
                         .IsUnique();
 
                     b.ToTable("GameRoundSelectorSelections");
@@ -168,7 +168,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.GameSession", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
@@ -182,49 +182,49 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("OwnerID")
+                    b.Property<Guid>("OwnerId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("GameSessions");
                 });
 
             modelBuilder.Entity("Domain.GameSessionMember", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameSessionID")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("TEXT");
 
                     b.Property<byte>("Team")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UserID")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GameSessionID");
+                    b.HasIndex("GameSessionId");
 
                     b.ToTable("GameSessionMembers");
                 });
 
             modelBuilder.Entity("Domain.GameSessionMemberRoundRole", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameRoundID")
+                    b.Property<Guid>("GameRoundId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameSessionID")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Role")
@@ -233,23 +233,23 @@ namespace Persistence.Migrations
                     b.Property<byte>("Team")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UserID")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GameRoundID");
+                    b.HasIndex("GameRoundId");
 
                     b.ToTable("GameSessionMemberRoundRoles");
                 });
 
             modelBuilder.Entity("Domain.GameSessionResult", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GameSessionID")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("LosingScore")
@@ -264,9 +264,9 @@ namespace Persistence.Migrations
                     b.Property<byte>("WinningTeam")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GameSessionID")
+                    b.HasIndex("GameSessionId")
                         .IsUnique();
 
                     b.ToTable("GameSessionResults");
@@ -274,7 +274,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.SpectrumCard", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
@@ -286,68 +286,68 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("SpectrumCards");
 
                     b.HasData(
                         new
                         {
-                            ID = new Guid("d443399e-4292-45d3-903e-937743e049d3"),
+                            Id = new Guid("d443399e-4292-45d3-903e-937743e049d3"),
                             LeftName = "Good",
                             RightName = "Bad"
                         },
                         new
                         {
-                            ID = new Guid("8e4a470c-1df2-4bf5-a034-2004628eae90"),
+                            Id = new Guid("8e4a470c-1df2-4bf5-a034-2004628eae90"),
                             LeftName = "Highly Attractive",
                             RightName = "Mildly Attractive"
                         },
                         new
                         {
-                            ID = new Guid("c5150589-e161-4096-9c73-e72b75e8d0e7"),
+                            Id = new Guid("c5150589-e161-4096-9c73-e72b75e8d0e7"),
                             LeftName = "Cold",
                             RightName = "Hot"
                         },
                         new
                         {
-                            ID = new Guid("77b7290e-583f-463d-b643-b961d353e7f3"),
+                            Id = new Guid("77b7290e-583f-463d-b643-b961d353e7f3"),
                             LeftName = "Weird",
                             RightName = "Normal"
                         },
                         new
                         {
-                            ID = new Guid("4508e7d3-2d87-4d3f-9811-a80ceef6c14b"),
+                            Id = new Guid("4508e7d3-2d87-4d3f-9811-a80ceef6c14b"),
                             LeftName = "Colorful",
                             RightName = "Colorless"
                         },
                         new
                         {
-                            ID = new Guid("ca7c9ab3-71b1-4376-a452-4e1ce108e070"),
+                            Id = new Guid("ca7c9ab3-71b1-4376-a452-4e1ce108e070"),
                             LeftName = "High Calorie",
                             RightName = "Low Calorie"
                         },
                         new
                         {
-                            ID = new Guid("d737e617-8b15-48aa-84b6-80eb11b8d09a"),
+                            Id = new Guid("d737e617-8b15-48aa-84b6-80eb11b8d09a"),
                             LeftName = "Feels Good",
                             RightName = "Feels Bad"
                         },
                         new
                         {
-                            ID = new Guid("a32543d2-1da3-4d39-b533-66014de89889"),
+                            Id = new Guid("a32543d2-1da3-4d39-b533-66014de89889"),
                             LeftName = "Expensive",
                             RightName = "Cheap"
                         },
                         new
                         {
-                            ID = new Guid("af711bff-924a-407b-b712-99e13b0cbf9f"),
+                            Id = new Guid("af711bff-924a-407b-b712-99e13b0cbf9f"),
                             LeftName = "Overrated Weapon",
                             RightName = "Underrated Weapon"
                         },
                         new
                         {
-                            ID = new Guid("4776e959-b795-4ec1-aa5f-440d786387d3"),
+                            Id = new Guid("4776e959-b795-4ec1-aa5f-440d786387d3"),
                             LeftName = "Common",
                             RightName = "Rare"
                         });
@@ -361,7 +361,7 @@ namespace Persistence.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("AvatarID")
+                    b.Property<Guid>("AvatarId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -552,7 +552,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.SpectrumCard", "SpectrumCard")
                         .WithMany()
-                        .HasForeignKey("SpectrumCardID")
+                        .HasForeignKey("SpectrumCardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -563,7 +563,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.GameRound", "GameRound")
                         .WithMany("GhostGuesses")
-                        .HasForeignKey("GameRoundID")
+                        .HasForeignKey("GameRoundId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -574,7 +574,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.GameRound", "GameRound")
                         .WithMany("OpposingGhostGuesses")
-                        .HasForeignKey("GameRoundID")
+                        .HasForeignKey("GameRoundId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -585,7 +585,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.GameRound", "GameRound")
                         .WithOne("OpposingSelectorSelection")
-                        .HasForeignKey("Domain.GameRoundOpposingTeamSelection", "GameRoundID")
+                        .HasForeignKey("Domain.GameRoundOpposingTeamSelection", "GameRoundId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -596,7 +596,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.GameRound", "GameRound")
                         .WithOne("SelectorSelection")
-                        .HasForeignKey("Domain.GameRoundSelectorSelection", "GameRoundID")
+                        .HasForeignKey("Domain.GameRoundSelectorSelection", "GameRoundId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -607,7 +607,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.GameSession", "GameSession")
                         .WithMany("Members")
-                        .HasForeignKey("GameSessionID")
+                        .HasForeignKey("GameSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -618,7 +618,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.GameRound", null)
                         .WithMany("RoundRoles")
-                        .HasForeignKey("GameRoundID")
+                        .HasForeignKey("GameRoundId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -627,7 +627,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.GameSession", "GameSession")
                         .WithOne("GameSessionResult")
-                        .HasForeignKey("Domain.GameSessionResult", "GameSessionID")
+                        .HasForeignKey("Domain.GameSessionResult", "GameSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

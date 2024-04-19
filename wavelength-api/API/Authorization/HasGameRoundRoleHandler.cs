@@ -48,21 +48,21 @@ public class HasGameRoundRoleHandler : BaseAuthorizationHandler<GameRoundRoleReq
     protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context,
         GameRoundRoleRequirement requirement)
     {
-        var _gameSessionID = await GetValueFromRequest("gameSessionID");
-        var _requesterID = GetRequesterID(context);
+        var _gameSessionId = await GetValueFromRequest("gameSessionId");
+        var _requesterId = GetRequesterId(context);
 
-        if (_gameSessionID == null
-            || _requesterID == null) return Task.CompletedTask;
+        if (_gameSessionId == null
+            || _requesterId == null) return Task.CompletedTask;
 
-        var gameSessionID = Guid.Parse(_gameSessionID);
-        var userID = Guid.Parse(_requesterID);
+        var gameSessionId = Guid.Parse(_gameSessionId);
+        var userId = Guid.Parse(_requesterId);
 
-        var gameRound = await gameRoundRepository.GetCurrentRound(gameSessionID);
+        var gameRound = await gameRoundRepository.GetCurrentRound(gameSessionId);
 
         if (gameRound == null) return Task.CompletedTask;
 
         var userRole = gameRound.RoundRoles
-            .FirstOrDefault(rr => rr.UserID == userID);
+            .FirstOrDefault(rr => rr.UserId == userId);
 
         if (userRole == null) return Task.CompletedTask;
 

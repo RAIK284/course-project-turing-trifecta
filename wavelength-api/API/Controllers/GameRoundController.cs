@@ -19,7 +19,7 @@ public class GameRoundController : BaseAPIController
     [HttpPost("performGhostGuess")]
     public async Task<ActionResult> PerformGhostGuess([FromBody] PerformGhostGuess.Param param)
     {
-        param.UserID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        param.UserId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         return HandleResult(await Mediator.Send(new PerformGhostGuess.Command(param)));
     }
 
@@ -28,7 +28,7 @@ public class GameRoundController : BaseAPIController
     [HttpPost("selectTarget")]
     public async Task<ActionResult> SelectTarget([FromBody] SelectTarget.Param param)
     {
-        param.UserID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        param.UserId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         return HandleResult(await Mediator.Send(new SelectTarget.Command(param)));
     }
 
@@ -37,7 +37,7 @@ public class GameRoundController : BaseAPIController
     [HttpPost("performOpposingTeamGuess")]
     public async Task<ActionResult> PerformOpposingTeamGuess([FromBody] PerformOpposingTeamGuess.Param param)
     {
-        param.UserID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        param.UserId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         return HandleResult(await Mediator.Send(new PerformOpposingTeamGuess.Command(param)));
     }
 
@@ -46,7 +46,7 @@ public class GameRoundController : BaseAPIController
     [HttpPost("performOpposingTeamSelection")]
     public async Task<ActionResult> PerformOpposingTeamSelection([FromBody] PerformOpposingTeamSelection.Param param)
     {
-        param.UserID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        param.UserId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         return HandleResult(await Mediator.Send(new PerformOpposingTeamSelection.Command(param)));
     }
 }

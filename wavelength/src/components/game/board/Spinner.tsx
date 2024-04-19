@@ -1,41 +1,51 @@
 import { useEffect, useRef, useState } from "react";
-import { drawSpinner } from "../../utils/spinnerUtils";
+import {
+  drawSpinner,
+  getMousePositionDegrees,
+} from "../../../utils/spinnerUtils";
 
 type SpinnerProps = {
-  size?: number;
   targetOffset?: number;
+  clickOption: "none" | "cover" | "select";
+  onTargetSelect?: (targetOffset: number) => void;
+  ghostGuesses?: number[];
 };
 
-const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 50 }) => {
+const size = 1000;
+
+const Spinner: React.FC<SpinnerProps> = ({
+  targetOffset,
+  clickOption,
+  onTargetSelect,
+  ghostGuesses,
+}) => {
+  const [covered, setCovered] = useState<boolean>(!targetOffset);
   const [mousePosition, setMousePosition] = useState<{
     x: number;
     y: number;
   }>({
-    x: -1,
-    y: -1,
+    x: !covered ? -1 : size / 2,
+    y: !covered ? -1 : 0,
   });
   const [selectorLocked, setSelectorLocked] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const canvas = canvasRef.current;
   const context = canvas?.getContext("2d");
-  const size = 1000;
   const halfSize = size / 2;
 
   useEffect(() => {
     if (context) {
       drawSpinner(context, size, {
-        cover: false,
+        cover: covered,
         targetOffset,
-        userMousePosition: {
-          x: mousePosition.x,
-          y: mousePosition.y,
-        },
+        userMousePosition: mousePosition,
+        ghostGuesses,
       });
     }
-  }, [mousePosition, canvas]);
+  }, [mousePosition, canvas, covered]);
 
   useEffect(() => {
-    if (!canvas) return;
+    if (!canvas || clickOption !== "select") return;
 
     const handlePositionUpdate = (
       clientX: number,
@@ -51,6 +61,8 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 50 }) => {
         height: canvasHeight,
       } = canvas.getBoundingClientRect();
       const [x, y] = [clientX - canvasX, clientY - canvasY];
+
+      if (x < 0 || y <= 0) return;
 
       // Scale the user's x and y to match the canvas' size
       setMousePosition({
@@ -75,7 +87,20 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 50 }) => {
       canvas.removeEventListener("mousemove", mouseListener);
       canvas.removeEventListener("touchmove", touchListener);
     };
-  }, [selectorLocked]);
+  }, [selectorLocked, canvas]);
+
+  const handleCanvasClick = () => {
+    if (clickOption === "select") {
+      if (!selectorLocked && onTargetSelect) {
+        onTargetSelect(
+          getMousePositionDegrees(mousePosition.x, mousePosition.y, size)
+        );
+      }
+      setSelectorLocked(!selectorLocked);
+    } else if (clickOption === "cover") {
+      setCovered(!covered);
+    }
+  };
 
   return (
     <canvas
@@ -86,9 +111,11 @@ const Spinner: React.FC<SpinnerProps> = ({ targetOffset = 50 }) => {
         maxWidth: `90vw`,
         maxHeight: `45vw`,
         height: `${halfSize / 2}px`,
+        cursor: clickOption !== "none" ? "pointer" : undefined,
       }}
       ref={canvasRef}
-      onClick={() => setSelectorLocked(!selectorLocked)}
+      onClick={handleCanvasClick}
+      aria-label="Spinner"
     ></canvas>
   );
 };

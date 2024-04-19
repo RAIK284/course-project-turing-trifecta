@@ -22,7 +22,7 @@ public class Register
             ErrorMessage = "Password does not meet requirements.")]
         public string Password { get; init; }
 
-        [Required] public Guid AvatarID { get; init; }
+        [Required] public Guid AvatarId { get; init; }
     }
 
     public class Command : IRequest<Result<UserDTO>>
@@ -57,11 +57,15 @@ public class Register
             if (doesEmailExist)
                 return Result<UserDTO>.Failure("A user with this email already exists.");
 
+            Guid userId = Guid.NewGuid();
+            
             var user = new User
             {
+                Id = userId.ToString(),
+                UserId = userId,
                 Email = request.Param.Email,
                 UserName = request.Param.UserName,
-                AvatarID = request.Param.AvatarID
+                AvatarId = request.Param.AvatarId
             };
 
             var result = await userManager.CreateAsync(user, request.Param.Password);
@@ -72,7 +76,7 @@ public class Register
                     Email = user.Email,
                     Token = tokenService.CreateToken(user),
                     UserName = user.UserName,
-                    AvatarID = user.AvatarID
+                    AvatarId = user.AvatarId
                 });
 
             return Result<UserDTO>.Failure("Something went wrong when trying to register.");

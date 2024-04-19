@@ -8,19 +8,19 @@ namespace API.Controllers;
 public class GameSessionsController : BaseAPIController
 {
     [Authorize(Policy = "IsGameSessionMember")]
-    [HttpGet("{gameSessionID}")]
-    public async Task<ActionResult> GetGameSession(Guid gameSessionID)
+    [HttpGet("{gameSessionId}")]
+    public async Task<ActionResult> GetGameSession(Guid gameSessionId)
     {
         return HandleResult(await Mediator.Send(new Get.Query(new Get.Params
         {
-            GameSessionID = gameSessionID
+            GameSessionId = gameSessionId
         })));
     }
 
     [HttpPost("create")]
     public async Task<ActionResult> CreateGameSession(Create.Params param)
     {
-        param.OwnerID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        param.OwnerId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         return HandleResult(await Mediator.Send(new Create.Command(param)));
     }
 
@@ -35,7 +35,7 @@ public class GameSessionsController : BaseAPIController
     [HttpPost("join")]
     public async Task<ActionResult> JoinGameSession(Join.Params param)
     {
-        param.UserID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        param.UserId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         return HandleResult(await Mediator.Send(new Join.Command(param)));
     }
 
@@ -43,7 +43,7 @@ public class GameSessionsController : BaseAPIController
     [HttpPost("switchTeams")]
     public async Task<ActionResult> SwitchTeams(SwitchTeams.Params param)
     {
-        param.UserID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        param.UserId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         return HandleResult(await Mediator.Send(new SwitchTeams.Command(param)));
     }
 }

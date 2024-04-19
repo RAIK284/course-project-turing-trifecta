@@ -2,6 +2,7 @@ import { makeAutoObservable, reaction, runInAction } from "mobx";
 import User from "../models/User";
 import api from "../api/api";
 import { StoreValue } from "./storeValue";
+import { store } from "./store";
 
 export default class UserStore {
   token: string | null = window.localStorage.getItem("jwt");
@@ -39,6 +40,12 @@ export default class UserStore {
       if (user.token) {
         this.userStoreValue.setValue(user);
         this.setToken(user.token);
+
+        if (user.activeGameSession) {
+          store.gameSessionStore.gameSessionStoreValue.setValue(
+            user.activeGameSession
+          );
+        }
       }
 
       return user;
@@ -52,6 +59,12 @@ export default class UserStore {
       if (user.token) {
         this.userStoreValue.setValue(user);
         this.setToken(user.token);
+
+        if (user.activeGameSession) {
+          store.gameSessionStore.gameSessionStoreValue.setValue(
+            user.activeGameSession
+          );
+        }
       }
 
       return user;
@@ -70,10 +83,24 @@ export default class UserStore {
         return undefined;
       }
 
+      // Ensure that the token isn't expired. If it is, the user should be logged out.
+      const decode = JSON.parse(atob(this.token.split(".")[1]));
+      if (decode.exp * 1000 < new Date().getTime()) {
+        window.localStorage.removeItem("jwt");
+        resolveLoadingOffStart();
+        return undefined;
+      }
+
       const user = await api.Account.getCurrentUser();
 
       if (user) {
         this.userStoreValue.setValue(user);
+
+        if (user.activeGameSession) {
+          store.gameSessionStore.gameSessionStoreValue.setValue(
+            user.activeGameSession
+          );
+        }
       }
 
       resolveLoadingOffStart();

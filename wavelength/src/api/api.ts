@@ -1,6 +1,9 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import User from "../models/User";
 import { store } from "../stores/store";
+import GameSession from "../models/GameSession";
+import Team from "../models/Team";
+import GameSessionMember from "../models/GameSessionMember";
 
 axios.defaults.baseURL = import.meta.env.APP_API_URL + "/api";
 
@@ -47,8 +50,26 @@ const Account = {
   getCurrentUser: () => requests.get<User>("/account"),
 };
 
+const GameSessions = {
+  create: (ownerId: string) =>
+    requests.post<GameSession>("/gameSessions/create", { ownerId }),
+  start: (gameSessionId: string) =>
+    requests.post<GameSession>("/gameSessions/start", { gameSessionId }),
+  join: (userId: string, joinCode: string) =>
+    requests.post<GameSession>("/gameSessions/join", { userId, joinCode }),
+  get: (gameSessionId: string) =>
+    requests.get<GameSession>(`/gameSessions/${gameSessionId}`),
+  switchTeams: (userId: string, gameSessionId: string, team: Team) =>
+    requests.post<GameSessionMember>("/gameSessions/switchTeams", {
+      gameSessionId,
+      team,
+      userId,
+    }),
+};
+
 const api = {
   Account,
+  GameSessions,
 };
 
 export default api;

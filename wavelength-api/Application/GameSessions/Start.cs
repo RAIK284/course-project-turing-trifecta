@@ -11,7 +11,7 @@ public class Start
 {
     public class Params
     {
-        public Guid GameSessionID { get; set; }
+        public Guid GameSessionId { get; set; }
     }
 
     public class Command : IRequest<Result<GameRoundDTO>>
@@ -44,22 +44,22 @@ public class Start
 
         public async Task<Result<GameRoundDTO>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var members = await gameSessionMemberRepository.AssignTeamlessPlayersToTeam(request.Param.GameSessionID);
+            var members = await gameSessionMemberRepository.AssignTeamlessPlayersToTeam(request.Param.GameSessionId);
             var membersOnTeamOne = members.Count(m => m.Team == Team.ONE);
             var membersOnTeamTwo = members.Count(m => m.Team == Team.TWO);
 
             if (membersOnTeamOne < 2 || membersOnTeamTwo < 2)
                 return Result<GameRoundDTO>.Failure("Each team must have two players for the game to start.");
 
-            var isGameStarted = await gameSessionRepository.Start(request.Param.GameSessionID);
+            var isGameStarted = await gameSessionRepository.Start(request.Param.GameSessionId);
 
             if (!isGameStarted) return Result<GameRoundDTO>.Failure("Failed to start game session.");
 
-            var firstRound = await gameRoundRepository.StartRound(request.Param.GameSessionID);
+            var firstRound = await gameRoundRepository.StartRound(request.Param.GameSessionId);
 
             if (firstRound == null) return Result<GameRoundDTO>.Failure("Unable to start game round.");
 
-            await roundHubService.NotifyRoundStart(request.Param.GameSessionID, firstRound);
+            await roundHubService.NotifyRoundStart(request.Param.GameSessionId, firstRound);
 
             return Result<GameRoundDTO>.Success(firstRound);
         }

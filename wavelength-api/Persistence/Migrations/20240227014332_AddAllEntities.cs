@@ -15,68 +15,68 @@ namespace Persistence.Migrations
                 name: "GameRoundGhostGuesses",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameSessionID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameRoundID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameSessionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameRoundId = table.Column<Guid>(type: "TEXT", nullable: false),
                     TargetOffset = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserID = table.Column<Guid>(type: "TEXT", nullable: false)
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameRoundGhostGuesses", x => x.ID);
+                    table.PrimaryKey("PK_GameRoundGhostGuesses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "GameRoundOpposingTeamGuesses",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameSessionID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameRoundID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameSessionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameRoundId = table.Column<Guid>(type: "TEXT", nullable: false),
                     IsLeft = table.Column<bool>(type: "INTEGER", nullable: false),
-                    UserID = table.Column<Guid>(type: "TEXT", nullable: false)
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameRoundOpposingTeamGuesses", x => x.ID);
+                    table.PrimaryKey("PK_GameRoundOpposingTeamGuesses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "GameRoundOpposingTeamSelections",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameSessionID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameRoundID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameSessionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameRoundId = table.Column<Guid>(type: "TEXT", nullable: false),
                     IsLeft = table.Column<bool>(type: "INTEGER", nullable: false),
                     Team = table.Column<byte>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameRoundOpposingTeamSelections", x => x.ID);
+                    table.PrimaryKey("PK_GameRoundOpposingTeamSelections", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "GameRoundSelectorSelections",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameSessionID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameRoundID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameSessionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameRoundId = table.Column<Guid>(type: "TEXT", nullable: false),
                     TargetOffset = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserID = table.Column<Guid>(type: "TEXT", nullable: false)
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameRoundSelectorSelections", x => x.ID);
+                    table.PrimaryKey("PK_GameRoundSelectorSelections", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "GameSessionResults",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameSessionID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameSessionId = table.Column<Guid>(type: "TEXT", nullable: false),
                     WinningTeam = table.Column<byte>(type: "INTEGER", nullable: false),
                     WinningScore = table.Column<int>(type: "INTEGER", nullable: false),
                     LosingTeam = table.Column<byte>(type: "INTEGER", nullable: false),
@@ -84,48 +84,48 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameSessionResults", x => x.ID);
+                    table.PrimaryKey("PK_GameSessionResults", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "SpectrumCards",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     LeftName = table.Column<string>(type: "TEXT", nullable: false),
                     RightName = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SpectrumCards", x => x.ID);
+                    table.PrimaryKey("PK_SpectrumCards", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "GameRounds",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GameSessionID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameSessionId = table.Column<Guid>(type: "TEXT", nullable: false),
                     TeamTurn = table.Column<byte>(type: "INTEGER", nullable: false),
-                    SpectrumCardID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    SpectrumCardId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Clue = table.Column<string>(type: "TEXT", nullable: false),
                     TargetOffset = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameRounds", x => x.ID);
+                    table.PrimaryKey("PK_GameRounds", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GameRounds_SpectrumCards_SpectrumCardID",
-                        column: x => x.SpectrumCardID,
+                        name: "FK_GameRounds_SpectrumCards_SpectrumCardId",
+                        column: x => x.SpectrumCardId,
                         principalTable: "SpectrumCards",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameRounds_SpectrumCardID",
+                name: "IX_GameRounds_SpectrumCardId",
                 table: "GameRounds",
-                column: "SpectrumCardID");
+                column: "SpectrumCardId");
         }
 
         /// <inheritdoc />

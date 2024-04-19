@@ -4,15 +4,15 @@ namespace Application.HubServices;
 
 public interface IGameRoundHubService
 {
-    public Task NotifyRoundStart(Guid gameSessionID, GameRoundDTO gameRound);
+    public Task NotifyRoundStart(Guid gameSessionId, GameRoundDTO gameRound);
 
-    public Task NotifyTeamTurnGhostGuess(Guid gameSessionID, GameRoundGhostGuessDTO guess);
+    public Task NotifyTeamTurnGhostGuess(Guid gameSessionId, GameRoundGhostGuessDTO guess);
 
-    public Task NotifyTeamTurnSelectorSelect(Guid gameSessionID, GameRoundSelectorSelectionDTO selection);
+    public Task NotifyTeamTurnSelectorSelect(Guid gameSessionId, GameRoundSelectorSelectionDTO selection);
 
-    public Task NotifyPsychicClue(Guid gameSessionID, GameRoundDTO gameRoundWithClue);
+    public Task NotifyPsychicClue(Guid gameSessionId, GameRoundDTO gameRoundWithClue);
 
-    public Task NotifyOpposingTeamGhostGuess(Guid gameSessionID, GameRoundGhostGuessDTO guess);
+    public Task NotifyOpposingTeamGhostGuess(Guid gameSessionId, GameRoundGhostGuessDTO guess);
 
-    public Task NotifyOpposingTeamSelectorSelect(Guid gameSessionID, GameRoundOpposingTeamSelectionDTO selection);
+    public Task NotifyOpposingTeamSelectorSelect(Guid gameSessionId, GameRoundOpposingTeamSelectionDTO selection);
 }

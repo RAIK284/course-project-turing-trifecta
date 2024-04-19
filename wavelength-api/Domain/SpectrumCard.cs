@@ -6,7 +6,7 @@
 /// </summary>
 public class SpectrumCard
 {
-    public Guid ID { get; set; }
+    public Guid Id { get; set; }
 
     public string LeftName { get; set; }
 

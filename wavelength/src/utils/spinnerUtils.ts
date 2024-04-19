@@ -111,6 +111,27 @@ const drawSingleTarget = (
   }
 };
 
+const drawSelector = (
+  ctx: CanvasRenderingContext2D,
+  color: string,
+  angleDegrees: number,
+  size: number
+) => {
+  const angleRadians = (Math.PI * angleDegrees) / 180;
+  const halfSize = size / 2;
+  const xCos = Math.cos(angleRadians);
+  const ySin = Math.sin(angleRadians + Math.PI);
+  const endX = (2 / 5) * size * xCos + halfSize;
+  const endY = (2 / 5) * size * ySin + halfSize;
+  ctx.beginPath();
+  ctx.moveTo(halfSize, halfSize);
+  ctx.lineTo(endX, endY);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 18;
+  ctx.lineCap = "round";
+  ctx.stroke();
+};
+
 const drawMiddleCircle = (
   ctx: CanvasRenderingContext2D,
   color: string,
@@ -129,7 +150,6 @@ export const drawSpinner = (
   size: number,
   options: SpinnerOptions
 ) => {
-  const halfSize = size / 2;
   const { colors } = tailWindConfig;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   clearCanvas(ctx, size);
@@ -184,16 +204,32 @@ export const drawSpinner = (
     );
   }
 
+  if (options.ghostGuesses) {
+    options.ghostGuesses.forEach((angle) =>
+      drawSelector(ctx, colors["ghost-guess"], angle, size)
+    );
+  }
+
   if (options.userMousePosition) {
     const { x, y } = options.userMousePosition;
 
     if (x != -1 && y != -1) {
-      const oppositeOverAdjacent = (y - halfSize) / (halfSize - x);
-      let angle = Math.atan(oppositeOverAdjacent);
-      angle = angle < 0 ? angle + Math.PI : angle;
-      drawSingleTarget(ctx, "blue", (angle * 180) / Math.PI, 3, size);
+      drawSelector(
+        ctx,
+        colors["center-red"],
+        getMousePositionDegrees(x, y, size),
+        size
+      );
     }
   }
 
   drawMiddleCircle(ctx, colors["center-red"], size);
 };
+
+export function getMousePositionDegrees(x: number, y: number, size: number) {
+  const halfSize = size / 2;
+  const oppositeOverAdjacent = (y - halfSize) / (halfSize - x);
+  let angle = Math.atan(oppositeOverAdjacent);
+  angle = angle < 0 ? angle + Math.PI : angle;
+  return (180 * angle) / Math.PI;
+}

@@ -5,6 +5,7 @@ using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Persistence.DataTransferObject;
+using Persistence.Repositories;
 
 namespace Application.Account;
 
@@ -29,13 +30,16 @@ public class Login
 
     public class Handler : IRequestHandler<Command, Result<UserDTO>>
     {
+        private readonly IGameSessionRepository gameSessionRepository;
         private readonly TokenService tokenService;
         private readonly UserManager<User> userManager;
 
-        public Handler(UserManager<User> userManager, TokenService tokenService)
+        public Handler(UserManager<User> userManager, TokenService tokenService,
+            IGameSessionRepository gameSessionRepository)
         {
             this.userManager = userManager;
             this.tokenService = tokenService;
+            this.gameSessionRepository = gameSessionRepository;
         }
 
         public async Task<Result<UserDTO>> Handle(Command request, CancellationToken cancellationToken)
@@ -48,14 +52,24 @@ public class Login
 
             if (!result) return Result<UserDTO>.Failure("Incorrect password.");
 
-            return Result<UserDTO>.Success(new UserDTO
+            var userDTO = new UserDTO
             {
                 UserName = user.UserName,
                 Email = user.Email,
                 Token = tokenService.CreateToken(user),
-                AvatarID = user.AvatarID,
-                ID = Guid.Parse(user.Id)
-            });
+                AvatarId = user.AvatarId,
+                Id = Guid.Parse(user.Id)
+            };
+
+            var activeGameSession = await gameSessionRepository.GetActiveSession(userDTO.Id);
+
+            if (activeGameSession != null)
+            {
+                userDTO.ActiveGameSession = activeGameSession;
+                userDTO.ActiveGameSessionId = activeGameSession.Id;
+            }
+
+            return Result<UserDTO>.Success(userDTO);
         }
     }
 }
