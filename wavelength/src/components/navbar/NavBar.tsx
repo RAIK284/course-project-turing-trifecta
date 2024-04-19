@@ -25,23 +25,19 @@ const NavBar: React.FC = observer(() => {
   const { isMobile } = useWindowSize();
   const [showProfileDropdown, setShowProfileDropdown] =
     useState<boolean>(false);
-
-  // If the user logs out or logs in, make sure the profile dropdown isn't showing from prior usage.
+// If the user logs our or logs in, make sure the profile dropdown isn't showing from prior usage.
   useEffect(() => {
     setShowProfileDropdown(false);
   }, [user]);
-
-  // Copies the text of the game code to the user's clipboard
+// Copies the text of the game code to the user's clipboard
   const handleJoinCodeButtonClick = () => {
     navigator.clipboard.writeText(gameSession.joinCode);
   };
-
-  // Navigates the user to the login page
+// Navigate to the login page
   const handleLoginButtonClick = () => {
     navigate(WavelengthPath.LOGIN);
   };
-
-  // Navigates the user to the register page
+// Navigate to the register page
   const handleRegisterButtonClick = () => {
     navigate(WavelengthPath.REGISTER);
   };
