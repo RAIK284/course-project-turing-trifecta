@@ -1,4 +1,3 @@
-import Spinner from "../components/spinner/Spinner";
 import { useNavigate } from "react-router-dom";
 import { WavelengthPath } from "../routing/Routes";
 
@@ -54,7 +53,6 @@ const AuthenticatedLandingPage: React.FC = () => {
         </div>
       </div>
     </div>
-    <div className = "fixed bottom-100 left-100 w-half"><Spinner /></div> {/* Adjust this value as needed */}
   </div>
   );
 };
