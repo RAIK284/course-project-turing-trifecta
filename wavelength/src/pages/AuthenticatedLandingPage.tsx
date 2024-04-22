@@ -2,12 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { WavelengthPath } from "../routing/Routes";
 import { useStore } from "../stores/store";
 import { useStoreValue } from "../stores/storeValue";
+import { useState } from "react";
+import { observer } from "mobx-react-lite";
 
-const AuthenticatedLandingPage: React.FC = () => {
+const AuthenticatedLandingPage: React.FC = observer(() => {
   const navigate = useNavigate();
   const { gameSessionStore, userStore } = useStore();
-  const { create: createGameSession } = gameSessionStore;
+  const { create: createGameSession, join } = gameSessionStore;
   const [user] = useStoreValue(userStore.userStoreValue);
+  const [gameSessionCode, setGameSessionCode] = useState<string>("");
+  const [, , error] = useStoreValue(gameSessionStore.gameSessionStoreValue);
+
+  // This condition will never be true.
+  if (!user) return <></>;
 
   const createSession = () => {
     if (user) {
@@ -17,6 +24,19 @@ const AuthenticatedLandingPage: React.FC = () => {
 
   const handleRulesPageButtonClick = () => {
     navigate(WavelengthPath.RULES);
+  };
+
+  const handleGameSessionCodeInputUpdate = (newValue: string) => {
+    const value = newValue.replace("#", "");
+    if (value.length > 6) {
+      return;
+    }
+
+    setGameSessionCode(value);
+  };
+
+  const handleJoinButtonClick = () => {
+    join(user?.id, gameSessionCode);
   };
 
   return (
@@ -29,11 +49,23 @@ const AuthenticatedLandingPage: React.FC = () => {
           >
             JOIN SESSION
           </text>
-          <input
-            type="text"
-            placeholder="ENTER GAME SESSION ID"
-            className="w-full h-10 p-2 bg-cover-blue rounded-lg text-white text-center placeholder-white"
-          />
+          <div className="flex gap-1">
+            <input
+              value={gameSessionCode ? `#${gameSessionCode}` : undefined}
+              onChange={(e) => handleGameSessionCodeInputUpdate(e.target.value)}
+              type="text"
+              placeholder="ENTER GAME SESSION ID"
+              className="w-full h-10 p-2 bg-cover-blue rounded-lg text-white text-center placeholder-white"
+            />
+            <button
+              className="rounded-lg bg-cover-blue px-5"
+              disabled={gameSessionCode.length !== 6}
+              onClick={handleJoinButtonClick}
+            >
+              JOIN
+            </button>
+          </div>
+          {error && <span className="text-center-red">{error}</span>}
         </div>
         <div className="w-full flex items-center">
           <hr className="flex-grow border-t-2 border-gray-300" />
@@ -65,6 +97,6 @@ const AuthenticatedLandingPage: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default AuthenticatedLandingPage;

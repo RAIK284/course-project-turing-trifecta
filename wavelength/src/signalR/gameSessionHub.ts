@@ -10,14 +10,15 @@ class GameSessionHub {
 
   gameSessionId: string | undefined;
 
-  private createConnection = (gameSessionId: string) => {
-    if (this.connection && gameSessionId === this.gameSessionId) return;
+  private createConnection = (gameSessionId: string): boolean => {
+    if (this.connection && gameSessionId === this.gameSessionId) return false;
+    console.log(this.connection, this.gameSessionId, gameSessionId);
 
     this.gameSessionId = gameSessionId;
 
     const token = store.userStore.token;
 
-    if (!token) return;
+    if (!token) return false;
 
     this.connection = new HubConnectionBuilder()
       .withUrl(
@@ -32,12 +33,12 @@ class GameSessionHub {
 
       .configureLogging(LogLevel.Information)
       .build();
+
+    return true;
   };
 
   connect = async (gameSessionId: string) => {
-    this.createConnection(gameSessionId);
-
-    if (!this.connection) return;
+    if (!this.createConnection(gameSessionId) || !this.connection) return;
 
     try {
       await this.connection.start();

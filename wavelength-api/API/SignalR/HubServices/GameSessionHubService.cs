@@ -28,6 +28,6 @@ public class GameSessionHubService : IGameSessionHubService
     public async Task NotifyUserLeft(Guid gameSessionId, Guid userId)
     {
         await gameSessionHub.Clients.Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
-            .SendAsync("UserJoinedGameSession", userId);
+            .SendAsync("UserLeftGameSession", userId);
     }
 }

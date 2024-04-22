@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { makeAutoObservable } from "mobx";
 
 export class StoreValue<T> {
@@ -46,7 +47,13 @@ export class StoreValue<T> {
       this.setError(undefined);
       return result;
     } catch (error) {
-      if (error instanceof Error) {
+      if (
+        error instanceof AxiosError &&
+        error.response &&
+        error.response.data
+      ) {
+        this.setError(error.response.data);
+      } else if (error instanceof Error) {
         this.setError(error.message);
       }
       this.setLoading(false);

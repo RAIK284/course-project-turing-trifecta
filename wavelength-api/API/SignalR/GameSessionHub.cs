@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace API.SignalR;
 
+[Authorize]
 public class GameSessionHub : Hub
 {
     private readonly IMediator mediator;
@@ -29,10 +30,11 @@ public class GameSessionHub : Hub
         var httpContext = Context.GetHttpContext();
         var _gameSessionId = httpContext.Request.Query["gameSessionId"];
         var canParseGameSessionId = Guid.TryParse(_gameSessionId, out var gameSessionId);
-        var canParseUserId = Guid.TryParse(Context.UserIdentifier, out var userId);
-
+        var canParseUserId = Guid.TryParse(Context.User.Identity.Name, out var userId);
+        
         if (gameSessionId == null || !canParseGameSessionId || !canParseUserId) return;
 
+        Console.WriteLine(gameSessionId);
         await JoinGameSessionGroup(userId, gameSessionId);
 
         await base.OnConnectedAsync();

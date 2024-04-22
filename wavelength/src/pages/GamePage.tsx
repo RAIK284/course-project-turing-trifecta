@@ -21,7 +21,6 @@ enum GameStatus {
 }
 
 const getGameStatus = (game: GameSession): GameStatus => {
-  if (game.id) return GameStatus.SELECTOR_SELECT;
   if (game.startTime === null) return GameStatus.CHOOSE_TEAMS;
 
   return GameStatus.CHOOSE_TEAMS;
