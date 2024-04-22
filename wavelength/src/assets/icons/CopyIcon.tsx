@@ -1,7 +1,7 @@
 import { IconProps } from "./icon";
 
 // Imported from https://heroicons.com/
-const ArrowRightIcon: React.FC<IconProps> = ({ className = "w-6 h-6" }) => (
+const CopyIcon: React.FC<IconProps> = ({ className = "w-6 h-6" }) => (
     <svg 
     xmlns="http://www.w3.org/2000/svg" 
     fill="none" 
@@ -19,4 +19,4 @@ const ArrowRightIcon: React.FC<IconProps> = ({ className = "w-6 h-6" }) => (
   
 );
 
-export default ArrowRightIcon;
+export default CopyIcon;

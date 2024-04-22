@@ -1,5 +1,5 @@
 import { cn } from "../../utils/utils";
-import CopyTextIcon from "../../assets/icons/CopyTextIcon";
+import CopyTextIcon from "../../assets/icons/CopyIcon";
 
 
 type NavBarProps = {
