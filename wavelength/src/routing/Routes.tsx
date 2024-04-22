@@ -56,7 +56,14 @@ const router = createBrowserRouter([
           </AuthenticatedRoute>
         ),
       },
-      { path: WavelengthPath.GAME, element: <GamePage /> },
+      {
+        path: WavelengthPath.GAME,
+        element: (
+          <AuthenticatedRoute connectToGameSessionHub={true}>
+            <GamePage />
+          </AuthenticatedRoute>
+        ),
+      },
       {
         path: WavelengthPath.PROFILE,
         element: (
