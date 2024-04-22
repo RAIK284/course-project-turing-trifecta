@@ -1,8 +1,4 @@
-import {
-  HubConnectionBuilder,
-  HubConnection,
-  LogLevel,
-} from "@microsoft/signalr";
+import { HubConnectionBuilder, HubConnection } from "@microsoft/signalr";
 import { store } from "../stores/store";
 
 class GameSessionHub {
@@ -12,7 +8,6 @@ class GameSessionHub {
 
   private createConnection = (gameSessionId: string): boolean => {
     if (this.connection && gameSessionId === this.gameSessionId) return false;
-    console.log(this.connection, this.gameSessionId, gameSessionId);
 
     this.gameSessionId = gameSessionId;
 
@@ -27,11 +22,8 @@ class GameSessionHub {
         }`,
         {
           accessTokenFactory: () => token,
-          withCredentials: false,
         }
       )
-
-      .configureLogging(LogLevel.Information)
       .build();
 
     return true;

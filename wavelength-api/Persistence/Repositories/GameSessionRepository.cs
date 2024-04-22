@@ -35,7 +35,7 @@ public class GameSessionRepository : IGameSessionRepository
         // Have the user join the game
         await Join(newGameSession.Id, ownerId);
 
-        return mapper.Map<GameSessionDTO>(newGameSession);
+        return await Get(newGameSession.Id);
     }
 
     public async Task<GameSessionDTO?> Get(Guid gameSessionId)
