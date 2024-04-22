@@ -24,11 +24,9 @@ const ChooseTeams: React.FC<ChooseTeamsProps> = observer(({ game }) => {
 
   const usersTeam = gameMemberForUser.team;
   const canSelectTeamOne =
-    usersTeam !== Team.ONE &&
-    teamOneMembers.length - teamTwoMembers.length <= 0;
+    usersTeam !== Team.ONE && teamOneMembers.length - teamTwoMembers.length < 0;
   const canSelectTeamTwo =
-    usersTeam !== Team.TWO &&
-    teamTwoMembers.length - teamOneMembers.length <= 0;
+    usersTeam !== Team.TWO && teamTwoMembers.length - teamOneMembers.length < 0;
 
   return (
     <div className="ChooseTeams flex flex-col items-center gap-10">

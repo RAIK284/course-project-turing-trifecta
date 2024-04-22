@@ -3,6 +3,9 @@ import { StoreValue } from "./storeValue";
 import GameSession from "../models/GameSession";
 import api from "../api/api";
 import Team from "../models/Team";
+import gameSessionHub from "../signalR/gameSessionHub";
+import GameSessionMember from "../models/GameSessionMember";
+import { deepCopy } from "../utils/utils";
 
 export default class GameSessionStore {
   gameSessionStoreValue = new StoreValue<GameSession>();
@@ -11,6 +14,41 @@ export default class GameSessionStore {
 
   constructor() {
     makeAutoObservable(this);
+
+    gameSessionHub.observe("UserSwitchedTeams", (member: GameSessionMember) => {
+      if (!this.gameSessionStoreValue.value) return;
+
+      const gameSession = deepCopy(this.gameSessionStoreValue.value);
+      const memberIndex = gameSession.members.findIndex(
+        (m) => m.userId === member.userId
+      );
+
+      runInAction(() => {
+        if (memberIndex === -1) gameSession.members.push(member);
+        else gameSession.members[memberIndex] = member;
+
+        this.gameSessionStoreValue.setValue(gameSession);
+      });
+    });
+
+    gameSessionHub.observe(
+      "UserJoinedGameSession",
+      (member: GameSessionMember) => {
+        if (!this.gameSessionStoreValue.value) return;
+
+        const gameSession = deepCopy(this.gameSessionStoreValue.value);
+        const memberIndex = gameSession.members.findIndex(
+          (m) => m.userId === member.userId
+        );
+
+        runInAction(() => {
+          if (memberIndex === -1) gameSession.members.push(member);
+          else gameSession.members[memberIndex] = member;
+
+          this.gameSessionStoreValue.setValue(gameSession);
+        });
+      }
+    );
   }
 
   create = async (ownerId: string) => {

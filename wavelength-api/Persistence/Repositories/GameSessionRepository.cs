@@ -61,7 +61,12 @@ public class GameSessionRepository : IGameSessionRepository
 
         await context.SaveChangesAsync();
 
-        return mapper.Map<GameSessionMemberDTO>(gameSessionMember);
+        return await context.GameSessionMembers
+            .Where(gsm => gsm.UserId == userId)
+            .Include(gsm => gsm.User)
+            .Include(gsm => gsm.GameSession)
+            .ProjectTo<GameSessionMemberDTO>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<GameSessionDTO?> GetByJoinCode(string joinCode)

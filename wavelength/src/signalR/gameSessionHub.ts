@@ -6,6 +6,8 @@ class GameSessionHub {
 
   gameSessionId: string | undefined;
 
+  observers: Map<string, (data: unknown) => void> = new Map();
+
   private createConnection = (gameSessionId: string): boolean => {
     if (this.connection && gameSessionId === this.gameSessionId) return false;
 
@@ -15,7 +17,7 @@ class GameSessionHub {
 
     if (!token) return false;
 
-    this.connection = new HubConnectionBuilder()
+    const connection = new HubConnectionBuilder()
       .withUrl(
         `${import.meta.env.APP_API_URL}/hub/gameSession?gameSessionId=${
           this.gameSessionId
@@ -24,9 +26,25 @@ class GameSessionHub {
           accessTokenFactory: () => token,
         }
       )
+      .withAutomaticReconnect()
       .build();
 
+    this.observers.forEach((action, key) => {
+      connection.on(key, (data) => {
+        action(data);
+      });
+    });
+
+    this.connection = connection;
+
     return true;
+  };
+
+  observe = <T extends object>(
+    eventName: string,
+    action: (data: T) => void
+  ) => {
+    this.observers.set(eventName, action as (data: unknown) => void);
   };
 
   connect = async (gameSessionId: string) => {

@@ -47,10 +47,10 @@ public class Join
 
             if (member == null) return Result<GameSessionDTO>.Failure("You cannot join this game session.");
 
-            await sessionHubService.NotifyUserJoined(gameSession.Id, member);
-
             if (gameSession.Members != null)
                 gameSession.Members.Add(member);
+
+            await sessionHubService.NotifyUserJoined(gameSession.Id, member);
 
             return Result<GameSessionDTO>.Success(gameSession);
         }
