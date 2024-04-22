@@ -38,15 +38,18 @@ const RegisterPage: React.FC = () => {
 
   function handleRegisterClick(){
     //Still need to connect to backend and actually register the user
-    if(password == confirm){
-      navigate(WavelengthPath.LANDING);
-    }
+    // const user = await register();
+    // if(user){
+      // navigate(WavelengthPath.LANDING);
+    // }
+
+    navigate(WavelengthPath.LANDING);
   }
 
 
   return(
     <div className="h-screen flex justify-center self-center space-y-1/2">
-      <form className="grid grid-rows-4 gap-y-6 h-1/2 w-1/3 my-auto">
+      <form className="grid grid-rows-4 gap-y-6 h-1/2 w-1/3 my-auto" onClick={handleRegisterClick}>
 
         <input //Enter Email
         className="bg-theme-blue border-2 border-target-2 text-center w-full h-10 p-2 rounded-lg placeholder-white text-white" 
@@ -78,8 +81,7 @@ const RegisterPage: React.FC = () => {
         <button 
         type="submit" 
         className="bg-cover-blue h-11 rounded-lg md:text-2xl" 
-        disabled={isLoading || !email || !username || !password || !confirm}
-        onClick={handleRegisterClick} 
+        disabled={isLoading || !email || !username || !password || !confirm || password != confirm} 
         style={{textShadow: "0 0 5px #ffffff"}}>
         REGISTER
         </button>
