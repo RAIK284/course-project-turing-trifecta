@@ -1,15 +1,9 @@
 import { useState } from "react";
-import { GameRound } from "../../models/GameRound";
-import GameSession from "../../models/GameSession";
 import GameBoard from "./board/GameBoard";
 import Spinner from "./board/Spinner";
+import { GamePageProps } from "../../pages/GamePage";
 
-type SelectorSelectProps = {
-  game: GameSession;
-  round: GameRound;
-};
-
-const SelectorSelect: React.FC<SelectorSelectProps> = ({ game, round }) => {
+const SelectorSelect: React.FC<GamePageProps> = ({ game, round }) => {
   const [selection, setSelection] = useState<number>(-1);
 
   const handleSendSelection = () => {

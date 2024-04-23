@@ -26,6 +26,11 @@ export default class UserStore {
     );
   }
 
+  reset = () => {
+    this.setToken(null);
+    this.userStoreValue.setValue(undefined);
+  };
+
   setToken = (token: string | null) => {
     this.token = token;
   };
@@ -112,7 +117,6 @@ export default class UserStore {
   };
 
   logout = async () => {
-    this.setToken(null);
-    this.userStoreValue.setValue(undefined);
+    this.reset();
   };
 }

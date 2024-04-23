@@ -5,6 +5,7 @@ import { RoundRole } from "./RoundRole";
 import { SelectorSelection } from "./SelectorSelection";
 import { SpectrumCard } from "./SpectrumCard";
 import Team from "./Team";
+import TeamRole from "./TeamRole";
 
 export type GameRound = {
   id: string;
@@ -20,3 +21,12 @@ export type GameRound = {
   opposingGhostGuesses?: OpposingGhostGuess[];
   opposingTeamSelection?: OpposingSelectorSelection;
 };
+
+export function getRoundRoleForUser(
+  userId: string,
+  round: GameRound
+): TeamRole {
+  const { roundRoles } = round;
+
+  return roundRoles?.find((rr) => rr.userId === userId)?.role ?? TeamRole.NONE;
+}

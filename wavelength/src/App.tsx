@@ -30,18 +30,16 @@ const App: React.FC = observer(() => {
   }, [activeGameSession]);
 
   return (
-    <div className="App pb-10 bg-stars bg-center bg-no-repeat bg-cover text-white">
-      <div className="z-10">
-        {loadingOffStart ? (
-          <AppLoader />
-        ) : (
-          <>
-            <NavBar />
-            {/* Children passed into the app in Routes.tsx will be output here */}
-            <Outlet />
-          </>
-        )}
-      </div>
+    <div className="App pb-10 bg-stars bg-center bg-no-repeat bg-cover h-screen w-screen text-white">
+      {loadingOffStart ? (
+        <AppLoader />
+      ) : (
+        <>
+          <NavBar />
+          {/* Children passed into the app in Routes.tsx will be output here */}
+          <Outlet />
+        </>
+      )}
     </div>
   );
 });

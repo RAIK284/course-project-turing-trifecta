@@ -184,17 +184,14 @@ public class GameSessionRepository : IGameSessionRepository
 
     public static GameSessionDTO? AdjustTargetOffsets(Guid userId, GameSessionDTO? gameSession)
     {
-        if (gameSession == null) return null;
+        if (gameSession == null || gameSession.GameRound < 0 || !gameSession.Rounds.Any()) return null;
 
-        foreach (var gameSessionRound in gameSession.Rounds)
-        {
-            var roundRole = gameSessionRound.RoundRoles
-                .SingleOrDefault(rr => rr.UserId == userId);
+        var gameRound = gameSession.Rounds[gameSession.GameRound];
+        var roundRole = gameRound.RoundRoles
+            .SingleOrDefault(rr => rr.UserId == userId);
 
-            if (roundRole != null)
-                if (roundRole.Role != TeamRole.PSYCHIC)
-                    gameSessionRound.TargetOffset = -1;
-        }
+        if (roundRole != null && roundRole.Role != TeamRole.PSYCHIC)
+            gameRound.TargetOffset = -1;
 
         return gameSession;
     }

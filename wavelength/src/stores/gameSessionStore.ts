@@ -55,6 +55,10 @@ export default class GameSessionStore {
     });
   }
 
+  reset = () => {
+    this.gameSessionStoreValue.setValue(undefined);
+  };
+
   create = async (ownerId: string) => {
     await this.gameSessionStoreValue.handleAPICall(async () => {
       const result = await api.GameSessions.create(ownerId);

@@ -6,9 +6,11 @@ import ChooseTeams from "../components/game/chooseTeams/ChooseTeams";
 import { Navigate } from "react-router-dom";
 import { WavelengthPath } from "../routing/Routes";
 import { ReactNode } from "react";
-import { psychicGiveClueRound, selectorSelectRound } from "../api/mockData";
 import PsychicGiveClue from "../components/game/PsychicGiveClue";
 import SelectorSelect from "../components/game/SelectorSelect";
+import User from "../models/User";
+import { GameRound, getRoundRoleForUser } from "../models/GameRound";
+import TeamRole from "../models/TeamRole";
 
 enum GameStatus {
   CHOOSE_TEAMS,
@@ -20,21 +22,36 @@ enum GameStatus {
   ROUND_END,
 }
 
-const getGameStatus = (game: GameSession): GameStatus => {
+export type GamePageProps = {
+  game: GameSession;
+  round: GameRound;
+  user: User;
+};
+
+const getGameStatus = (user: User, game: GameSession): GameStatus => {
   const currentRound = getCurrentGameRound(game);
 
-  if (game.startTime === null) return GameStatus.CHOOSE_TEAMS;
-  if (currentRound && !currentRound.clue) return GameStatus.PSYCHIC_GIVE_CLUE;
+  if (currentRound) {
+    const roundRole = getRoundRoleForUser(user.id, currentRound);
+
+    switch (roundRole) {
+      case TeamRole.PSYCHIC:
+        return GameStatus.PSYCHIC_GIVE_CLUE;
+      case TeamRole.SELECTOR:
+        return GameStatus.SELECTOR_SELECT;
+    }
+  }
 
   return GameStatus.CHOOSE_TEAMS;
 };
 
 const GamePage: React.FC = observer(() => {
-  const { gameSessionStore } = useStore();
+  const { gameSessionStore, userStore } = useStore();
   const [game] = useStoreValue(gameSessionStore.gameSessionStoreValue);
+  const [user] = useStoreValue(userStore.userStoreValue);
   const currentRound = getCurrentGameRound(game);
 
-  if (!game) {
+  if (!game || !user) {
     return <Navigate to={WavelengthPath.LANDING} />;
   }
 
@@ -43,17 +60,21 @@ const GamePage: React.FC = observer(() => {
 
   let element: ReactNode;
 
-  switch (getGameStatus(game)) {
+  switch (getGameStatus(user, game)) {
     case GameStatus.CHOOSE_TEAMS:
       element = <ChooseTeams game={game} />;
       break;
     case GameStatus.PSYCHIC_GIVE_CLUE:
       if (currentRound)
-        element = <PsychicGiveClue game={game} round={currentRound} />;
+        element = (
+          <PsychicGiveClue game={game} round={currentRound} user={user} />
+        );
       break;
     case GameStatus.SELECTOR_SELECT:
       if (currentRound)
-        element = <SelectorSelect game={game} round={currentRound} />;
+        element = (
+          <SelectorSelect game={game} round={currentRound} user={user} />
+        );
       break;
   }
 
