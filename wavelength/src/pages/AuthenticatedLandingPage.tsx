@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { WavelengthPath } from "../routing/Routes";
 import { useStore } from "../stores/store";
 import { useStoreValue } from "../stores/storeValue";
@@ -11,10 +11,16 @@ const AuthenticatedLandingPage: React.FC = observer(() => {
   const { create: createGameSession, join } = gameSessionStore;
   const [user] = useStoreValue(userStore.userStoreValue);
   const [gameSessionCode, setGameSessionCode] = useState<string>("");
-  const [, , error] = useStoreValue(gameSessionStore.gameSessionStoreValue);
+  const [game, , error] = useStoreValue(gameSessionStore.gameSessionStoreValue);
 
   // This condition will never be true.
   if (!user) return <></>;
+
+  if (game) {
+    return (
+      <Navigate to={WavelengthPath.GAME.replace(":gameSessionId", game.id)} />
+    );
+  }
 
   const createSession = () => {
     if (user) {

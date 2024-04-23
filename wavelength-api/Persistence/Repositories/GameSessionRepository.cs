@@ -147,6 +147,16 @@ public class GameSessionRepository : IGameSessionRepository
             .Where(gs => gameSessionIdsForUser.Contains(gs.Id))
             .Include(gs => gs.Members)
             .ThenInclude(gsm => gsm.User)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.GhostGuesses)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.SelectorSelection)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.RoundRoles)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.OpposingGhostGuesses)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.OpposingSelectorSelection)
             .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }
