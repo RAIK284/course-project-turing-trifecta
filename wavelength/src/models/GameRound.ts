@@ -31,43 +31,58 @@ export function getRoundRoleForUser(
   return roundRoles?.find((rr) => rr.userId === userId);
 }
 
+export type RoundDirection = {
+  canDoAction: boolean;
+  message: string;
+};
+
 export function getRoundDirections(userId: string, round: GameRound) {
   const roundRole = getRoundRoleForUser(userId, round);
 
-  if (!roundRole) return "";
+  const direct = (canDoAction: boolean, message: string): RoundDirection => {
+    return {
+      canDoAction,
+      message,
+    };
+  };
+
+  if (!roundRole) return direct(false, "");
 
   const { role, team } = roundRole;
 
   if (team !== round.teamTurn) {
-    return "Awaiting opposing team responses...";
+    return direct(false, "Awaiting opposing team responses...");
   }
 
   switch (role) {
     case TeamRole.PSYCHIC:
       const canPsychicGiveClue = !round.clue;
 
-      return canPsychicGiveClue ? "Enter your clue:" : "Clue has been sent!";
+      return canPsychicGiveClue
+        ? direct(true, "Enter your clue:")
+        : direct(false, "Clue has been sent!");
     case TeamRole.GHOST:
       const canGhostGuess = !!round.clue;
 
       return canGhostGuess
-        ? "Select your guess"
-        : "Awaiting psychic to give their clue...";
+        ? direct(true, "Select your guess")
+        : direct(false, "Awaiting psychic to give their clue...");
     case TeamRole.SELECTOR:
       const numGhosts = round.roundRoles?.filter(
         (rr) => rr.team === round.teamTurn && rr.role === TeamRole.GHOST
       ).length;
-      const isAwaitingPsychic = !!round.clue;
+      const isAwaitingPsychic = !round.clue;
 
-      if (isAwaitingPsychic) return "Awaiting psychic to give their clue...";
+      if (isAwaitingPsychic)
+        return direct(false, "Awaiting psychic to give their clue...");
 
       const canSelectorSelect =
         round.ghostGuesses && round.ghostGuesses.length === numGhosts;
 
       return canSelectorSelect
-        ? "Select your guess"
-        : "Awaiting ghosts to select their guesses...";
+        ? direct(true, "Select your guess")
+        : direct(false, "Awaiting ghosts to select their guesses...");
   }
 
-  return "";
+  return direct(false, "");
 }

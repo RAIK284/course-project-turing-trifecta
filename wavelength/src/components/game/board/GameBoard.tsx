@@ -26,7 +26,7 @@ const GameBoard: React.FC<PropsWithChildren<GameBoardProps>> = ({
       <div className="bg-scoreboard-blue flex flex-col pt-5 gap-3 justify-center items-center">
         {round.clue && <ClueDisplay clue={round.clue} />}
         <div className="text-center text-xl">
-          {getRoundDirections(user.id, round)}
+          {getRoundDirections(user.id, round).message}
         </div>
         {children && (
           <div className="flex items-center justify-center flex-col gap-4">
