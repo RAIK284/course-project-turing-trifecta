@@ -5,3 +5,7 @@
 button:disabled {
   opacity: 75%;
 }
+
+body {
+  background-color: #0e1228;
+}

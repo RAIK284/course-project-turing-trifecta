@@ -1,7 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import "./index.css";
 import NavBar from "./components/navbar/NavBar";
-import AppBackground from "./components/AppBackground";
 import { useStore } from "./stores/store";
 import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
@@ -31,17 +30,18 @@ const App: React.FC = observer(() => {
   }, [activeGameSession]);
 
   return (
-    <div className="App bg-theme-blue w-screen h-screen fixed text-white">
-      <AppBackground />
-      {loadingOffStart ? (
-        <AppLoader />
-      ) : (
-        <>
-          <NavBar />
-          {/* Children passed into the app in Routes.tsx will be output here */}
-          <Outlet />
-        </>
-      )}
+    <div className="App pb-10 bg-stars bg-center bg-no-repeat bg-cover text-white">
+      <div className="z-10">
+        {loadingOffStart ? (
+          <AppLoader />
+        ) : (
+          <>
+            <NavBar />
+            {/* Children passed into the app in Routes.tsx will be output here */}
+            <Outlet />
+          </>
+        )}
+      </div>
     </div>
   );
 });

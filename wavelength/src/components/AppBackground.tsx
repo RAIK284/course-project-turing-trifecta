@@ -14,7 +14,7 @@ const AppBackground: React.FC = memo(() => {
     const dot = (
       <div
         key={i}
-        className={`dot bg-star-${color} absolute`}
+        className={`dot bg-star-${color} fixed`}
         style={{
           width: `${randomRadius}px`,
           height: `${randomRadius}px`,
@@ -26,7 +26,11 @@ const AppBackground: React.FC = memo(() => {
     children.push(dot);
   }
 
-  return <div className="AppBackground">{children}</div>;
+  return (
+    <div className="AppBackground w-full h-full bg-theme-blue fixed z-{-1}">
+      {children}
+    </div>
+  );
 });
 
 export default AppBackground;
