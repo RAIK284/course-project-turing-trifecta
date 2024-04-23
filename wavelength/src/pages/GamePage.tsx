@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import GameSession from "../models/GameSession";
+import GameSession, { getCurrentGameRound } from "../models/GameSession";
 import { useStore } from "../stores/store";
 import { useStoreValue } from "../stores/storeValue";
 import ChooseTeams from "../components/game/chooseTeams/ChooseTeams";
@@ -21,7 +21,10 @@ enum GameStatus {
 }
 
 const getGameStatus = (game: GameSession): GameStatus => {
+  const currentRound = getCurrentGameRound(game);
+
   if (game.startTime === null) return GameStatus.CHOOSE_TEAMS;
+  if (currentRound && !currentRound.clue) return GameStatus.PSYCHIC_GIVE_CLUE;
 
   return GameStatus.CHOOSE_TEAMS;
 };
@@ -29,10 +32,14 @@ const getGameStatus = (game: GameSession): GameStatus => {
 const GamePage: React.FC = observer(() => {
   const { gameSessionStore } = useStore();
   const [game] = useStoreValue(gameSessionStore.gameSessionStoreValue);
+  const currentRound = getCurrentGameRound(game);
 
   if (!game) {
     return <Navigate to={WavelengthPath.LANDING} />;
   }
+
+  if (game.startTime && !currentRound)
+    return <Navigate to={WavelengthPath.LANDING} />;
 
   let element: ReactNode;
 
@@ -41,10 +48,12 @@ const GamePage: React.FC = observer(() => {
       element = <ChooseTeams game={game} />;
       break;
     case GameStatus.PSYCHIC_GIVE_CLUE:
-      element = <PsychicGiveClue game={game} round={psychicGiveClueRound} />;
+      if (currentRound)
+        element = <PsychicGiveClue game={game} round={currentRound} />;
       break;
     case GameStatus.SELECTOR_SELECT:
-      element = <SelectorSelect game={game} round={selectorSelectRound} />;
+      if (currentRound)
+        element = <SelectorSelect game={game} round={currentRound} />;
       break;
   }
 

@@ -44,6 +44,16 @@ public class GameSessionRepository : IGameSessionRepository
             .Where(gs => gs.Id == gameSessionId)
             .Include(gs => gs.Members)
             .ThenInclude(gsm => gsm.User)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.GhostGuesses)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.SelectorSelection)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.RoundRoles)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.OpposingGhostGuesses)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.OpposingSelectorSelection)
             .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }
@@ -160,5 +170,22 @@ public class GameSessionRepository : IGameSessionRepository
         }
 
         return joinCode;
+    }
+
+    public static GameSessionDTO? AdjustTargetOffsets(Guid userId, GameSessionDTO? gameSession)
+    {
+        if (gameSession == null) return null;
+
+        foreach (var gameSessionRound in gameSession.Rounds)
+        {
+            var roundRole = gameSessionRound.RoundRoles
+                .SingleOrDefault(rr => rr.UserId == userId);
+
+            if (roundRole != null)
+                if (roundRole.Role != TeamRole.PSYCHIC)
+                    gameSessionRound.TargetOffset = -1;
+        }
+
+        return gameSession;
     }
 }

@@ -14,7 +14,7 @@ public class Start
         public Guid GameSessionId { get; set; }
     }
 
-    public class Command : IRequest<Result<GameRoundDTO>>
+    public class Command : IRequest<Result<GameSessionDTO>>
     {
         public Params Param;
 
@@ -24,7 +24,7 @@ public class Start
         }
     }
 
-    public class Handler : IRequestHandler<Command, Result<GameRoundDTO>>
+    public class Handler : IRequestHandler<Command, Result<GameSessionDTO>>
     {
         private readonly IGameRoundRepository gameRoundRepository;
         private readonly IGameSessionMemberRepository gameSessionMemberRepository;
@@ -42,26 +42,26 @@ public class Start
             this.gameSessionMemberRepository = gameSessionMemberRepository;
         }
 
-        public async Task<Result<GameRoundDTO>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<GameSessionDTO>> Handle(Command request, CancellationToken cancellationToken)
         {
             var members = await gameSessionMemberRepository.AssignTeamlessPlayersToTeam(request.Param.GameSessionId);
             var membersOnTeamOne = members.Count(m => m.Team == Team.ONE);
             var membersOnTeamTwo = members.Count(m => m.Team == Team.TWO);
 
             if (membersOnTeamOne < 2 || membersOnTeamTwo < 2)
-                return Result<GameRoundDTO>.Failure("Each team must have two players for the game to start.");
+                return Result<GameSessionDTO>.Failure("Each team must have two players for the game to start.");
 
             var isGameStarted = await gameSessionRepository.Start(request.Param.GameSessionId);
 
-            if (!isGameStarted) return Result<GameRoundDTO>.Failure("Failed to start game session.");
+            if (!isGameStarted) return Result<GameSessionDTO>.Failure("Failed to start game session.");
 
-            var firstRound = await gameRoundRepository.StartRound(request.Param.GameSessionId);
+            var gameSession = await gameRoundRepository.StartRound(request.Param.GameSessionId);
 
-            if (firstRound == null) return Result<GameRoundDTO>.Failure("Unable to start game round.");
+            if (gameSession == null) return Result<GameSessionDTO>.Failure("Unable to start game round.");
 
-            await roundHubService.NotifyRoundStart(request.Param.GameSessionId, firstRound);
+            await roundHubService.NotifyRoundStart(request.Param.GameSessionId, gameSession);
 
-            return Result<GameRoundDTO>.Success(firstRound);
+            return Result<GameSessionDTO>.Success(gameSession);
         }
     }
 }

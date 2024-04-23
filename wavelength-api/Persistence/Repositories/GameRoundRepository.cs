@@ -9,20 +9,23 @@ namespace Persistence.Repositories;
 public class GameRoundRepository : IGameRoundRepository
 {
     private readonly DataContext context;
+    private readonly IGameSessionRepository gameSessionRepository;
     private readonly IMapper mapper;
     private readonly Random random;
     private readonly ISpectrumCardRepository spectrumCardRepository;
 
-    public GameRoundRepository(DataContext context, IMapper mapper, ISpectrumCardRepository spectrumCardRepository)
+    public GameRoundRepository(DataContext context, IMapper mapper, ISpectrumCardRepository spectrumCardRepository,
+        IGameSessionRepository gameSessionRepository)
     {
         this.context = context;
         this.mapper = mapper;
         this.spectrumCardRepository = spectrumCardRepository;
+        this.gameSessionRepository = gameSessionRepository;
         random = new Random();
     }
 
     /// <inheritdoc />
-    public async Task<GameRoundDTO?> StartRound(Guid gameSessionId)
+    public async Task<GameSessionDTO?> StartRound(Guid gameSessionId)
     {
         var previousRoundsForGameSession = await context.GameRounds
             .Where(gr => gr.GameSessionId == gameSessionId)
@@ -66,11 +69,7 @@ public class GameRoundRepository : IGameRoundRepository
 
             if (userRoles == null || !userRoles.Any()) return null;
 
-            var result = mapper.Map<GameRoundDTO>(newRound);
-
-            result.RoundRoles = userRoles;
-
-            return result;
+            return await gameSessionRepository.Get(gameSessionId);
         }
 
         return null;

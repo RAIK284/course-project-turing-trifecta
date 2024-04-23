@@ -10,8 +10,13 @@ type ChooseTeamsProps = {
 };
 
 const ChooseTeams: React.FC<ChooseTeamsProps> = observer(({ game }) => {
-  const { userStore } = useStore();
+  const { userStore, gameSessionStore } = useStore();
+  const { start } = gameSessionStore;
   const [user] = useStoreValue(userStore.userStoreValue);
+  const [, isGameLoading] = useStoreValue(
+    gameSessionStore.gameSessionStoreValue
+  );
+
   const teamlessMembers = game.members.filter((gm) => gm.team === Team.ZERO);
   const teamOneMembers = game.members.filter((gm) => gm.team === Team.ONE);
   const teamTwoMembers = game.members.filter((gm) => gm.team === Team.TWO);
@@ -27,6 +32,10 @@ const ChooseTeams: React.FC<ChooseTeamsProps> = observer(({ game }) => {
     usersTeam !== Team.ONE && teamOneMembers.length - teamTwoMembers.length < 0;
   const canSelectTeamTwo =
     usersTeam !== Team.TWO && teamTwoMembers.length - teamOneMembers.length < 0;
+
+  const handleStartGameButtonClick = () => {
+    start(game.id);
+  };
 
   return (
     <div className="ChooseTeams flex flex-col items-center gap-10">
@@ -53,8 +62,9 @@ const ChooseTeams: React.FC<ChooseTeamsProps> = observer(({ game }) => {
       </div>
       {game.ownerId === user?.id && (
         <button
-          disabled={!canStartGame}
+          disabled={!canStartGame || isGameLoading}
           className="bg-center-red w-52 p-3 rounded-md"
+          onClick={handleStartGameButtonClick}
         >
           Start Game
         </button>

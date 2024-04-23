@@ -8,12 +8,12 @@ namespace API.SignalR.HubServices;
 
 public class GameRoundHubService : IGameRoundHubService
 {
-    private readonly IHubContext<GameSessionHub> gameSessionHub;
     private readonly IGameRoundRepository gameRoundRepository;
+    private readonly IHubContext<GameSessionHub> gameSessionHub;
     private readonly IGameSessionMemberRepository gameSessionMemberRepository;
 
     public GameRoundHubService(
-        IHubContext<GameSessionHub> gameSessionHub, 
+        IHubContext<GameSessionHub> gameSessionHub,
         IGameRoundRepository gameRoundRepository,
         IGameSessionMemberRepository gameSessionMemberRepository)
     {
@@ -22,17 +22,18 @@ public class GameRoundHubService : IGameRoundHubService
         this.gameSessionMemberRepository = gameSessionMemberRepository;
     }
 
-    public async Task NotifyRoundStart(Guid gameSessionId, GameRoundDTO gameRound)
+    public async Task NotifyRoundStart(Guid gameSessionId, GameSessionDTO gameSession)
     {
+        var gameRound = gameSession.Rounds[gameSession.GameRound];
         var targetOffset = gameRound.TargetOffset;
         foreach (var roundRole in gameRound.RoundRoles)
         {
             // Only show the psychic the target offset.
             gameRound.TargetOffset = roundRole.Role == TeamRole.PSYCHIC ? targetOffset : -1;
-                
+
             await gameSessionHub.Clients
                 .Group(GameSessionHub.GroupNameForIndividual(roundRole.UserId, gameSessionId))
-                .SendAsync("RoundStarted", gameRound);
+                .SendAsync("RoundStarted", gameSession);
         }
     }
 
@@ -57,7 +58,7 @@ public class GameRoundHubService : IGameRoundHubService
         {
             // Only show the psychic the target offset.
             gameRoundWithClue.TargetOffset = roundRole.Role == TeamRole.PSYCHIC ? targetOffset : -1;
-                
+
             await gameSessionHub.Clients
                 .Group(GameSessionHub.GroupNameForIndividual(roundRole.UserId, gameSessionId))
                 .SendAsync("PsychicGaveClue", gameRoundWithClue);

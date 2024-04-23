@@ -49,6 +49,10 @@ export default class GameSessionStore {
         });
       }
     );
+
+    gameSessionHub.observe("RoundStarted", (gameSession: GameSession) => {
+      this.gameSessionStoreValue.setValue(gameSession);
+    });
   }
 
   create = async (ownerId: string) => {

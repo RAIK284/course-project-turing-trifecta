@@ -4,7 +4,7 @@ namespace Application.HubServices;
 
 public interface IGameRoundHubService
 {
-    public Task NotifyRoundStart(Guid gameSessionId, GameRoundDTO gameRound);
+    public Task NotifyRoundStart(Guid gameSessionId, GameSessionDTO gameSession);
 
     public Task NotifyTeamTurnGhostGuess(Guid gameSessionId, GameRoundGhostGuessDTO guess);
 
