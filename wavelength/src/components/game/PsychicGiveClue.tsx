@@ -1,6 +1,4 @@
 import { FormEvent, useState } from "react";
-import { GameRound } from "../../models/GameRound";
-import GameSession from "../../models/GameSession";
 import GameBoard from "./board/GameBoard";
 import Spinner from "./board/Spinner";
 import ArrowRightIcon from "../../assets/icons/ArrowRightIcon";
@@ -8,7 +6,7 @@ import { GamePageProps } from "../../pages/GamePage";
 
 const maxClueLength = 75;
 
-const PsychicGiveClue: React.FC<GamePageProps> = ({ game, round }) => {
+const PsychicGiveClue: React.FC<GamePageProps> = ({ game, round, user }) => {
   const [clue, setClue] = useState<string>(round.clue);
 
   const handleClueSend = (e: FormEvent) => {
@@ -18,8 +16,8 @@ const PsychicGiveClue: React.FC<GamePageProps> = ({ game, round }) => {
 
   return (
     <GameBoard
-      directions="Enter Your Clue:"
       game={game}
+      user={user}
       round={round}
       spinner={
         <Spinner targetOffset={round.targetOffset} clickOption="cover" />

@@ -25,8 +25,49 @@ export type GameRound = {
 export function getRoundRoleForUser(
   userId: string,
   round: GameRound
-): TeamRole {
+): RoundRole | undefined {
   const { roundRoles } = round;
 
-  return roundRoles?.find((rr) => rr.userId === userId)?.role ?? TeamRole.NONE;
+  return roundRoles?.find((rr) => rr.userId === userId);
+}
+
+export function getRoundDirections(userId: string, round: GameRound) {
+  const roundRole = getRoundRoleForUser(userId, round);
+
+  if (!roundRole) return "";
+
+  const { role, team } = roundRole;
+
+  if (team !== round.teamTurn) {
+    return "Awaiting opposing team responses...";
+  }
+
+  switch (role) {
+    case TeamRole.PSYCHIC:
+      const canPsychicGiveClue = !round.clue;
+
+      return canPsychicGiveClue ? "Enter your clue:" : "Clue has been sent!";
+    case TeamRole.GHOST:
+      const canGhostGuess = !!round.clue;
+
+      return canGhostGuess
+        ? "Select your guess"
+        : "Awaiting psychic to give their clue...";
+    case TeamRole.SELECTOR:
+      const numGhosts = round.roundRoles?.filter(
+        (rr) => rr.team === round.teamTurn && rr.role === TeamRole.GHOST
+      ).length;
+      const isAwaitingPsychic = !!round.clue;
+
+      if (isAwaitingPsychic) return "Awaiting psychic to give their clue...";
+
+      const canSelectorSelect =
+        round.ghostGuesses && round.ghostGuesses.length === numGhosts;
+
+      return canSelectorSelect
+        ? "Select your guess"
+        : "Awaiting ghosts to select their guesses...";
+  }
+
+  return "";
 }

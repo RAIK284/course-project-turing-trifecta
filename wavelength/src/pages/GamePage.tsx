@@ -32,7 +32,7 @@ const getGameStatus = (user: User, game: GameSession): GameStatus => {
   const currentRound = getCurrentGameRound(game);
 
   if (currentRound) {
-    const roundRole = getRoundRoleForUser(user.id, currentRound);
+    const roundRole = getRoundRoleForUser(user.id, currentRound)?.role;
 
     switch (roundRole) {
       case TeamRole.PSYCHIC:

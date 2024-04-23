@@ -3,7 +3,7 @@ import GameBoard from "./board/GameBoard";
 import Spinner from "./board/Spinner";
 import { GamePageProps } from "../../pages/GamePage";
 
-const SelectorSelect: React.FC<GamePageProps> = ({ game, round }) => {
+const SelectorSelect: React.FC<GamePageProps> = ({ game, round, user }) => {
   const [selection, setSelection] = useState<number>(-1);
 
   const handleSendSelection = () => {
@@ -14,7 +14,7 @@ const SelectorSelect: React.FC<GamePageProps> = ({ game, round }) => {
     <GameBoard
       game={game}
       round={round}
-      directions="Select Your Guess!"
+      user={user}
       spinner={
         <Spinner
           clickOption="select"
