@@ -3,16 +3,22 @@ import GameBoard from "./board/GameBoard";
 import Spinner from "./board/Spinner";
 import ArrowRightIcon from "../../assets/icons/ArrowRightIcon";
 import { GamePageProps } from "../../pages/GamePage";
+import { useStore } from "../../stores/store";
+import { getRoundDirections } from "../../models/GameRound";
 
 const maxClueLength = 75;
 
 const PsychicGiveClue: React.FC<GamePageProps> = ({ game, round, user }) => {
+  const { gameSessionStore } = useStore();
+  const { giveClue, callingEndpoint } = gameSessionStore;
   const [clue, setClue] = useState<string>(round.clue);
 
   const handleClueSend = (e: FormEvent) => {
     e.preventDefault();
-    console.log(clue);
+    giveClue(game.id, clue);
   };
+
+  const directions = getRoundDirections(user.id, round);
 
   return (
     <GameBoard
@@ -22,24 +28,27 @@ const PsychicGiveClue: React.FC<GamePageProps> = ({ game, round, user }) => {
       spinner={
         <Spinner targetOffset={round.targetOffset} clickOption="cover" />
       }
+      directions={directions}
     >
-      <form
-        onSubmit={handleClueSend}
-        className="p-5 text-black w-full flex items-center justify-center gap-2 rounded"
-      >
-        <input
-          className="p-1 rounded"
-          value={clue}
-          onChange={(e) => setClue(e.target.value)}
-        />
-        <button
-          disabled={round.clue === clue || clue.length > maxClueLength}
-          className="bg-target-2 rounded-full p-1"
-          type="submit"
+      {directions.canDoAction && (
+        <form
+          onSubmit={handleClueSend}
+          className="p-5 text-black w-full flex items-center justify-center gap-2 rounded"
         >
-          <ArrowRightIcon className="h-6 w-6 text-white" />
-        </button>
-      </form>
+          <input
+            className="p-1 rounded"
+            value={clue}
+            onChange={(e) => setClue(e.target.value)}
+          />
+          <button
+            disabled={clue.length > maxClueLength || callingEndpoint}
+            className="bg-target-2 rounded-full p-1"
+            type="submit"
+          >
+            <ArrowRightIcon className="h-6 w-6 text-white" />
+          </button>
+        </form>
+      )}
     </GameBoard>
   );
 };

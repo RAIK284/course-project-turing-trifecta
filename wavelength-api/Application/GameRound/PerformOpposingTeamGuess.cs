@@ -1,4 +1,5 @@
 using Application.Core;
+using Application.HubServices;
 using MediatR;
 using Persistence.DataTransferObject;
 using Persistence.Repositories;
@@ -28,11 +29,14 @@ public class PerformOpposingTeamGuess
 
     public class Handler : IRequestHandler<Command, Result<GameRoundOpposingTeamGuessDTO>>
     {
+        private readonly IGameRoundHubService gameRoundHubService;
         private readonly IGameRoundRepository gameRoundRepository;
 
-        public Handler(IGameRoundRepository gameRoundRepository)
+        public Handler(IGameRoundRepository gameRoundRepository,
+            IGameRoundHubService gameRoundHubService)
         {
             this.gameRoundRepository = gameRoundRepository;
+            this.gameRoundHubService = gameRoundHubService;
         }
 
         public async Task<Result<GameRoundOpposingTeamGuessDTO>> Handle(Command request,
@@ -50,9 +54,13 @@ public class PerformOpposingTeamGuess
                 currentRound.Id,
                 request.Param.IsLeft
             );
-            return result == null
-                ? Result<GameRoundOpposingTeamGuessDTO>.Failure("Game round guess cannot be performed")
-                : Result<GameRoundOpposingTeamGuessDTO>.Success(result);
+
+            if (result == null)
+                return Result<GameRoundOpposingTeamGuessDTO>.Failure("Game round guess cannot be performed");
+
+            await gameRoundHubService.NotifyOpposingTeamGhostGuess(result.GameSessionId, result);
+
+            return Result<GameRoundOpposingTeamGuessDTO>.Success(result);
         }
     }
 }

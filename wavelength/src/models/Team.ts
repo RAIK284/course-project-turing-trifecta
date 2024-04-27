@@ -15,4 +15,8 @@ export function getTeamName(team: Team) {
   }
 }
 
+export function getOtherTeam(team: Team) {
+  return team === Team.ONE ? Team.TWO : Team.ONE;
+}
+
 export default Team;

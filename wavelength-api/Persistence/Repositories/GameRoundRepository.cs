@@ -43,6 +43,7 @@ public class GameRoundRepository : IGameRoundRepository
 
         var newRound = new GameRound
         {
+            RoundNumber = previousRoundsForGameSession.Count,
             GameSessionId = gameSessionId,
             SpectrumCardId = unusedSpectrumCards[random.Next(unusedSpectrumCards.Count)].Id,
             TargetOffset = random.Next(20, 161) // Generate between 20 and 160 inclusive
@@ -88,10 +89,16 @@ public class GameRoundRepository : IGameRoundRepository
         var lastRound = await context.GameRounds
             .Where(gr => gr.GameSessionId == gameSession.Id)
             .Include(gr => gr.RoundRoles)
+            .Include(gr => gr.GhostGuesses)
+            .Include(gr => gr.SelectorSelection)
+            .Include(gr => gr.OpposingGhostGuesses)
+            .Include(gr => gr.OpposingSelectorSelection)
+            .Include(gr => gr.SpectrumCard)
             .OrderBy(gr => gr.RoundNumber)
             .LastOrDefaultAsync();
 
-        if (lastRound == null) return null;
+        // If the round already has a clue, then the user shouldn't be able to give one
+        if (lastRound == null || lastRound.Clue.Length != 0) return null;
 
         lastRound.Clue = clue;
 
@@ -117,6 +124,7 @@ public class GameRoundRepository : IGameRoundRepository
             .Include(gr => gr.SelectorSelection)
             .Include(gr => gr.OpposingGhostGuesses)
             .Include(gr => gr.OpposingSelectorSelection)
+            .Include(gr => gr.SpectrumCard)
             .OrderBy(gr => gr.RoundNumber)
             .LastOrDefaultAsync();
 

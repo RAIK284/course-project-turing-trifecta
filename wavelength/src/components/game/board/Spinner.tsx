@@ -9,6 +9,8 @@ type SpinnerProps = {
   clickOption: "none" | "cover" | "select";
   onTargetSelect?: (targetOffset: number) => void;
   ghostGuesses?: number[];
+  selectorSelection?: number;
+  isLeftGuess?: boolean;
 };
 
 const size = 1000;
@@ -18,14 +20,17 @@ const Spinner: React.FC<SpinnerProps> = ({
   clickOption,
   onTargetSelect,
   ghostGuesses,
+  selectorSelection,
+  isLeftGuess,
 }) => {
   const [covered, setCovered] = useState<boolean>(!targetOffset);
+  const showDefaultSelector = covered && clickOption === "select";
   const [mousePosition, setMousePosition] = useState<{
     x: number;
     y: number;
   }>({
-    x: !covered ? -1 : size / 2,
-    y: !covered ? -1 : 0,
+    x: !showDefaultSelector ? -1 : size / 2,
+    y: !showDefaultSelector ? -1 : 0,
   });
   const [selectorLocked, setSelectorLocked] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -40,9 +45,11 @@ const Spinner: React.FC<SpinnerProps> = ({
         targetOffset,
         userMousePosition: mousePosition,
         ghostGuesses,
+        selectorSelection,
+        isLeftGuess,
       });
     }
-  }, [mousePosition, canvas, covered]);
+  }, [mousePosition, canvas, covered, isLeftGuess]);
 
   useEffect(() => {
     if (!canvas || clickOption !== "select") return;

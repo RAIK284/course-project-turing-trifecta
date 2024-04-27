@@ -65,7 +65,7 @@ public class GameRoundHubService : IGameRoundHubService
         }
     }
 
-    public async Task NotifyOpposingTeamGhostGuess(Guid gameSessionId, GameRoundGhostGuessDTO guess)
+    public async Task NotifyOpposingTeamGhostGuess(Guid gameSessionId, GameRoundOpposingTeamGuessDTO guess)
     {
         await gameSessionHub.Clients
             .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))

@@ -12,7 +12,7 @@ public interface IGameRoundHubService
 
     public Task NotifyPsychicClue(Guid gameSessionId, GameRoundDTO gameRoundWithClue);
 
-    public Task NotifyOpposingTeamGhostGuess(Guid gameSessionId, GameRoundGhostGuessDTO guess);
+    public Task NotifyOpposingTeamGhostGuess(Guid gameSessionId, GameRoundOpposingTeamGuessDTO guess);
 
     public Task NotifyOpposingTeamSelectorSelect(Guid gameSessionId, GameRoundOpposingTeamSelectionDTO selection);
 }

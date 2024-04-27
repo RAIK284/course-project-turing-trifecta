@@ -11,6 +11,9 @@ import SelectorSelect from "../components/game/SelectorSelect";
 import User from "../models/User";
 import { GameRound, getRoundRoleForUser } from "../models/GameRound";
 import TeamRole from "../models/TeamRole";
+import GhostGuess from "../components/game/GhostGuess";
+import OpposingGhostGuess from "../components/game/OpposingGhostGuess";
+import OpposingSelectorSelect from "../components/game/OpposingSelectorSelect";
 
 enum GameStatus {
   CHOOSE_TEAMS,
@@ -32,13 +35,24 @@ const getGameStatus = (user: User, game: GameSession): GameStatus => {
   const currentRound = getCurrentGameRound(game);
 
   if (currentRound) {
-    const roundRole = getRoundRoleForUser(user.id, currentRound)?.role;
+    const roundRole = getRoundRoleForUser(user.id, currentRound);
 
-    switch (roundRole) {
-      case TeamRole.PSYCHIC:
-        return GameStatus.PSYCHIC_GIVE_CLUE;
-      case TeamRole.SELECTOR:
-        return GameStatus.SELECTOR_SELECT;
+    if (roundRole) {
+      const { role, team } = roundRole;
+      const isOpposingTeam = team !== currentRound.teamTurn;
+
+      switch (role) {
+        case TeamRole.PSYCHIC:
+          return GameStatus.PSYCHIC_GIVE_CLUE;
+        case TeamRole.SELECTOR:
+          return isOpposingTeam
+            ? GameStatus.OPPOSING_SELECTOR_SELECT
+            : GameStatus.SELECTOR_SELECT;
+        case TeamRole.GHOST:
+          return isOpposingTeam
+            ? GameStatus.OPPOSING_GHOST_GUESS
+            : GameStatus.GHOST_GUESS;
+      }
     }
   }
 
@@ -74,6 +88,27 @@ const GamePage: React.FC = observer(() => {
       if (currentRound)
         element = (
           <SelectorSelect game={game} round={currentRound} user={user} />
+        );
+
+      break;
+    case GameStatus.GHOST_GUESS:
+      if (currentRound)
+        element = <GhostGuess game={game} round={currentRound} user={user} />;
+      break;
+    case GameStatus.OPPOSING_GHOST_GUESS:
+      if (currentRound)
+        element = (
+          <OpposingGhostGuess game={game} round={currentRound} user={user} />
+        );
+      break;
+    case GameStatus.OPPOSING_SELECTOR_SELECT:
+      if (currentRound)
+        element = (
+          <OpposingSelectorSelect
+            game={game}
+            round={currentRound}
+            user={user}
+          />
         );
       break;
   }

@@ -30,6 +30,7 @@ export default {
       "white-hover": "#f1f1f1",
       "grey-spinner-text": "#262626",
       "ghost-guess": "#347982",
+      "is-left-guess": "#dec610",
     },
   },
   plugins: [],

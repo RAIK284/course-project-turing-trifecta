@@ -1,5 +1,4 @@
 import { GameRound, getRoundRoleForUser } from "../../../models/GameRound";
-import { getTeamName } from "../../../models/Team";
 import User from "../../../models/User";
 
 type RoundInfoDisplayProps = {

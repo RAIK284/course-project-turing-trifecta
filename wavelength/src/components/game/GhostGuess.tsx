@@ -5,13 +5,13 @@ import { GamePageProps } from "../../pages/GamePage";
 import { useStore } from "../../stores/store";
 import { getRoundDirections } from "../../models/GameRound";
 
-const SelectorSelect: React.FC<GamePageProps> = ({ game, round, user }) => {
+const GhostGuess: React.FC<GamePageProps> = ({ game, round, user }) => {
   const { gameSessionStore } = useStore();
-  const { selectorSelect, callingEndpoint } = gameSessionStore;
+  const { ghostGuess, callingEndpoint } = gameSessionStore;
   const [selection, setSelection] = useState<number>(-1);
 
-  const handleSendSelection = () => {
-    selectorSelect(game.id, selection);
+  const handleSendGuess = () => {
+    ghostGuess(game.id, selection);
   };
 
   const directions = getRoundDirections(user.id, round);
@@ -26,7 +26,6 @@ const SelectorSelect: React.FC<GamePageProps> = ({ game, round, user }) => {
           clickOption={directions.canDoAction ? "select" : "none"}
           onTargetSelect={setSelection}
           ghostGuesses={round.ghostGuesses?.map((gg) => gg.targetOffset)}
-          selectorSelection={round.selectorSelection?.targetOffset}
         />
       }
       directions={directions}
@@ -35,7 +34,7 @@ const SelectorSelect: React.FC<GamePageProps> = ({ game, round, user }) => {
         <button
           disabled={selection === -1 || callingEndpoint}
           className="uppercase rounded bg-theme-blue w-fit px-5 py-1 font-semibold"
-          onClick={handleSendSelection}
+          onClick={handleSendGuess}
           type="button"
         >
           Send Selection
@@ -45,4 +44,4 @@ const SelectorSelect: React.FC<GamePageProps> = ({ game, round, user }) => {
   );
 };
 
-export default SelectorSelect;
+export default GhostGuess;
