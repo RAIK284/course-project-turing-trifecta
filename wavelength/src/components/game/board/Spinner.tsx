@@ -49,7 +49,7 @@ const Spinner: React.FC<SpinnerProps> = ({
         isLeftGuess,
       });
     }
-  }, [mousePosition, canvas, covered, isLeftGuess]);
+  }, [mousePosition, canvas, covered, isLeftGuess, context]);
 
   useEffect(() => {
     if (!canvas || clickOption !== "select") return;

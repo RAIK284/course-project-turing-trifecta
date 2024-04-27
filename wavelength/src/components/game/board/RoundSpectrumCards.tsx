@@ -22,7 +22,7 @@ const SingleSpectrumCard: React.FC<SingleSpectrumCardProps> = ({
   return (
     <div
       className={cn(
-        "w-1/3 h-40 rounded-lg flex items-center justify-center flex-col relative text-xl",
+        "w-1/4 h-32 rounded-lg flex items-center justify-center flex-col relative text-center",
         beforeElement,
         afterElement,
         {
@@ -34,7 +34,7 @@ const SingleSpectrumCard: React.FC<SingleSpectrumCardProps> = ({
       style={{ zIndex: "200" }}
     >
       {name}
-      <div className="tracking-[-0.5rem]">
+      <div className="tracking-[-0.5rem] font-bold">
         {direction === "left" ? "<—————" : "————>"}
       </div>
       {/* <div

@@ -8,6 +8,11 @@ import GameSessionMember from "../models/GameSessionMember";
 import { deepCopy } from "../utils/utils";
 import { AxiosError } from "axios";
 import { store } from "./store";
+import { GhostGuess } from "../models/GhostGuess";
+import { SelectorSelection } from "../models/SelectorSelection";
+import { OpposingGhostGuess } from "../models/OpposingGhostGuess";
+import { OpposingSelectorSelection } from "../models/OpposingSelectorSelection";
+import { GameRound } from "../models/GameRound";
 
 export default class GameSessionStore {
   gameSessionStoreValue = new StoreValue<GameSession>();
@@ -55,6 +60,47 @@ export default class GameSessionStore {
     gameSessionHub.observe("RoundStarted", (gameSession: GameSession) => {
       this.gameSessionStoreValue.setValue(gameSession);
     });
+
+    gameSessionHub.observe("TeamTurnGhostGuess", (ghostGuess: GhostGuess) => {
+      this.handleNewGhostGuess(ghostGuess);
+    });
+
+    gameSessionHub.observe(
+      "TeamTurnSelectorSelect",
+      (selectorSelection: SelectorSelection) => {
+        this.handleNewSelectorSelection(selectorSelection);
+      }
+    );
+
+    gameSessionHub.observe("PsychicGaveClue", (newRound: GameRound) => {
+      const { value: activeGameSession } = this.gameSessionStoreValue;
+
+      if (!activeGameSession) return;
+
+      const newRounds = activeGameSession.rounds;
+
+      const newRoundIndex = newRounds.findIndex((r) => r.id === newRound.id);
+      if (newRoundIndex === -1) newRounds.push(newRound);
+      else newRounds[newRoundIndex] = newRound;
+
+      activeGameSession.rounds = newRounds;
+
+      this.gameSessionStoreValue.setValue({ ...activeGameSession });
+    });
+
+    gameSessionHub.observe(
+      "OpposingTeamGhostGuess",
+      (ghostGuess: OpposingGhostGuess) => {
+        this.handleNewOpposingGhostGuess(ghostGuess);
+      }
+    );
+
+    gameSessionHub.observe(
+      "OpposingTeamSelectorSelect",
+      (opposingSelectorSelection: OpposingSelectorSelection) => {
+        this.handleNewOpposingSelectorSelection(opposingSelectorSelection);
+      }
+    );
   }
 
   reset = () => {
@@ -177,10 +223,9 @@ export default class GameSessionStore {
   };
 
   selectorSelect = async (gameSessionId: string, targetOffset: number) => {
-    const { value: activeGameSession } = this.gameSessionStoreValue;
     const { value: user } = store.userStore.userStoreValue;
 
-    if (!activeGameSession || !user) return undefined;
+    if (!user) return undefined;
 
     runInAction(() => (this.callingEndpoint = true));
     try {
@@ -190,14 +235,7 @@ export default class GameSessionStore {
         targetOffset
       );
 
-      const mostRecentRound = getCurrentGameRound(activeGameSession);
-
-      if (mostRecentRound) {
-        runInAction(() => {
-          mostRecentRound.selectorSelection = selectorSelection;
-          this.gameSessionStoreValue.setValue({ ...activeGameSession });
-        });
-      }
+      this.handleNewSelectorSelection(selectorSelection);
     } catch (e) {
       if (e instanceof AxiosError) {
         this.gameSessionStoreValue.setError(e.response?.data);
@@ -210,10 +248,9 @@ export default class GameSessionStore {
   };
 
   ghostGuess = async (gameSessionId: string, targetOffset: number) => {
-    const { value: activeGameSession } = this.gameSessionStoreValue;
     const { value: user } = store.userStore.userStoreValue;
 
-    if (!activeGameSession || !user) return undefined;
+    if (!user) return undefined;
 
     runInAction(() => (this.callingEndpoint = true));
     try {
@@ -223,18 +260,7 @@ export default class GameSessionStore {
         targetOffset
       );
 
-      const mostRecentRound = getCurrentGameRound(activeGameSession);
-
-      if (mostRecentRound) {
-        const newGhostGuesses = [
-          ...(mostRecentRound.ghostGuesses ?? []),
-          ghostGuess,
-        ];
-        runInAction(() => {
-          mostRecentRound.ghostGuesses = newGhostGuesses;
-          this.gameSessionStoreValue.setValue({ ...activeGameSession });
-        });
-      }
+      this.handleNewGhostGuess(ghostGuess);
     } catch (e) {
       if (e instanceof AxiosError) {
         this.gameSessionStoreValue.setError(e.response?.data);
@@ -247,10 +273,9 @@ export default class GameSessionStore {
   };
 
   opposingGhostGuess = async (gameSessionId: string, isLeft: boolean) => {
-    const { value: activeGameSession } = this.gameSessionStoreValue;
     const { value: user } = store.userStore.userStoreValue;
 
-    if (!activeGameSession || !user) return undefined;
+    if (!user) return undefined;
 
     runInAction(() => (this.callingEndpoint = true));
     try {
@@ -260,18 +285,7 @@ export default class GameSessionStore {
         isLeft
       );
 
-      const mostRecentRound = getCurrentGameRound(activeGameSession);
-
-      if (mostRecentRound) {
-        const newGhostGuesses = [
-          ...(mostRecentRound.opposingGhostGuesses ?? []),
-          ghostGuess,
-        ];
-        runInAction(() => {
-          mostRecentRound.opposingGhostGuesses = newGhostGuesses;
-          this.gameSessionStoreValue.setValue({ ...activeGameSession });
-        });
-      }
+      this.handleNewOpposingGhostGuess(ghostGuess);
     } catch (e) {
       if (e instanceof AxiosError) {
         this.gameSessionStoreValue.setError(e.response?.data);
@@ -284,10 +298,9 @@ export default class GameSessionStore {
   };
 
   opposingSelectorSelect = async (gameSessionId: string, isLeft: boolean) => {
-    const { value: activeGameSession } = this.gameSessionStoreValue;
     const { value: user } = store.userStore.userStoreValue;
 
-    if (!activeGameSession || !user) return undefined;
+    if (!user) return undefined;
 
     runInAction(() => (this.callingEndpoint = true));
     try {
@@ -298,14 +311,7 @@ export default class GameSessionStore {
           isLeft
         );
 
-      const mostRecentRound = getCurrentGameRound(activeGameSession);
-
-      if (mostRecentRound) {
-        runInAction(() => {
-          mostRecentRound.opposingTeamSelection = opposingSelectorSelect;
-          this.gameSessionStoreValue.setValue({ ...activeGameSession });
-        });
-      }
+      this.handleNewOpposingSelectorSelection(opposingSelectorSelect);
     } catch (e) {
       if (e instanceof AxiosError) {
         this.gameSessionStoreValue.setError(e.response?.data);
@@ -315,5 +321,79 @@ export default class GameSessionStore {
     }
 
     runInAction(() => (this.callingEndpoint = false));
+  };
+
+  private handleNewGhostGuess = (ghostGuess: GhostGuess) => {
+    const { value: activeGameSession } = this.gameSessionStoreValue;
+    const { value: user } = store.userStore.userStoreValue;
+
+    if (!activeGameSession || !user) return undefined;
+
+    const mostRecentRound = getCurrentGameRound(activeGameSession);
+
+    if (mostRecentRound) {
+      const newGhostGuesses = [
+        ...(mostRecentRound.ghostGuesses ?? []),
+        ghostGuess,
+      ];
+      runInAction(() => {
+        mostRecentRound.ghostGuesses = newGhostGuesses;
+        this.gameSessionStoreValue.setValue({ ...activeGameSession });
+      });
+    }
+  };
+
+  private handleNewSelectorSelection = (
+    selectorSelection: SelectorSelection
+  ) => {
+    const { value: activeGameSession } = this.gameSessionStoreValue;
+    const { value: user } = store.userStore.userStoreValue;
+
+    if (!activeGameSession || !user) return undefined;
+
+    const mostRecentRound = getCurrentGameRound(activeGameSession);
+
+    if (mostRecentRound) {
+      runInAction(() => {
+        mostRecentRound.selectorSelection = selectorSelection;
+        this.gameSessionStoreValue.setValue({ ...activeGameSession });
+      });
+    }
+  };
+
+  private handleNewOpposingGhostGuess = (ghostGuess: OpposingGhostGuess) => {
+    const { value: activeGameSession } = this.gameSessionStoreValue;
+    const { value: user } = store.userStore.userStoreValue;
+
+    if (!activeGameSession || !user) return undefined;
+
+    const mostRecentRound = getCurrentGameRound(activeGameSession);
+
+    if (mostRecentRound) {
+      const newGhostGuesses = [
+        ...(mostRecentRound.opposingGhostGuesses ?? []),
+        ghostGuess,
+      ];
+      runInAction(() => {
+        mostRecentRound.opposingGhostGuesses = newGhostGuesses;
+        this.gameSessionStoreValue.setValue({ ...activeGameSession });
+      });
+    }
+  };
+
+  private handleNewOpposingSelectorSelection = (
+    opposingSelectorSelection: OpposingSelectorSelection
+  ) => {
+    const { value: activeGameSession } = this.gameSessionStoreValue;
+
+    if (!activeGameSession) return undefined;
+    const mostRecentRound = getCurrentGameRound(activeGameSession);
+
+    if (mostRecentRound) {
+      runInAction(() => {
+        mostRecentRound.opposingTeamSelection = opposingSelectorSelection;
+        this.gameSessionStoreValue.setValue({ ...activeGameSession });
+      });
+    }
   };
 }

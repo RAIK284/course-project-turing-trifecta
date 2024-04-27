@@ -45,11 +45,13 @@ const ChooseTeams: React.FC<ChooseTeamsProps> = observer(({ game }) => {
     <div className="ChooseTeams flex flex-col items-center gap-10">
       <h1 className="text-3xl">Select Team</h1>
       {teamlessMembers.length > 0 && (
-        <div className="bg-scoreboard-blue w-52 h-32 flex flex-col gap-1 items-center">
-          <header>No Team</header>
+        <div className="bg-scoreboard-blue w-52 h-fit p-1 rounded flex flex-col gap-1 items-center">
+          <header className="font-bold underline">No Team</header>
           {game.members
             .filter((gm) => gm.team === Team.ZERO)
-            .map((gm) => gm.user.userName)}
+            .map((gm) => (
+              <span key={gm.userId}>{gm.user.userName}</span>
+            ))}
         </div>
       )}
       <div className="flex gap-10">
