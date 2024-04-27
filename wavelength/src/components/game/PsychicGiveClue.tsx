@@ -26,7 +26,12 @@ const PsychicGiveClue: React.FC<GamePageProps> = ({ game, round, user }) => {
       user={user}
       round={round}
       spinner={
-        <Spinner targetOffset={round.targetOffset} clickOption="cover" />
+        <Spinner
+          targetOffset={round.targetOffset}
+          clickOption={directions.canDoAction ? "cover" : "none"}
+          ghostGuesses={round.ghostGuesses?.map((gg) => gg.targetOffset)}
+          selectorSelection={round.selectorSelection?.targetOffset}
+        />
       }
       directions={directions}
     >

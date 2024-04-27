@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GameBoard from "./board/GameBoard";
 import Spinner from "./board/Spinner";
 import { GamePageProps } from "../../pages/GamePage";
@@ -9,6 +9,16 @@ const GhostGuess: React.FC<GamePageProps> = ({ game, round, user }) => {
   const { gameSessionStore } = useStore();
   const { ghostGuess, callingEndpoint } = gameSessionStore;
   const [selection, setSelection] = useState<number>(-1);
+
+  useEffect(() => {
+    const { ghostGuesses } = round;
+
+    if (!ghostGuesses) return;
+
+    const ghostGuessForUser = ghostGuesses.find((gg) => gg.userId === user.id);
+
+    if (ghostGuessForUser) setSelection(-1);
+  }, [round]);
 
   const handleSendGuess = () => {
     ghostGuess(game.id, selection);
@@ -26,6 +36,7 @@ const GhostGuess: React.FC<GamePageProps> = ({ game, round, user }) => {
           clickOption={directions.canDoAction ? "select" : "none"}
           onTargetSelect={setSelection}
           ghostGuesses={round.ghostGuesses?.map((gg) => gg.targetOffset)}
+          selectorSelection={round.selectorSelection?.targetOffset}
         />
       }
       directions={directions}

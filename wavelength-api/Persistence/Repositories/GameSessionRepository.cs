@@ -40,7 +40,7 @@ public class GameSessionRepository : IGameSessionRepository
 
     public async Task<GameSessionDTO?> Get(Guid gameSessionId)
     {
-        return await context.GameSessions
+        var gameSession = await context.GameSessions
             .Where(gs => gs.Id == gameSessionId)
             .Include(gs => gs.Members)
             .ThenInclude(gsm => gsm.User)
@@ -56,6 +56,12 @@ public class GameSessionRepository : IGameSessionRepository
             .ThenInclude(r => r.OpposingSelectorSelection)
             .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
+
+        if (gameSession == null) return null;
+
+        gameSession.Rounds = gameSession.Rounds.OrderBy(r => r.RoundNumber).ToList();
+
+        return gameSession;
     }
 
     public async Task<GameSessionMemberDTO?> Join(Guid gameSessionId, Guid userId)
@@ -146,23 +152,13 @@ public class GameSessionRepository : IGameSessionRepository
 
         if (!gameSessionIdsForUser.Any()) return null;
 
-        return await context.GameSessions
+        var gameSessionId = await context.GameSessions
             .Where(gs => gs.EndTime == null)
             .Where(gs => gameSessionIdsForUser.Contains(gs.Id))
-            .Include(gs => gs.Members)
-            .ThenInclude(gsm => gsm.User)
-            .Include(gsm => gsm.Rounds)
-            .ThenInclude(r => r.GhostGuesses)
-            .Include(gsm => gsm.Rounds)
-            .ThenInclude(r => r.SelectorSelection)
-            .Include(gsm => gsm.Rounds)
-            .ThenInclude(r => r.RoundRoles)
-            .Include(gsm => gsm.Rounds)
-            .ThenInclude(r => r.OpposingGhostGuesses)
-            .Include(gsm => gsm.Rounds)
-            .ThenInclude(r => r.OpposingSelectorSelection)
-            .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
+
+
+        return gameSessionId == null ? null : await Get(gameSessionId.Id);
     }
 
     private string GenerateRandomJoinCode()
@@ -188,7 +184,7 @@ public class GameSessionRepository : IGameSessionRepository
 
     public static GameSessionDTO? AdjustTargetOffsets(Guid userId, GameSessionDTO? gameSession)
     {
-        if (gameSession == null || gameSession.GameRound < 0 || !gameSession.Rounds.Any()) return null;
+        if (gameSession == null || gameSession.GameRound < 0 || !gameSession.Rounds.Any()) return gameSession;
 
         var gameRound = gameSession.Rounds[gameSession.GameRound];
         var roundRole = gameRound.RoundRoles

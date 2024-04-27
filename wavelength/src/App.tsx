@@ -22,7 +22,6 @@ const App: React.FC = observer(() => {
 
   useEffect(() => {
     if (activeGameSession) {
-      console.log(activeGameSession);
       navigate(
         WavelengthPath.GAME.replace(":gameSessionId", activeGameSession.id)
       );
@@ -30,7 +29,7 @@ const App: React.FC = observer(() => {
   }, [activeGameSession]);
 
   return (
-    <div className="App pb-10 bg-stars bg-center bg-no-repeat bg-cover h-screen w-screen text-white">
+    <div className="App pb-10 bg-stars bg-center bg-no-repeat bg-cover min-h-screen w-screen text-white">
       {loadingOffStart ? (
         <AppLoader />
       ) : (

@@ -58,7 +58,9 @@ export default class GameSessionStore {
     );
 
     gameSessionHub.observe("RoundStarted", (gameSession: GameSession) => {
-      this.gameSessionStoreValue.setValue(gameSession);
+      runInAction(() => {
+        this.gameSessionStoreValue.setValue(gameSession);
+      });
     });
 
     gameSessionHub.observe("TeamTurnGhostGuess", (ghostGuess: GhostGuess) => {
@@ -77,15 +79,17 @@ export default class GameSessionStore {
 
       if (!activeGameSession) return;
 
-      const newRounds = activeGameSession.rounds;
+      runInAction(() => {
+        const newRounds = activeGameSession.rounds;
 
-      const newRoundIndex = newRounds.findIndex((r) => r.id === newRound.id);
-      if (newRoundIndex === -1) newRounds.push(newRound);
-      else newRounds[newRoundIndex] = newRound;
+        const newRoundIndex = newRounds.findIndex((r) => r.id === newRound.id);
+        if (newRoundIndex === -1) newRounds.push(newRound);
+        else newRounds[newRoundIndex] = newRound;
 
-      activeGameSession.rounds = newRounds;
+        activeGameSession.rounds = newRounds;
 
-      this.gameSessionStoreValue.setValue({ ...activeGameSession });
+        this.gameSessionStoreValue.setValue({ ...activeGameSession });
+      });
     });
 
     gameSessionHub.observe(
@@ -370,10 +374,12 @@ export default class GameSessionStore {
     const mostRecentRound = getCurrentGameRound(activeGameSession);
 
     if (mostRecentRound) {
-      const newGhostGuesses = [
-        ...(mostRecentRound.opposingGhostGuesses ?? []),
-        ghostGuess,
-      ];
+      const newGhostGuesses = mostRecentRound.opposingGhostGuesses ?? [];
+      const index = newGhostGuesses.findIndex((gg) => gg.id === ghostGuess.id);
+
+      if (index === -1) newGhostGuesses.push(ghostGuess);
+      else newGhostGuesses[index] = ghostGuess;
+
       runInAction(() => {
         mostRecentRound.opposingGhostGuesses = newGhostGuesses;
         this.gameSessionStoreValue.setValue({ ...activeGameSession });
