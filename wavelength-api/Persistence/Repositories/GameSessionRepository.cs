@@ -126,11 +126,15 @@ public class GameSessionRepository : IGameSessionRepository
             .Where(gs => gs.Id == gameSessionId)
             .FirstOrDefaultAsync();
 
-        if (gameSession == null || gameSession.StartTime != null) return false;
+        if (gameSession == null) return false;
 
-        gameSession.StartTime = DateTime.Now;
+        if (gameSession.StartTime == null)
+        {
+            gameSession.StartTime = DateTime.Now;
+            await context.SaveChangesAsync();
+        }
 
-        return await context.SaveChangesAsync() > 0;
+        return true;
     }
 
     public async Task<GameSessionDTO?> GetActiveSession(Guid userId)

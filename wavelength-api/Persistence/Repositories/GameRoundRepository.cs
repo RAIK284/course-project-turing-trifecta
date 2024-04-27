@@ -64,6 +64,14 @@ public class GameRoundRepository : IGameRoundRepository
 
         context.GameRounds.Add(newRound);
 
+        var gameSession = await context.GameSessions
+            .Where(gs => gs.Id == gameSessionId)
+            .FirstOrDefaultAsync();
+
+        if (gameSession == null) return null;
+
+        gameSession.GameRound = newRound.RoundNumber;
+
         if (await context.SaveChangesAsync() > 0)
         {
             var userRoles = await CreateUserRolesForRound(newRound, previousRoundsForGameSession);

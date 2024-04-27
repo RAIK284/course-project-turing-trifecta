@@ -316,8 +316,4 @@ export default class GameSessionStore {
 
     runInAction(() => (this.callingEndpoint = false));
   };
-
-  startNextRound = async (gameSessionId: string) => {
-    console.log(gameSessionId);
-  };
 }

@@ -25,9 +25,9 @@ const GameBoard: React.FC<PropsWithChildren<GameBoardProps>> = ({
   directions,
 }) => {
   const { gameSessionStore } = useStore();
-  const { startNextRound } = gameSessionStore;
+  const { start } = gameSessionStore;
   const handleStartNextRoundClick = () => {
-    startNextRound(game.id);
+    start(game.id);
   };
   return (
     <div aria-label="GameBoard">
@@ -35,12 +35,13 @@ const GameBoard: React.FC<PropsWithChildren<GameBoardProps>> = ({
       {spinner}
       <div className="bg-scoreboard-blue flex flex-col pt-5 gap-2 justify-center items-center">
         {round.clue && <ClueDisplay clue={round.clue} />}
-        {round.opposingGhostGuesses && (
-          <div className="flex gap-2 w-1/2">
-            <IsLeftCount round={round} isLeft={true} />
-            <IsLeftCount round={round} isLeft={false} />
-          </div>
-        )}
+        {round.opposingGhostGuesses &&
+          round.opposingGhostGuesses.length > 0 && (
+            <div className="flex gap-2 w-1/2">
+              <IsLeftCount round={round} isLeft={true} />
+              <IsLeftCount round={round} isLeft={false} />
+            </div>
+          )}
         <div className="text-center text-xl">{directions.message}</div>
         {directions.canStartNextRound && game.ownerId === user.id && (
           <button
