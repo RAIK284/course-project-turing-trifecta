@@ -10,7 +10,7 @@ public interface IGameRoundRepository
     /// </summary>
     /// <param name="gameSessionId">The Id of the GameSession to make this round for.</param>
     /// <returns></returns>
-    public Task<GameRoundDTO?> StartRound(Guid gameSessionId);
+    public Task<GameSessionDTO?> StartRound(Guid gameSessionId);
 
     /// <summary>
     ///     Performs a guess for a Ghost. This method will either create a new guess object or change the existing

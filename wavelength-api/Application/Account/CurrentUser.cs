@@ -51,7 +51,7 @@ public class CurrentUser
 
             if (activeGameSession != null)
             {
-                userDTO.ActiveGameSession = activeGameSession;
+                userDTO.ActiveGameSession = GameSessionRepository.AdjustTargetOffsets(userDTO.Id, activeGameSession);
                 userDTO.ActiveGameSessionId = activeGameSession.Id;
             }
 

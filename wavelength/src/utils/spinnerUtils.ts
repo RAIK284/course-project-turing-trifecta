@@ -11,6 +11,7 @@ export type SpinnerOptions = {
     x: number;
     y: number;
   };
+  isLeftGuess?: boolean;
 };
 
 const targetDegreeWidth = 8;
@@ -111,6 +112,31 @@ const drawSingleTarget = (
   }
 };
 
+const drawIsLeftGuess = (
+  ctx: CanvasRenderingContext2D,
+  color: string,
+  startDegrees: number,
+  endDegrees: number,
+  size: number
+) => {
+  const halfSize = size / 2;
+  const radius = (2 / 5) * size;
+  ctx.beginPath();
+  ctx.moveTo(halfSize, halfSize);
+  ctx.lineTo(size, size - (20 / 500) * size);
+  ctx.moveTo(halfSize, halfSize);
+  ctx.arc(
+    halfSize,
+    halfSize,
+    radius,
+    Math.PI + getRadians(180 - startDegrees),
+    Math.PI + getRadians(180 - endDegrees)
+  );
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+};
+
 const drawSelector = (
   ctx: CanvasRenderingContext2D,
   color: string,
@@ -204,10 +230,25 @@ export const drawSpinner = (
     );
   }
 
+  if (options.isLeftGuess !== undefined && options.selectorSelection) {
+    const isLeft = !!options.isLeftGuess;
+    drawIsLeftGuess(
+      ctx,
+      colors["is-left-guess"],
+      isLeft ? 180 : options.selectorSelection,
+      isLeft ? options.selectorSelection : 0,
+      size
+    );
+  }
+
   if (options.ghostGuesses) {
     options.ghostGuesses.forEach((angle) =>
       drawSelector(ctx, colors["ghost-guess"], angle, size)
     );
+  }
+
+  if (options.selectorSelection) {
+    drawSelector(ctx, colors["center-red"], options.selectorSelection, size);
   }
 
   if (options.userMousePosition) {

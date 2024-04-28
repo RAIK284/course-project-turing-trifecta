@@ -35,17 +35,33 @@ public class GameSessionRepository : IGameSessionRepository
         // Have the user join the game
         await Join(newGameSession.Id, ownerId);
 
-        return mapper.Map<GameSessionDTO>(newGameSession);
+        return await Get(newGameSession.Id);
     }
 
     public async Task<GameSessionDTO?> Get(Guid gameSessionId)
     {
-        return await context.GameSessions
+        var gameSession = await context.GameSessions
             .Where(gs => gs.Id == gameSessionId)
             .Include(gs => gs.Members)
             .ThenInclude(gsm => gsm.User)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.GhostGuesses)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.SelectorSelection)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.RoundRoles)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.OpposingGhostGuesses)
+            .Include(gsm => gsm.Rounds)
+            .ThenInclude(r => r.OpposingSelectorSelection)
             .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
+
+        if (gameSession == null) return null;
+
+        gameSession.Rounds = gameSession.Rounds.OrderBy(r => r.RoundNumber).ToList();
+
+        return gameSession;
     }
 
     public async Task<GameSessionMemberDTO?> Join(Guid gameSessionId, Guid userId)
@@ -61,7 +77,12 @@ public class GameSessionRepository : IGameSessionRepository
 
         await context.SaveChangesAsync();
 
-        return mapper.Map<GameSessionMemberDTO>(gameSessionMember);
+        return await context.GameSessionMembers
+            .Where(gsm => gsm.UserId == userId)
+            .Include(gsm => gsm.User)
+            .Include(gsm => gsm.GameSession)
+            .ProjectTo<GameSessionMemberDTO>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<GameSessionDTO?> GetByJoinCode(string joinCode)
@@ -111,11 +132,15 @@ public class GameSessionRepository : IGameSessionRepository
             .Where(gs => gs.Id == gameSessionId)
             .FirstOrDefaultAsync();
 
-        if (gameSession == null || gameSession.StartTime != null) return false;
+        if (gameSession == null) return false;
 
-        gameSession.StartTime = DateTime.Now;
+        if (gameSession.StartTime == null)
+        {
+            gameSession.StartTime = DateTime.Now;
+            await context.SaveChangesAsync();
+        }
 
-        return await context.SaveChangesAsync() > 0;
+        return true;
     }
 
     public async Task<GameSessionDTO?> GetActiveSession(Guid userId)
@@ -127,13 +152,13 @@ public class GameSessionRepository : IGameSessionRepository
 
         if (!gameSessionIdsForUser.Any()) return null;
 
-        return await context.GameSessions
+        var gameSessionId = await context.GameSessions
             .Where(gs => gs.EndTime == null)
             .Where(gs => gameSessionIdsForUser.Contains(gs.Id))
-            .Include(gs => gs.Members)
-            .ThenInclude(gsm => gsm.User)
-            .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
+
+
+        return gameSessionId == null ? null : await Get(gameSessionId.Id);
     }
 
     private string GenerateRandomJoinCode()
@@ -155,5 +180,19 @@ public class GameSessionRepository : IGameSessionRepository
         }
 
         return joinCode;
+    }
+
+    public static GameSessionDTO? AdjustTargetOffsets(Guid userId, GameSessionDTO? gameSession)
+    {
+        if (gameSession == null || gameSession.GameRound < 0 || !gameSession.Rounds.Any()) return gameSession;
+
+        var gameRound = gameSession.Rounds[gameSession.GameRound];
+        var roundRole = gameRound.RoundRoles
+            .SingleOrDefault(rr => rr.UserId == userId);
+
+        if (roundRole != null && roundRole.Role != TeamRole.PSYCHIC)
+            gameRound.TargetOffset = -1;
+
+        return gameSession;
     }
 }

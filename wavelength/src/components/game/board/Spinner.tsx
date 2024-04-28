@@ -9,6 +9,8 @@ type SpinnerProps = {
   clickOption: "none" | "cover" | "select";
   onTargetSelect?: (targetOffset: number) => void;
   ghostGuesses?: number[];
+  selectorSelection?: number;
+  isLeftGuess?: boolean;
 };
 
 const size = 1000;
@@ -18,33 +20,57 @@ const Spinner: React.FC<SpinnerProps> = ({
   clickOption,
   onTargetSelect,
   ghostGuesses,
+  selectorSelection,
+  isLeftGuess,
 }) => {
-  const [covered, setCovered] = useState<boolean>(!targetOffset);
+  const [covered, setCovered] = useState<boolean>(true);
   const [mousePosition, setMousePosition] = useState<{
     x: number;
     y: number;
   }>({
-    x: !covered ? -1 : size / 2,
-    y: !covered ? -1 : 0,
+    x: -1,
+    y: -1,
   });
   const [selectorLocked, setSelectorLocked] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const canvas = canvasRef.current;
-  const context = canvas?.getContext("2d");
   const halfSize = size / 2;
 
   useEffect(() => {
-    if (context) {
-      drawSpinner(context, size, {
+    setCovered(clickOption !== "cover" || !targetOffset || targetOffset === -1);
+  }, [clickOption, targetOffset]);
+
+  useEffect(() => {
+    const showDefaultSelector = covered && clickOption === "select";
+    setMousePosition({
+      x: !showDefaultSelector ? -1 : size / 2,
+      y: !showDefaultSelector ? -1 : 0,
+    });
+  }, [covered, clickOption]);
+
+  useEffect(() => {
+    const canvasContext = canvasRef.current?.getContext("2d");
+    if (canvasContext) {
+      drawSpinner(canvasContext, size, {
         cover: covered,
         targetOffset,
         userMousePosition: mousePosition,
         ghostGuesses,
+        selectorSelection,
+        isLeftGuess,
       });
     }
-  }, [mousePosition, canvas, covered]);
+  }, [
+    canvasRef,
+    mousePosition,
+    covered,
+    isLeftGuess,
+    ghostGuesses,
+    targetOffset,
+    selectorSelection,
+  ]);
 
   useEffect(() => {
+    const canvas = canvasRef.current;
     if (!canvas || clickOption !== "select") return;
 
     const handlePositionUpdate = (
@@ -87,7 +113,7 @@ const Spinner: React.FC<SpinnerProps> = ({
       canvas.removeEventListener("mousemove", mouseListener);
       canvas.removeEventListener("touchmove", touchListener);
     };
-  }, [selectorLocked, canvas]);
+  }, [selectorLocked, canvasRef, canvasRef.current, clickOption]);
 
   const handleCanvasClick = () => {
     if (clickOption === "select") {

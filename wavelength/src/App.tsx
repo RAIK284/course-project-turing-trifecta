@@ -1,7 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import "./index.css";
 import NavBar from "./components/navbar/NavBar";
-import AppBackground from "./components/AppBackground";
 import { useStore } from "./stores/store";
 import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
@@ -23,7 +22,6 @@ const App: React.FC = observer(() => {
 
   useEffect(() => {
     if (activeGameSession) {
-      console.log(activeGameSession);
       navigate(
         WavelengthPath.GAME.replace(":gameSessionId", activeGameSession.id)
       );
@@ -31,8 +29,7 @@ const App: React.FC = observer(() => {
   }, [activeGameSession]);
 
   return (
-    <div className="App bg-theme-blue w-screen h-screen fixed text-white">
-      <AppBackground />
+    <div className="App pb-10 bg-stars bg-center bg-no-repeat bg-cover min-h-screen w-screen text-white">
       {loadingOffStart ? (
         <AppLoader />
       ) : (

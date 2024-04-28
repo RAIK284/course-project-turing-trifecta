@@ -18,8 +18,6 @@ public static class ApplicationServiceExtensions
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddDbContext<DataContext>(opt => opt.UseSqlite(config.GetConnectionString("DefaultConnection")));
-        services.AddCors(opt => opt.AddPolicy("CorsPolicy",
-            policy => policy.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()));
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Get.Handler).Assembly));
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         services.AddScoped<IUsersRepository, UsersRepository>();

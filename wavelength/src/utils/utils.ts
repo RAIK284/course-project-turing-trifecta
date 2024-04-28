@@ -38,4 +38,8 @@ export function cn(...classNames: ClassName[]): string {
   return returnedClassNames.join(" ");
 }
 
+export function deepCopy<T>(ob: T): T {
+  return JSON.parse(JSON.stringify(ob)) as T;
+}
+
 export const tailWindConfig = resolveConfig(tailwindConfig).theme;

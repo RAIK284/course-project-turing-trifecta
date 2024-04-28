@@ -1,4 +1,5 @@
 using Application.Core;
+using Application.HubServices;
 using MediatR;
 using Persistence.DataTransferObject;
 using Persistence.Repositories;
@@ -28,11 +29,14 @@ public class SelectTarget
 
     public class Handler : IRequestHandler<Command, Result<GameRoundSelectorSelectionDTO>>
     {
+        private readonly IGameRoundHubService gameRoundHubService;
         private readonly IGameRoundRepository gameRoundRepository;
 
-        public Handler(IGameRoundRepository gameRoundRepository)
+        public Handler(IGameRoundRepository gameRoundRepository,
+            IGameRoundHubService gameRoundHubService)
         {
             this.gameRoundRepository = gameRoundRepository;
+            this.gameRoundHubService = gameRoundHubService;
         }
 
         public async Task<Result<GameRoundSelectorSelectionDTO>> Handle(Command request,
@@ -51,9 +55,13 @@ public class SelectTarget
                 request.Param.TargetOffset
             );
 
-            return result == null
-                ? Result<GameRoundSelectorSelectionDTO>.Failure("Game round target cannot be selected")
-                : Result<GameRoundSelectorSelectionDTO>.Success(result);
+            if (result == null)
+                return
+                    Result<GameRoundSelectorSelectionDTO>.Failure("Game round target cannot be selected");
+
+            await gameRoundHubService.NotifyTeamTurnSelectorSelect(result.GameSessionId, result);
+
+            return Result<GameRoundSelectorSelectionDTO>.Success(result);
         }
     }
 }

@@ -4,6 +4,11 @@ import { store } from "../stores/store";
 import GameSession from "../models/GameSession";
 import Team from "../models/Team";
 import GameSessionMember from "../models/GameSessionMember";
+import { GameRound } from "../models/GameRound";
+import { SelectorSelection } from "../models/SelectorSelection";
+import { GhostGuess } from "../models/GhostGuess";
+import { OpposingGhostGuess } from "../models/OpposingGhostGuess";
+import { OpposingSelectorSelection } from "../models/OpposingSelectorSelection";
 
 axios.defaults.baseURL = import.meta.env.APP_API_URL + "/api";
 
@@ -67,9 +72,57 @@ const GameSessions = {
     }),
 };
 
+const GameRounds = {
+  giveClue: (gameSessionId: string, clue: string) =>
+    requests.post<GameRound>("/gameRound/giveClue", {
+      gameSessionId,
+      clue,
+    }),
+  performGhostGuess: (
+    gameSessionId: string,
+    userId: string,
+    targetOffset: number
+  ) =>
+    requests.post<GhostGuess>("/gameRound/performGhostGuess", {
+      gameSessionId,
+      userId,
+      targetOffset: Math.round(targetOffset),
+    }),
+  selectTarget: (gameSessionId: string, userId: string, targetOffset: number) =>
+    requests.post<SelectorSelection>("/gameRound/selectTarget", {
+      gameSessionId,
+      userId,
+      targetOffset: Math.round(targetOffset),
+    }),
+  performOpposingTeamGuess: (
+    gameSessionId: string,
+    userId: string,
+    isLeft: boolean
+  ) =>
+    requests.post<OpposingGhostGuess>("/gameRound/performOpposingTeamGuess", {
+      gameSessionId,
+      userId,
+      isLeft,
+    }),
+  performOpposingTeamSelection: (
+    gameSessionId: string,
+    userId: string,
+    isLeft: boolean
+  ) =>
+    requests.post<OpposingSelectorSelection>(
+      "/gameRound/performOpposingTeamSelection",
+      {
+        gameSessionId,
+        userId,
+        isLeft,
+      }
+    ),
+};
+
 const api = {
   Account,
   GameSessions,
+  GameRounds,
 };
 
 export default api;

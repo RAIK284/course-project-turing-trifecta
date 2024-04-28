@@ -39,8 +39,8 @@ app.Use(async (context, next) =>
 
 app.UseHttpsRedirection();
 
-app.UseCors("CorsPolicy");
-
+// TODO: This will need to be updated for production environment
+app.UseCors(config => config.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 app.UseAuthentication();
 app.UseAuthorization();
 

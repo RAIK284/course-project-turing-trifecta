@@ -5,7 +5,11 @@ export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   safelist: ["bg-star-1", "bg-star-2", "bg-star-3"], // These are values that need to be added when we conditionally use tailwind values in components
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        stars: "url('/src/assets/stars.png')",
+      },
+    },
     colors: {
       "theme-blue": "#0E1228",
       "cover-blue": "#6EB4B1",
@@ -26,6 +30,7 @@ export default {
       "white-hover": "#f1f1f1",
       "grey-spinner-text": "#262626",
       "ghost-guess": "#347982",
+      "is-left-guess": "#dec610",
     },
   },
   plugins: [],

@@ -9,20 +9,23 @@ namespace Persistence.Repositories;
 public class GameRoundRepository : IGameRoundRepository
 {
     private readonly DataContext context;
+    private readonly IGameSessionRepository gameSessionRepository;
     private readonly IMapper mapper;
     private readonly Random random;
     private readonly ISpectrumCardRepository spectrumCardRepository;
 
-    public GameRoundRepository(DataContext context, IMapper mapper, ISpectrumCardRepository spectrumCardRepository)
+    public GameRoundRepository(DataContext context, IMapper mapper, ISpectrumCardRepository spectrumCardRepository,
+        IGameSessionRepository gameSessionRepository)
     {
         this.context = context;
         this.mapper = mapper;
         this.spectrumCardRepository = spectrumCardRepository;
+        this.gameSessionRepository = gameSessionRepository;
         random = new Random();
     }
 
     /// <inheritdoc />
-    public async Task<GameRoundDTO?> StartRound(Guid gameSessionId)
+    public async Task<GameSessionDTO?> StartRound(Guid gameSessionId)
     {
         var previousRoundsForGameSession = await context.GameRounds
             .Where(gr => gr.GameSessionId == gameSessionId)
@@ -40,6 +43,7 @@ public class GameRoundRepository : IGameRoundRepository
 
         var newRound = new GameRound
         {
+            RoundNumber = previousRoundsForGameSession.Count,
             GameSessionId = gameSessionId,
             SpectrumCardId = unusedSpectrumCards[random.Next(unusedSpectrumCards.Count)].Id,
             TargetOffset = random.Next(20, 161) // Generate between 20 and 160 inclusive
@@ -60,17 +64,21 @@ public class GameRoundRepository : IGameRoundRepository
 
         context.GameRounds.Add(newRound);
 
+        var gameSession = await context.GameSessions
+            .Where(gs => gs.Id == gameSessionId)
+            .FirstOrDefaultAsync();
+
+        if (gameSession == null) return null;
+
+        gameSession.GameRound = newRound.RoundNumber;
+
         if (await context.SaveChangesAsync() > 0)
         {
             var userRoles = await CreateUserRolesForRound(newRound, previousRoundsForGameSession);
 
             if (userRoles == null || !userRoles.Any()) return null;
 
-            var result = mapper.Map<GameRoundDTO>(newRound);
-
-            result.RoundRoles = userRoles;
-
-            return result;
+            return await gameSessionRepository.Get(gameSessionId);
         }
 
         return null;
@@ -89,10 +97,16 @@ public class GameRoundRepository : IGameRoundRepository
         var lastRound = await context.GameRounds
             .Where(gr => gr.GameSessionId == gameSession.Id)
             .Include(gr => gr.RoundRoles)
+            .Include(gr => gr.GhostGuesses)
+            .Include(gr => gr.SelectorSelection)
+            .Include(gr => gr.OpposingGhostGuesses)
+            .Include(gr => gr.OpposingSelectorSelection)
+            .Include(gr => gr.SpectrumCard)
             .OrderBy(gr => gr.RoundNumber)
             .LastOrDefaultAsync();
 
-        if (lastRound == null) return null;
+        // If the round already has a clue, then the user shouldn't be able to give one
+        if (lastRound == null || lastRound.Clue.Length != 0) return null;
 
         lastRound.Clue = clue;
 
@@ -118,6 +132,7 @@ public class GameRoundRepository : IGameRoundRepository
             .Include(gr => gr.SelectorSelection)
             .Include(gr => gr.OpposingGhostGuesses)
             .Include(gr => gr.OpposingSelectorSelection)
+            .Include(gr => gr.SpectrumCard)
             .OrderBy(gr => gr.RoundNumber)
             .LastOrDefaultAsync();
 

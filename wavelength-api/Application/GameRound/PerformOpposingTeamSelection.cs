@@ -1,4 +1,5 @@
 using Application.Core;
+using Application.HubServices;
 using MediatR;
 using Persistence.DataTransferObject;
 using Persistence.Repositories;
@@ -28,11 +29,14 @@ public class PerformOpposingTeamSelection
 
     public class Handler : IRequestHandler<Command, Result<GameRoundOpposingTeamSelectionDTO>>
     {
+        private readonly IGameRoundHubService gameRoundHubService;
         private readonly IGameRoundRepository gameRoundRepository;
 
-        public Handler(IGameRoundRepository gameRoundRepository)
+        public Handler(IGameRoundRepository gameRoundRepository,
+            IGameRoundHubService gameRoundHubService)
         {
             this.gameRoundRepository = gameRoundRepository;
+            this.gameRoundHubService = gameRoundHubService;
         }
 
         public async Task<Result<GameRoundOpposingTeamSelectionDTO>> Handle(Command request,
@@ -51,9 +55,12 @@ public class PerformOpposingTeamSelection
                 request.Param.IsLeft
             );
 
-            return result == null
-                ? Result<GameRoundOpposingTeamSelectionDTO>.Failure("Game round selection cannot be performed")
-                : Result<GameRoundOpposingTeamSelectionDTO>.Success(result);
+            if (result == null)
+                return Result<GameRoundOpposingTeamSelectionDTO>.Failure("Game round selection cannot be performed");
+
+            await gameRoundHubService.NotifyOpposingTeamSelectorSelect(result.GameSessionId, result);
+
+            return Result<GameRoundOpposingTeamSelectionDTO>.Success(result);
         }
     }
 }

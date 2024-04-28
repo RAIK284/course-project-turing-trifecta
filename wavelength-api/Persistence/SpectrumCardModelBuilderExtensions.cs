@@ -17,6 +17,12 @@ public static class SpectrumCardModelBuilderExtensions
         var SpectrumCardId_8 = Guid.Parse("a32543d2-1da3-4d39-b533-66014de89889");
         var SpectrumCardId_9 = Guid.Parse("af711bff-924a-407b-b712-99e13b0cbf9f");
         var SpectrumCardId_10 = Guid.Parse("4776e959-b795-4ec1-aa5f-440d786387d3");
+        var SpectrumCardId_11 = Guid.Parse("4776e959-b795-4ec1-aa5f-440d786387d4");
+        var SpectrumCardId_12 = Guid.Parse("4776e959-b795-4ec1-aa5f-440d786387d5");
+        var SpectrumCardId_13 = Guid.Parse("4776e959-b795-4ec1-aa5f-440d786387d6");
+        var SpectrumCardId_14 = Guid.Parse("4776e959-b795-4ec1-aa5f-440d786387d7");
+        var SpectrumCardId_15 = Guid.Parse("4776e959-b795-4ec1-aa5f-440d786387d8");
+        var SpectrumCardId_16 = Guid.Parse("4776e959-b795-4ec1-aa5f-440d786387d9");
 
         modelBuilder.Entity<SpectrumCard>().HasData(
             new SpectrumCard
@@ -78,6 +84,42 @@ public static class SpectrumCardModelBuilderExtensions
                 Id = SpectrumCardId_10,
                 LeftName = "Common",
                 RightName = "Rare"
+            },
+            new SpectrumCard
+            {
+                Id = SpectrumCardId_11,
+                LeftName = "Good Actor",
+                RightName = "Bad Actor"
+            },
+            new SpectrumCard
+            {
+                Id = SpectrumCardId_12,
+                LeftName = "Formal",
+                RightName = "Casual"
+            },
+            new SpectrumCard
+            {
+                Id = SpectrumCardId_13,
+                LeftName = "Evil",
+                RightName = "Good"
+            },
+            new SpectrumCard
+            {
+                Id = SpectrumCardId_14,
+                LeftName = "Healthy",
+                RightName = "Unhealthy"
+            },
+            new SpectrumCard
+            {
+                Id = SpectrumCardId_15,
+                LeftName = "Good Pizza Topping",
+                RightName = "Bad Pizza Topping"
+            },
+            new SpectrumCard
+            {
+                Id = SpectrumCardId_16,
+                LeftName = "Flavorful",
+                RightName = "Flavorless"
             }
         );
     }

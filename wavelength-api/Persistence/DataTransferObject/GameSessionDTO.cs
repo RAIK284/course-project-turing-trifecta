@@ -14,7 +14,7 @@ public class GameSessionDTO
 
     public List<GameSessionMemberDTO>? Members { get; set; }
 
-    public List<GameRoundDTO>? Rounds { get; set; }
+    public List<GameRoundDTO> Rounds { get; set; } = new();
 
     public int GameRound { get; set; }
 }

@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { WavelengthPath } from "./Routes";
 import { useStore } from "../stores/store";
@@ -30,13 +30,15 @@ const AuthenticatedRoute: React.FC<PropsWithChildren<AuthenticatedRouteProps>> =
       const [game] = useStoreValue(gameSessionStore.gameSessionStoreValue);
       const isAuthenticated = !!user;
 
-      if (connectToGameSessionHub && isAuthenticated && game && game.id) {
-        gameSessionHub.connect(game.id);
-      }
+      useEffect(() => {
+        if (connectToGameSessionHub && isAuthenticated && game && game.id) {
+          gameSessionHub.connect(game.id);
+        }
 
-      if (!connectToGameSessionHub) {
-        gameSessionHub.disconnect();
-      }
+        if (!connectToGameSessionHub) {
+          gameSessionHub.disconnect();
+        }
+      }, [connectToGameSessionHub, isAuthenticated, game]);
 
       if (isAuthenticated) {
         return children;
