@@ -11,6 +11,8 @@ public class GameSessionDTO
     public DateTime? StartTime { get; set; }
 
     public DateTime? EndTime { get; set; }
+    
+    public GameSessionResultDTO Scores { get; set; }
 
     public List<GameSessionMemberDTO>? Members { get; set; }
 

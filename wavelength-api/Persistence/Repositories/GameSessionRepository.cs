@@ -54,6 +54,7 @@ public class GameSessionRepository : IGameSessionRepository
             .ThenInclude(r => r.OpposingGhostGuesses)
             .Include(gsm => gsm.Rounds)
             .ThenInclude(r => r.OpposingSelectorSelection)
+            .Include(gs => gs.GameSessionResult)
             .ProjectTo<GameSessionDTO>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
 
@@ -194,5 +195,96 @@ public class GameSessionRepository : IGameSessionRepository
             gameRound.TargetOffset = -1;
 
         return gameSession;
+    }
+
+    public async Task<GameSessionDTO?> UpdateGameScoring(Guid gameSessionId)
+    {
+        var gameSession = await Get(gameSessionId);
+
+        if (gameSession == null) return null;
+
+        var gameSessionResult = CalculateScoring(gameSession);
+
+        var existingGameSessionResult = await context.GameSessionResults
+            .Where(gs => gs.GameSessionId == gameSession.Id)
+            .FirstOrDefaultAsync();
+
+        if (existingGameSessionResult == null)
+        {
+            context.GameSessionResults.Add(gameSessionResult);
+        }
+        else
+        {
+            existingGameSessionResult.WinningTeam = gameSessionResult.WinningTeam;
+            existingGameSessionResult.WinningScore = gameSessionResult.WinningScore;
+            existingGameSessionResult.LosingTeam = gameSessionResult.LosingTeam;
+            existingGameSessionResult.LosingScore = gameSessionResult.LosingScore;
+        }
+
+        await context.SaveChangesAsync();
+
+        return await Get(gameSessionId);
+    }
+
+    private GameSessionResult CalculateScoring(GameSessionDTO gameSession)
+    {
+        var teamOneScore = 0;
+        var teamTwoScore = 0;
+        foreach (var round in gameSession.Rounds)
+        {
+            var teamTurn = round.TeamTurn;
+            var targetOffset = round.TargetOffset;
+            var selection = round.SelectorSelection.TargetOffset;
+            var isLeftSelection = round.OpposingTeamSelection.IsLeft;
+
+            var teamGuessDistance = Math.Abs(targetOffset - selection);
+            var wasSelectionLeft = targetOffset - selection > 0;
+            var teamTurnScore = 0;
+            var opposingTeamTurnScore = 0;
+
+            if (teamGuessDistance <= 4)
+            {
+                teamTurnScore = 4;
+            } else if (teamGuessDistance <= 12)
+            {
+                teamTurnScore = 3;
+            } else if (teamGuessDistance <= 20)
+            {
+                teamTurnScore = 2;
+            }
+
+            if (teamGuessDistance > 4)
+            {
+                if (wasSelectionLeft && isLeftSelection)
+                {
+                    opposingTeamTurnScore = 1;
+                } else if (!wasSelectionLeft && !isLeftSelection)
+                {
+                    opposingTeamTurnScore = 1;
+                }
+            }
+
+            if (teamTurn == Team.ONE)
+            {
+                teamOneScore += teamTurnScore;
+                teamTwoScore += opposingTeamTurnScore;
+            }
+            else
+            {
+                teamOneScore += opposingTeamTurnScore;
+                teamTwoScore += teamTurnScore;
+            }
+        }
+
+        var gameSessionResult = new GameSessionResult
+        {
+            GameSessionId = gameSession.Id,
+            LosingTeam = teamOneScore < teamTwoScore ? Team.ONE : Team.TWO,
+            LosingScore = Math.Min(teamOneScore, teamTwoScore),
+            WinningTeam = teamOneScore > teamTwoScore ? Team.ONE : Team.TWO,
+            WinningScore = Math.Max(teamOneScore, teamTwoScore),
+        };
+
+        return gameSessionResult;
     }
 }

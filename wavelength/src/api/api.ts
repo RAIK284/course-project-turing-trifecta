@@ -109,14 +109,11 @@ const GameRounds = {
     userId: string,
     isLeft: boolean
   ) =>
-    requests.post<OpposingSelectorSelection>(
-      "/gameRound/performOpposingTeamSelection",
-      {
-        gameSessionId,
-        userId,
-        isLeft,
-      }
-    ),
+    requests.post<GameSession>("/gameRound/performOpposingTeamSelection", {
+      gameSessionId,
+      userId,
+      isLeft,
+    }),
 };
 
 const api = {

@@ -12,6 +12,8 @@ public class MappingProfiles : Profile
             .ForMember(dto => dto.Id,
                 opts => opts.MapFrom(u => Guid.Parse(u.Id)));
         _ = CreateMap<GameSession, GameSessionDTO>()
+            .ForMember(gs => gs.Scores,
+                opt => opt.MapFrom(gs => gs.GameSessionResult))
             .ForMember(gs => gs.Rounds,
                 opt => opt.MapFrom(gs => gs.Rounds))
             .ForMember(gs => gs.Members,
@@ -23,6 +25,7 @@ public class MappingProfiles : Profile
         _ = CreateMap<GameRoundSelectorSelection, GameRoundSelectorSelectionDTO>();
         _ = CreateMap<GameRoundOpposingTeamGuess, GameRoundOpposingTeamGuessDTO>();
         _ = CreateMap<GameRoundOpposingTeamSelection, GameRoundOpposingTeamSelectionDTO>();
+        _ = CreateMap<GameSessionResult, GameSessionResultDTO>();
         _ = CreateMap<GameRound, GameRoundDTO>()
             .ForMember(round => round.RoundRoles,
                 opt => opt.MapFrom(round => round.RoundRoles))

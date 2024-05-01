@@ -51,6 +51,13 @@ public class GameRoundHubService : IGameRoundHubService
             .SendAsync("TeamTurnSelectorSelect", selection);
     }
 
+    public async Task NotifyRoundEnd(Guid gameSessionId, GameSessionDTO gameSession)
+    {
+        await gameSessionHub.Clients
+            .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
+            .SendAsync("RoundEnded", gameSession);
+    }
+
     public async Task NotifyPsychicClue(Guid gameSessionId, GameRoundDTO gameRoundWithClue)
     {
         var targetOffset = gameRoundWithClue.TargetOffset;
@@ -65,17 +72,13 @@ public class GameRoundHubService : IGameRoundHubService
         }
     }
 
-    public async Task NotifyOpposingTeamGhostGuess(Guid gameSessionId, GameRoundOpposingTeamGuessDTO guess)
+    public async Task NotifyOpposingTeamGhostGuess(Guid gameSessionId,
+        GameRoundOpposingTeamGuessDTO guess)
     {
         await gameSessionHub.Clients
             .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
             .SendAsync("OpposingTeamGhostGuess", guess);
     }
-
-    public async Task NotifyOpposingTeamSelectorSelect(Guid gameSessionId, GameRoundOpposingTeamSelectionDTO selection)
-    {
-        await gameSessionHub.Clients
-            .Group(GameSessionHub.GroupNameForAllGameSessionMembers(gameSessionId))
-            .SendAsync("OpposingTeamSelectorSelect", selection);
-    }
+    
+    
 }

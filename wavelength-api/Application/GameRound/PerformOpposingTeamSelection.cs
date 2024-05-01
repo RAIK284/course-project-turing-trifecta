@@ -17,7 +17,7 @@ public class PerformOpposingTeamSelection
         public bool IsLeft { get; set; }
     }
 
-    public class Command : IRequest<Result<GameRoundOpposingTeamSelectionDTO>>
+    public class Command : IRequest<Result<GameSessionDTO>>
     {
         public Param Param;
 
@@ -27,25 +27,28 @@ public class PerformOpposingTeamSelection
         }
     }
 
-    public class Handler : IRequestHandler<Command, Result<GameRoundOpposingTeamSelectionDTO>>
+    public class Handler : IRequestHandler<Command, Result<GameSessionDTO>>
     {
         private readonly IGameRoundHubService gameRoundHubService;
         private readonly IGameRoundRepository gameRoundRepository;
+        private readonly IGameSessionRepository gameSessionRepository;
 
         public Handler(IGameRoundRepository gameRoundRepository,
-            IGameRoundHubService gameRoundHubService)
+            IGameRoundHubService gameRoundHubService,
+            IGameSessionRepository gameSessionRepository)
         {
             this.gameRoundRepository = gameRoundRepository;
             this.gameRoundHubService = gameRoundHubService;
+            this.gameSessionRepository = gameSessionRepository;
         }
 
-        public async Task<Result<GameRoundOpposingTeamSelectionDTO>> Handle(Command request,
+        public async Task<Result<GameSessionDTO>> Handle(Command request,
             CancellationToken cancellationToken)
         {
             var currentRound = await gameRoundRepository.GetCurrentRound(request.Param.GameSessionId);
 
             if (currentRound == null)
-                return Result<GameRoundOpposingTeamSelectionDTO>.Failure(
+                return Result<GameSessionDTO>.Failure(
                     "The current round does not exist, so no guess can be made.");
 
             var result = await gameRoundRepository.PerformOpposingTeamSelection(
@@ -56,11 +59,20 @@ public class PerformOpposingTeamSelection
             );
 
             if (result == null)
-                return Result<GameRoundOpposingTeamSelectionDTO>.Failure("Game round selection cannot be performed");
+                return Result<GameSessionDTO>.Failure("Game round selection cannot be performed");
 
-            await gameRoundHubService.NotifyOpposingTeamSelectorSelect(result.GameSessionId, result);
+            var updatedGameSession =
+                await gameSessionRepository.UpdateGameScoring(request.Param.GameSessionId);
 
-            return Result<GameRoundOpposingTeamSelectionDTO>.Success(result);
+            if (updatedGameSession == null)
+            {
+                return Result<GameSessionDTO>.Failure(
+                    "Something went wrong when updating the game score.");
+            }
+
+            await gameRoundHubService.NotifyRoundEnd(result.GameSessionId, updatedGameSession);
+
+            return Result<GameSessionDTO>.Success(updatedGameSession);
         }
     }
 }
