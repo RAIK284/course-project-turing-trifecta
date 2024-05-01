@@ -1,5 +1,6 @@
 import { GameRound } from "./GameRound";
 import GameSessionMember from "./GameSessionMember";
+import { GameSessionResult } from "./GameSessionResult";
 
 type GameSession = {
   id: string;
@@ -10,6 +11,7 @@ type GameSession = {
   gameRound: number;
   members: GameSessionMember[];
   rounds: GameRound[];
+  scores: GameSessionResult;
 };
 
 export default GameSession;
