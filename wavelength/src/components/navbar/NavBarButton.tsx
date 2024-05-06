@@ -6,6 +6,7 @@ type NavBarProps = {
   content: string;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   filled?: boolean;
+  isGameCode: boolean;
 };
 
 /**
@@ -15,6 +16,7 @@ const NavBarButton: React.FC<NavBarProps> = ({
   content,
   onClick,
   filled = true,
+  isGameCode, 
 }) => (
   <button
     type="button"
@@ -29,7 +31,7 @@ const NavBarButton: React.FC<NavBarProps> = ({
     style={{ display: 'flex', alignItems: 'center' }}
   >
     <span style={{ marginRight: '0.5rem' }}>{content}</span>
-    <CopyTextIcon/>
+    {isGameCode && <CopyTextIcon/>}
   </button> 
 );
 

@@ -49,6 +49,7 @@ const NavBar: React.FC = observer(() => {
       content={`GAME #${game.joinCode}`}
       onClick={handleJoinCodeButtonClick}
       filled={true}
+      isGameCode={true}
     />
   );
   const loginButton = !isAuthenticated && (
@@ -56,6 +57,7 @@ const NavBar: React.FC = observer(() => {
       content="Login"
       filled={false}
       onClick={handleLoginButtonClick}
+      isGameCode={false}
     />
   );
   const registerButton = !isAuthenticated && (
@@ -63,6 +65,7 @@ const NavBar: React.FC = observer(() => {
       content="Register"
       filled={true}
       onClick={handleRegisterButtonClick}
+      isGameCode={false}
     />
   );
   const profileButton = isAuthenticated && (
