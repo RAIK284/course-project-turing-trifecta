@@ -11,6 +11,9 @@ import { useStore } from "../../stores/store";
 import { useStoreValue } from "../../stores/storeValue";
 import { observer } from "mobx-react-lite";
 
+// import the avatar assigned to the user
+import { avatarDict } from "../../utils/avatarUtils";
+
 const NavBar: React.FC = observer(() => {
   const { userStore, gameSessionStore } = useStore();
   const [user] = useStoreValue(userStore.userStoreValue);
