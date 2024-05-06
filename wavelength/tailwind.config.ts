@@ -9,6 +9,9 @@ export default {
       backgroundImage: {
         stars: "url('/src/assets/stars.png')",
       },
+      boxShadow: {
+        glow: "0 0 5px #ffffff",
+      }
     },
     colors: {
       "theme-blue": "#0E1228",
