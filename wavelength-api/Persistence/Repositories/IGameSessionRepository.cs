@@ -18,5 +18,7 @@ public interface IGameSessionRepository
 
     public Task<bool> Start(Guid gameSessionId);
 
+    public Task<GameSessionDTO?> UpdateGameScoring(Guid gameSessionId);
+
     public Task<GameSessionDTO?> GetActiveSession(Guid userId);
 }

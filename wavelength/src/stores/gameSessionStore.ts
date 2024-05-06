@@ -99,12 +99,11 @@ export default class GameSessionStore {
       }
     );
 
-    gameSessionHub.observe(
-      "OpposingTeamSelectorSelect",
-      (opposingSelectorSelection: OpposingSelectorSelection) => {
-        this.handleNewOpposingSelectorSelection(opposingSelectorSelection);
-      }
-    );
+    gameSessionHub.observe("RoundEnded", (gameSession: GameSession) => {
+      runInAction(() => {
+        this.gameSessionStoreValue.setValue(gameSession);
+      });
+    });
   }
 
   reset = () => {
@@ -308,14 +307,16 @@ export default class GameSessionStore {
 
     runInAction(() => (this.callingEndpoint = true));
     try {
-      const opposingSelectorSelect =
+      const updatedGameSession =
         await api.GameRounds.performOpposingTeamSelection(
           gameSessionId,
           user.id,
           isLeft
         );
 
-      this.handleNewOpposingSelectorSelection(opposingSelectorSelect);
+      runInAction(() => {
+        this.gameSessionStoreValue.setValue(updatedGameSession);
+      });
     } catch (e) {
       if (e instanceof AxiosError) {
         this.gameSessionStoreValue.setError(e.response?.data);
