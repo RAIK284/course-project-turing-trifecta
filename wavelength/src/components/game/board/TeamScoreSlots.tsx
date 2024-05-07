@@ -24,7 +24,7 @@ function TeamScoreSlots ({score, teamOne}: {score:number; teamOne: boolean}){
       <div className="bg-scoreboard-blue h-full rounded-full text-center">{point}</div>
     );
     }
-    if(atScore && firstTeam){
+    if(point == atScore && firstTeam){
       return(
         <div className="bg-team-1-score-holder h-full rounded-full text-center text-black">{point}</div>
       );
