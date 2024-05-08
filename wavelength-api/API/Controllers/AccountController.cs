@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using API.Services;
 using Application.Account;
+using Application.GameRound;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -37,6 +38,26 @@ public class AccountController : BaseAPIController
     [HttpGet]
     public async Task<ActionResult<UserDTO>> GetCurrentUser()
     {
+        return HandleResult(await Mediator.Send(new CurrentUser.Query(new CurrentUser.Params
+        {
+            Email = User.FindFirstValue(ClaimTypes.Email)
+        })));
+    }
+
+    [Authorize]
+    [HttpPost("updateUserProfile")]
+    public async Task<ActionResult<UserDTO>> UpdateUserProfile([FromBody] UpdateProfile.Params param)
+    {
+        return HandleResult(await Mediator.Send(new UpdateProfile.Command(param)));
+    }
+
+    [Authorize]
+    [HttpPost("changePassword")]
+    public async Task<ActionResult<UserDTO>> UpdateUserPassword([FromBody] ChangePassword.Params param)
+
+    {   
+        param.UserID = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        await Mediator.Send(new ChangePassword.Command(param));
         return HandleResult(await Mediator.Send(new CurrentUser.Query(new CurrentUser.Params
         {
             Email = User.FindFirstValue(ClaimTypes.Email)

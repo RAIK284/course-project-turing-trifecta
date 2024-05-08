@@ -4,6 +4,7 @@ using API.Services;
 using Domain;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
@@ -14,6 +15,7 @@ public static class IdentityServiceExtensions
 {
     public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
     {
+        services.AddIdentityCore<User>().AddDefaultTokenProviders().AddEntityFrameworkStores<DataContext>();
         services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddIdentityCore<User>(opt =>
             {
