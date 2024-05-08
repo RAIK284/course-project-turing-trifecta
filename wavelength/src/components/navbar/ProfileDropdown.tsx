@@ -47,8 +47,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
     setIsAvatarPopupOpen(true);
   };
 
-  const canSaveChanges = editedUser.userName !== user.userName;
-
   return (
     <div className="relative">
       <div className="dropdown-content absolute bg-scoreboard-blue p-3 top-105% right-5 w-fit rounded-md flex flex-col gap-1 items-center" onClick={(e) => e.stopPropagation()}>
@@ -64,8 +62,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
                 onChange={(e) => updateUserValue("userName", e.target.value)}
                 value={editedUser.userName}
               />
-              <button className="save-button" disabled={!canSaveChanges} onClick={saveEditedUser}>
-                
+              <button className="save-button" disabled={user.userName === editedUser.userName} onClick={saveEditedUser}>
                 Save Changes
               </button>
             </div>
@@ -81,7 +78,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
               />
-              <button className="save-button" disabled={!canSaveChanges} onClick={saveEditedPassword}>
+              <button className="save-button" disabled={password.length === 0} onClick={saveEditedPassword}>
                 Save Changes
               </button>
             </div>
