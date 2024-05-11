@@ -16,3 +16,6 @@ Backend:
 - Entity Framework
 - SignalR
 
+### How to Run
+
+See `wavelength-api/README.md` for backend instructions, and `wavelength/README.md` for frontend instructions.
