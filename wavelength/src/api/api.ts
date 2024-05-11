@@ -56,6 +56,9 @@ const Account = {
       "/account/register",
        {username, email, password, avatarId},
     ),
+  updateUserProfile: (user: User) => requests.post<User>("/account/updateUserProfile", user),
+  changePassword: (password: string) => requests.post<User>("/account/changePassword", { password }),
+
   getCurrentUser: () => requests.get<User>("/account"),
 };
 
@@ -113,14 +116,11 @@ const GameRounds = {
     userId: string,
     isLeft: boolean
   ) =>
-    requests.post<OpposingSelectorSelection>(
-      "/gameRound/performOpposingTeamSelection",
-      {
-        gameSessionId,
-        userId,
-        isLeft,
-      }
-    ),
+    requests.post<GameSession>("/gameRound/performOpposingTeamSelection", {
+      gameSessionId,
+      userId,
+      isLeft,
+    }),
 };
 
 const api = {

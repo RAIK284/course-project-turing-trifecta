@@ -76,6 +76,44 @@ export default class UserStore {
     });
   };
 
+  updateProfile = async (newUser: User): Promise<User | undefined> => {
+    return this.userStoreValue.handleAPICall(async () => {
+      const user = await api.Account.updateUserProfile(newUser);
+
+      if (user.token) {
+        this.userStoreValue.setValue(user);
+        this.setToken(user.token);
+
+        if (user.activeGameSession) {
+          store.gameSessionStore.gameSessionStoreValue.setValue(
+            user.activeGameSession
+          );
+        }
+      }
+
+      return user;
+    });
+  };
+
+  changePassword = async (password: string): Promise<User | undefined> => {
+    return this.userStoreValue.handleAPICall(async () => {
+      const user = await api.Account.changePassword(password);
+
+      if (user.token) {
+        this.userStoreValue.setValue(user);
+        this.setToken(user.token);
+
+        if (user.activeGameSession) {
+          store.gameSessionStore.gameSessionStoreValue.setValue(
+            user.activeGameSession
+          );
+        }
+      }
+
+      return user;
+    });
+  };
+
   currentUser = async () => {
     if (this.userStoreValue.value) return this.userStoreValue.value;
 

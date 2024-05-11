@@ -26,4 +26,22 @@ public class UsersRepository : IUsersRepository
 
         return user;
     }
+
+    public async Task<UserDTO?> UpdateProfile(UserDTO user)
+    {
+        var userIdString = user.Id.ToString();
+        var result = await context.Users
+            .Where(u => u.Id == userIdString)
+            .FirstOrDefaultAsync();
+
+        if (result == null)
+        {
+            return null;
+        }
+
+        result.UserName = user.UserName;
+        result.AvatarId = user.AvatarId;
+        await context.SaveChangesAsync();
+        return mapper.Map<UserDTO>(result);
+    }
 }

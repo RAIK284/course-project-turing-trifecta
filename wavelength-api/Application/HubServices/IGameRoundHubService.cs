@@ -14,5 +14,5 @@ public interface IGameRoundHubService
 
     public Task NotifyOpposingTeamGhostGuess(Guid gameSessionId, GameRoundOpposingTeamGuessDTO guess);
 
-    public Task NotifyOpposingTeamSelectorSelect(Guid gameSessionId, GameRoundOpposingTeamSelectionDTO selection);
+    public Task NotifyRoundEnd(Guid gameSessionId, GameSessionDTO gameSession);
 }
