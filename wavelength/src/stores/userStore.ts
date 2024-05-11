@@ -57,9 +57,9 @@ export default class UserStore {
     });
   };
 
-  register = async (newUser: User): Promise<User | undefined> => {
+  register = async (username: string, email: string, password: string, avatarId: string): Promise<User | undefined> => {
     return this.userStoreValue.handleAPICall(async () => {
-      const user = await api.Account.register(newUser);
+      const user = await api.Account.register(username, email, password, avatarId);
 
       if (user.token) {
         this.userStoreValue.setValue(user);

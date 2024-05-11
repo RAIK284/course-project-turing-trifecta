@@ -51,9 +51,14 @@ const Account = {
       { email, password },
       { validateStatus: null }
     ),
-  register: (user: User) => requests.post<User>("/account/register", user),
+  register: (username: string, email: string, password: string, avatarId: string) => 
+    requests.post<User>(
+      "/account/register",
+       {username, email, password, avatarId},
+    ),
   updateUserProfile: (user: User) => requests.post<User>("/account/updateUserProfile", user),
   changePassword: (password: string) => requests.post<User>("/account/changePassword", { password }),
+
   getCurrentUser: () => requests.get<User>("/account"),
 };
 
